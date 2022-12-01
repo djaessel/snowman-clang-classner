@@ -14,12 +14,15 @@ class Classner:
 
     def readClassFunctions(self, file_path):
         class_functions = []
+        line_index = -1
+        lines_to_remove = []
         print("Reading class functions...", end="", flush=True)
         with open(file_path) as f:
             cur_class_index = -1
             next_is_decl = False
             class_body = False
             for line in f:
+                line_index += 1
                 line = line.rstrip("\n")
                 if next_is_decl:
                     line = line.strip()
@@ -31,12 +34,14 @@ class Classner:
                         class_functions[cur_class_index].append([]) # body of function
                         class_body = True
 
+                    lines_to_remove.append(line_index)
                     next_is_decl = False
                 elif class_body:
                     if line == "}":
                         class_body = False
                     else:
                         class_functions[cur_class_index][2].append(line)
+                    lines_to_remove.append(line_index)
                 elif line.startswith("/*"):
                     line = line.strip()
                     if line.endswith("*/") and "::" in line:
@@ -51,8 +56,30 @@ class Classner:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
 
+                                # here because some class functions are skipped at the moment for some reasons
+                                lines_to_remove.append(line_index)
+
+
         print("DONE", flush=True)
+
+        self.save_new_cpp_file(file_path, lines_to_remove)
         self.sort_funcs_into_classes(class_functions)
+
+        print()
+
+
+    def save_new_cpp_file(self, file_path, lines_to_remove):
+        print("Writing cleaned cpp file...", end="", flush=True)
+        with open(file_path) as fr:
+            new_file_name = file_path.split("/")
+            new_file_name = new_file_name[len(new_file_name) - 1]
+            with open(Classner.export_dir + "/" + new_file_name, "w") as fw:
+                linerx = -1
+                for line in fr:
+                    linerx += 1
+                    if not linerx in lines_to_remove:
+                        fw.write(line)
+        print("DONE")
 
 
     def sort_funcs_into_classes(self, funcs):

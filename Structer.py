@@ -37,3 +37,4 @@ class Structer:
                     if line == "};":
                         struct_body = False
         print("DONE")
+        print()
