@@ -14,6 +14,7 @@ class Classner:
 
     def readClassFunctions(self, file_path):
         class_functions = []
+        print("Reading class functions...", end="", flush=True)
         with open(file_path) as f:
             cur_class_index = -1
             next_is_decl = False
@@ -51,10 +52,12 @@ class Classner:
                                 next_is_decl = True
 
         self.sort_funcs_into_classes(class_functions)
+        print("DONE", flush=True)
 
 
     def sort_funcs_into_classes(self, funcs):
         self.classes.clear()
+        print("Sort functions into classes...", end="", flush=True)
         for func in funcs:
             ddd = func[0].split("::")
             if len(ddd) > 1:
@@ -75,4 +78,5 @@ class Classner:
                     self.classes[class_name] = []
 
                 self.classes[class_name].append((ddd[1], func[1], func[2]))
+        print("DONE", flush=True)
 

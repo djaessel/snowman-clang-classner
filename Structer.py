@@ -15,6 +15,7 @@ class Structer:
 
     def readStructs(self, file_path):
         self.structs.clear()
+        print("Reading structs...", end="", flush=True)
         with open(file_path) as f:
             cur_struct_name = None
             struct_body = False
@@ -35,3 +36,4 @@ class Structer:
                     self.structs[cur_struct_name].append(line)
                     if line == "};":
                         struct_body = False
+        print("DONE")

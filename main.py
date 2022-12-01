@@ -20,19 +20,21 @@ def main():
     stopwatch = Stopwatch()
     stopwatch.start()
 
-    print("Processing cpp file ...", end=" ", flush=True)
+    print("Processing cpp file ...\n")
     
     structer = Structer()
     structer.readStructs(file_path)
+    stopwatch.printElapsed()
 
     classner = Classner()
     classner.readClassFunctions(file_path)
     classes = classner.get_classes()
+    stopwatch.printElapsed()
 
     classStorer = ClassStorer(structer, classes)
     classStorer.writeClasses()
     
-    print("DONE", flush=True)
+    print("Processing DONE", flush=True)
 
     stopwatch.stop()
     stopwatch.printElapsed()

@@ -100,14 +100,18 @@ class ClassStorer:
         if not os.path.exists(ClassStorer.export_dir):
             os.mkdir(ClassStorer.export_dir)
 
+        print("WRITING CLASSES BEGIN")
         for cls in self.classList:
             self.writeClassHeaderFile(cls)
             self.writeClassCodeFile(cls)
             self.writeStructsForHeader(cls)
+        print("WRITING CLASSES END")
+        print()
 
 
     def writeStructsForHeader(self, cls):
         structs = self.structer.get_structs()
+        print("  Writing", cls, "class used structs...", end="", flush=True)
 
         with open(ClassStorer.export_dir + "/" + cls + ".cpp") as fread:
             allCode = fread.read()
@@ -128,8 +132,11 @@ class ClassStorer:
         with open(ClassStorer.export_dir + "/" + cls + ".h", "w") as fwrite:
             fwrite.write(allHeader + "\n")
 
+        print("DONE")
+
 
     def writeClassHeaderFile(self, cls):
+        print("  Writing", cls, "class header...", end="", flush=True)
         with open(ClassStorer.export_dir + "/" + cls + ".h", "w") as f:
             f.write("#ifndef " + cls.upper() + "_H" + "\n")
             f.write("#define " + cls.upper() + "_H" + "\n")
@@ -159,10 +166,12 @@ class ClassStorer:
             f.write("\n")
             f.write("#endif // " + cls.upper() + "_H" + "\n")
             f.write("\n")
+        print("DONE")
 
 
     def writeClassCodeFile(self, clsxxx):
         structs = self.structer.get_structs()
+        print("  Writing", clsxxx, "class functions...", end="", flush=True)
 
         with open(ClassStorer.export_dir + "/" + clsxxx + ".cpp", "w") as f:
             f.write('#include "' + clsxxx + '.h"' + "\n")
@@ -322,3 +331,4 @@ class ClassStorer:
                         f.write("  // " + uap + "\n")
 
                 f.write("}\n\n\n")
+        print("DONE")
