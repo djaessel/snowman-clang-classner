@@ -4,6 +4,8 @@ import re
 
 
 class Classner:
+    export_dir = "generated_classes"
+
     def __init__(self):
         self.classes = {"DUMMY": []}
         pass
