@@ -51,8 +51,8 @@ class Classner:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
 
-        self.sort_funcs_into_classes(class_functions)
         print("DONE", flush=True)
+        self.sort_funcs_into_classes(class_functions)
 
 
     def sort_funcs_into_classes(self, funcs):
