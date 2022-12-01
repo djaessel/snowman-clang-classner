@@ -17,7 +17,7 @@ class Classner:
     def readClassFunctions(self, file_path):
         class_functions = []
         line_index = -1
-        lines_to_remove = []
+        ignored_lines = []
         print("Reading class functions...", end="", flush=True)
         with open(file_path) as f:
             cur_class_index = -1
@@ -36,14 +36,12 @@ class Classner:
                         class_functions[cur_class_index].append([]) # body of function
                         class_body = True
 
-                    lines_to_remove.append(line_index)
                     next_is_decl = False
                 elif class_body:
                     if line == "}":
                         class_body = False
                     else:
                         class_functions[cur_class_index][2].append(line)
-                    lines_to_remove.append(line_index)
                 elif line.startswith("/*"):
                     line = line.strip()
                     if line.endswith("*/") and "::" in line:
@@ -57,35 +55,23 @@ class Classner:
                             if len(mo.group(0)) > 0:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
-
-                                # here because some class functions are skipped at the moment for some reasons
-                                lines_to_remove.append(line_index)
+                else:
+                    ignored_lines.append(line)
 
 
         print("DONE", flush=True)
 
-        self.save_new_cpp_file(file_path, lines_to_remove)
+        self.save_new_cpp_file(file_path, ignored_lines)
         self.sort_funcs_into_classes(class_functions)
 
 
-    def save_new_cpp_file(self, file_path, lines_to_remove):
+    def save_new_cpp_file(self, file_path, lines_to_store):
         print("Writing cleaned cpp file...", end="", flush=True)
-
-        lines_to_remove.sort()
-        lines_to_remove.reverse()
-
-        lines = []
-        with open(file_path) as fr:
-            index = -1
-            for line in fr:
-                index += 1
-                if not index in lines_to_remove:
-                    lines.append(line)
 
         path_array = file_path.split("/")
         file_name = path_array[len(path_array) - 1]
         with open(Classner.export_dir + "/" + file_name, "w") as fw:
-            fw.writelines(lines)
+            fw.writelines(lines_to_store)
 
         print("DONE")
 
