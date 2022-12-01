@@ -1,0 +1,16 @@
+
+*.pyc
+*/*.pyc
+
+warband_mangled_source/
+warband_mangled_source/*
+
+generated_classes/
+generated_classes/*
+
+.git_broken/
+.git_broken/*
+
+
+*.user
+
