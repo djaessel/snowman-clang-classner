@@ -73,14 +73,23 @@ class Classner:
     def save_new_cpp_file(self, file_path, lines_to_remove):
         print("Writing cleaned cpp file...", end="", flush=True)
         with open(file_path) as fr:
-            new_file_name = file_path.split("/")
-            new_file_name = new_file_name[len(new_file_name) - 1]
-            with open(Classner.export_dir + "/" + new_file_name, "w") as fw:
-                linerx = -1
-                for line in fr:
-                    linerx += 1
-                    if not linerx in lines_to_remove:
-                        fw.write(line)
+            path_array = file_path.split("/")
+            file_name = path_array[len(path_array) - 1]
+
+            lines = []
+            for line in fr:
+                lines.append(line)
+
+            # remove already processed lines (e.g. in class files)
+            lines_to_remove.sort()
+            lines_to_remove.reverse()
+            for idx in lines_to_remove:
+                del lines[idx]
+
+            with open(Classner.export_dir + "/" + file_name, "w") as fw:
+                for line in lines:
+                    fw.write(line)
+
         print("DONE")
 
 
