@@ -14,3 +14,16 @@ generated_classes/*
 
 *.user
 
+
+*.build/
+*.build/*
+
+*.dist/
+*.dist/*
+
+*.onefile-build/
+*.onefile-build/*
+
+main
+main.bin
+
