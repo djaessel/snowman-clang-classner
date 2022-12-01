@@ -12,7 +12,7 @@ class Classner:
         return self.classes
 
 
-    def readClassFunctions(file_path):
+    def readClassFunctions(self, file_path):
         class_functions = []
         with open(file_path) as f:
             cur_class_index = -1
@@ -71,7 +71,7 @@ class Classner:
                 if mo and len(mo.group(0)) > 0:
                     continue # skip weird class functions for now
 
-                if not class_name in classes.keys():
+                if not class_name in self.classes.keys():
                     self.classes[class_name] = []
 
                 self.classes[class_name].append((ddd[1], func[1], func[2]))

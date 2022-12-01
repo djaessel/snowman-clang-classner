@@ -20,7 +20,7 @@ def main():
     stopwatch = Stopwatch()
     stopwatch.start()
 
-    print("Processing cpp file ...", end=" ")
+    print("Processing cpp file ...", end=" ", flush=True)
     
     structer = Structer()
     structer.readStructs(file_path)
@@ -32,13 +32,13 @@ def main():
     classStorer = ClassStorer(structer, classes)
     classStorer.writeClasses()
     
-    print("DONE")
+    print("DONE", flush=True)
 
     stopwatch.stop()
     stopwatch.printElapsed()
 
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     main()
 

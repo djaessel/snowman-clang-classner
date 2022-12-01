@@ -6,6 +6,7 @@ import os
 class ClassStorer:
     export_dir = "generated_classes"
 
+    # currently unused
     param_types = {
         "i": "int32_t",
         "v": "void", # no parameters
@@ -100,18 +101,18 @@ class ClassStorer:
             os.mkdir(ClassStorer.export_dir)
 
         for cls in self.classList:
-            writeClassHeaderFile(cls)
-            writeClassCodeFile(cls)
-            writeStructsForHeader(cls)
+            self.writeClassHeaderFile(cls)
+            self.writeClassCodeFile(cls)
+            self.writeStructsForHeader(cls)
 
 
     def writeStructsForHeader(self, cls):
         structs = self.structer.get_structs()
 
-        with open(export_dir + "/" + cls + ".cpp") as fread:
+        with open(ClassStorer.export_dir + "/" + cls + ".cpp") as fread:
             allCode = fread.read()
 
-        with open(export_dir + "/" + cls + ".h") as fread:
+        with open(ClassStorer.export_dir + "/" + cls + ".h") as fread:
             allHeader = fread.read()
 
         newStructCode = ""
@@ -124,7 +125,7 @@ class ClassStorer:
                 newStructCode += "\n"
 
         allHeader = allHeader.replace("// STRUCTS_GEN", newStructCode)
-        with open(export_dir + "/" + cls + ".h", "w") as fwrite:
+        with open(ClassStorer.export_dir + "/" + cls + ".h", "w") as fwrite:
             fwrite.write(allHeader + "\n")
 
 
@@ -143,8 +144,7 @@ class ClassStorer:
             f.write("public:" + "\n")
             #f.write("  " + cls + "() {}" + "\n") # write empty constructor if nothing found - later check for depending object calls etc
 
-            classFuncs = self.classList[cls]
-            for func in classFuncs:
+            for func in self.classList[cls]:
                 # func1 = func[1].rstrip("}").rstrip().rstrip("{").rstrip()
                 return_type = "void" # void until proven otherwise
                 #return_type = func1.split("(")[0].split("<")[0]
@@ -164,7 +164,7 @@ class ClassStorer:
     def writeClassCodeFile(self, clsxxx):
         structs = self.structer.get_structs()
 
-        with open(export_dir + "/" + clsxxx + ".cpp", "w") as f:
+        with open(ClassStorer.export_dir + "/" + clsxxx + ".cpp", "w") as f:
             f.write('#include "' + clsxxx + '.h"' + "\n")
             f.write("\n")
 
@@ -179,7 +179,7 @@ class ClassStorer:
                 #if return_type in return_types.keys():
                 #    return_type = return_types[return_type]
 
-                cpp_file_func_name = classFunctionParameterFix(func[0], func[1]) # make with actual parameters
+                cpp_file_func_name = self.classFunctionParameterFix(func[0], func[1]) # make with actual parameters
                 f.write(return_type + " " + clsxxx + "::" + cpp_file_func_name + "\n") # add return value and maybe basic parameter names
 
                 func_body = func[2]
@@ -189,18 +189,18 @@ class ClassStorer:
                 for i, line in enumerate(func_body):
                     # if regex:
                     monline = line.rstrip("\n").rstrip(";").strip()
-                    for repl in replaces:
+                    for repl in ClassStorer.replaces:
                         monline = monline.replace(repl[0], repl[1])
                     monem = monline.split()
                     monemLen = len(monem)
                     if monemLen == 2:
-                        if monem[0] in all_valid_types:
+                        if monem[0] in ClassStorer.all_valid_types:
                             variables[monem[1]] = monem[0]
                             to_be_deleted.append(i)
                         # else:
                         #     print("NOT VALID?", monem)
                     elif monemLen == 3:
-                        if monem[0] in all_valid_special_types:
+                        if monem[0] in ClassStorer.all_valid_special_types:
                             # variables[monem[2]] = monem[1] # change later to meaningful name or fix
                             variables[monem[2]] = "STRUCT_" + monem[1][1:] # change later to meaningful name or fix
                             to_be_deleted.append(i)
@@ -232,7 +232,7 @@ class ClassStorer:
 
                 f.write("{\n")
                 for line in func_body:
-                    for repl in replaces:
+                    for repl in ClassStorer.replaces:
                         line = line.replace(repl[0], repl[1])
 
                     tmp = None
