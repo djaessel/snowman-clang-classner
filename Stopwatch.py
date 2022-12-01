@@ -26,4 +26,5 @@ class Stopwatch:
         if self.running:
             self.endTime = time.time() - self.startTime
         print("Time taken: ", str(int(self.endTime / 60)).rjust(2, "0") + ":" + str(int(self.endTime % 60)).rjust(2, "0"))
+        print()
 
