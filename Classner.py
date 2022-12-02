@@ -3,10 +3,10 @@
 import re
 import os
 
+from ClassStorer import ClassStorer
+
 
 class Classner:
-    export_dir = "generated_classes"
-
     def __init__(self):
         self.classes = {"DUMMY": []}
         pass
@@ -82,12 +82,12 @@ class Classner:
     def save_new_cpp_file(self, file_path, lines_to_store):
         print("Writing cleaned cpp file...", end="", flush=True)
 
-        if not os.path.exists(Classner.export_dir):
-            os.mkdir(Classner.export_dir)
+        if not os.path.exists(ClassStorer.export_dir):
+            os.mkdir(ClassStorer.export_dir)
 
         path_array = file_path.split("/")
         file_name = path_array[len(path_array) - 1]
-        with open(Classner.export_dir + "/" + file_name, "w") as fw:
+        with open(ClassStorer.export_dir + "/" + file_name, "w") as fw:
             fw.writelines(lines_to_store)
 
         print("DONE")
