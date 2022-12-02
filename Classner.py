@@ -57,7 +57,7 @@ class Classner:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
                 else:
-                    ignored_lines.append(line)
+                    ignored_lines.append(line + "\n")
 
 
         print("DONE", flush=True)
