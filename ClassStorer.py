@@ -210,6 +210,7 @@ class ClassStorer:
         while "_Z" in line and not tmp == line:
             tmp = line
             cutty = line[line.index("_Z"):]
+
             if cutty.find("(") >= 0:
                 cutty = cutty[0:cutty.index("(")]
             elif cutty.find(")") >= 0:
@@ -220,9 +221,10 @@ class ClassStorer:
                 cutty = cutty[0:cutty.index(";")]
             else:
                 print("ERROR")
+
             if cutty in self.allFuncs:
                 if commax or decl:
-                    line = line.replace(cutty, "rdi_ObjectX->" + self.allFuncs[cutty].split("(")[0]) + " // find rdi val and set as proper object"
+                    line = line.replace(cutty, "UNKNOWN_OBJECT_RDI_1->" + self.allFuncs[cutty].split("(")[0]) + " // find rdi val and set as proper object"
                 else:
                     rdix = line[line.index(cutty):]
                     if rdix.find(",") >= 0:
@@ -230,6 +232,7 @@ class ClassStorer:
                         if rdix.find("(") >= 0:
                             rdix = rdix.split("(")[1]
                         los = rdix + ", "
+                        molto = ""
                         rdix = rdix.split()
                         if len(rdix) > 0:
                             rdix = rdix[len(rdix) - 1]
@@ -239,7 +242,8 @@ class ClassStorer:
                         rdix = rdix[0:rdix.index(")")]
                         if rdix.find("(") >= 0:
                             rdix = rdix.split("(")[1]
-                        los = rdix
+                        los = "(" + rdix + ")"
+                        molto = "()"
                         rdix = rdix.split()
                         if len(rdix) > 0:
                             rdix = rdix[len(rdix) - 1]
@@ -247,8 +251,8 @@ class ClassStorer:
                             rdix = ""
                     rdix = rdix.strip()
                     if len(rdix) <= 0:
-                        rdix = "UNKNOWN_OBJECT_RDI"
-                    line = line.replace(cutty, rdix + "->" + self.allFuncs[cutty].split("(")[0]).replace(los, "") + " // remove rdi val and set as proper object"
+                        rdix = "UNKNOWN_OBJECT_RDI_2"
+                    line = line.replace(cutty, rdix + "->" + self.allFuncs[cutty].split("(")[0]).replace(los, molto) + " // remove rdi val and set as proper object"
 
         return line
 
