@@ -96,9 +96,40 @@ class ClassStorer:
         return fname
 
 
+    def update_new_cpp_file(self, file_path, classes):
+        print("Update cleaned cpp file...", end="", flush=True)
+
+        path_array = file_path.split("/")
+        file_name = path_array[len(path_array) - 1]
+
+        with open(ClassStorer.export_dir + "/" + file_name) as fr:
+            lines = fr.readlines()
+
+        with open(ClassStorer.export_dir + "/" + file_name, "w") as fw:
+            for line in lines:
+                line = self.replaceSymbolsInLine(line)
+                fw.write(line.rstrip("\n") + "\n")
+
+        print("DONE")
+
+
     def writeClasses(self):
         if not os.path.exists(ClassStorer.export_dir):
             os.mkdir(ClassStorer.export_dir)
+
+        self.allFuncs = {"DUMMY":"DUMMY"}
+        for cls in self.classList:
+            funcy = self.classList[cls]
+            for func in funcy:
+                folyr = None
+                foly = func[1].split()
+                for ll in foly:
+                    if ll.find("_Z") == 0:
+                        folyr = ll.split("(")[0]
+                        break
+                if folyr:
+                    self.allFuncs[folyr] = func[0].strip()
+        self.allFuncs.pop("DUMMY") # remove dummy func data
 
         print("WRITING CLASSES BEGIN")
         for cls in self.classList:
@@ -169,6 +200,59 @@ class ClassStorer:
         print("DONE")
 
 
+    def replaceSymbolsInLine(self, line):
+        for repl in ClassStorer.replaces:
+            line = line.replace(repl[0], repl[1])
+
+        tmp = None
+        decl = False
+        commax = False
+        while "_Z" in line and not tmp == line:
+            tmp = line
+            cutty = line[line.index("_Z"):]
+            if cutty.find("(") >= 0:
+                cutty = cutty[0:cutty.index("(")]
+            elif cutty.find(")") >= 0:
+                cutty = cutty[0:cutty.index(")")]
+                decl = True
+            elif cutty.find(";") >= 0:
+                commax = True
+                cutty = cutty[0:cutty.index(";")]
+            else:
+                print("ERROR")
+            if cutty in self.allFuncs:
+                if commax or decl:
+                    line = line.replace(cutty, "rdi_ObjectX->" + self.allFuncs[cutty].split("(")[0]) + " // find rdi val and set as proper object"
+                else:
+                    rdix = line[line.index(cutty):]
+                    if rdix.find(",") >= 0:
+                        rdix = rdix[0:rdix.index(",")]
+                        if rdix.find("(") >= 0:
+                            rdix = rdix.split("(")[1]
+                        los = rdix + ", "
+                        rdix = rdix.split()
+                        if len(rdix) > 0:
+                            rdix = rdix[len(rdix) - 1]
+                        else:
+                            rdix = ""
+                    elif rdix.find(")") >= 0:
+                        rdix = rdix[0:rdix.index(")")]
+                        if rdix.find("(") >= 0:
+                            rdix = rdix.split("(")[1]
+                        los = rdix
+                        rdix = rdix.split()
+                        if len(rdix) > 0:
+                            rdix = rdix[len(rdix) - 1]
+                        else:
+                            rdix = ""
+                    rdix = rdix.strip()
+                    if len(rdix) <= 0:
+                        rdix = "UNKNOWN_OBJECT_RDI"
+                    line = line.replace(cutty, rdix + "->" + self.allFuncs[cutty].split("(")[0]).replace(los, "") + " // remove rdi val and set as proper object"
+
+        return line
+
+
     def writeClassCodeFile(self, clsxxx):
         structs = self.structer.get_structs()
         print("  Writing", clsxxx, "class functions...", end="", flush=True)
@@ -226,70 +310,9 @@ class ClassStorer:
 
                 used_as_pointer = []
 
-                allFuncs = {"DUMMY":"DUMMY"}
-                for cls in self.classList:
-                    funcy = self.classList[cls]
-                    for func in funcy:
-                        folyr = None
-                        foly = func[1].split()
-                        for ll in foly:
-                            if ll.find("_Z") == 0:
-                                folyr = ll.split("(")[0]
-                                break
-                        if folyr:
-                            allFuncs[folyr] = func[0].strip()
-                allFuncs.pop("DUMMY") # remove dummy func data
-
                 f.write("{\n")
                 for line in func_body:
-                    for repl in ClassStorer.replaces:
-                        line = line.replace(repl[0], repl[1])
-
-                    tmp = None
-                    decl = False
-                    commax = False
-                    while "_Z" in line and not tmp == line:
-                        tmp = line
-                        cutty = line[line.index("_Z"):]
-                        if cutty.find("(") >= 0:
-                            cutty = cutty[0:cutty.index("(")]
-                        elif cutty.find(")") >= 0:
-                            cutty = cutty[0:cutty.index(")")]
-                            decl = True
-                        elif cutty.find(";") >= 0:
-                            commax = True
-                            cutty = cutty[0:cutty.index(";")]
-                        else:
-                            print("ERROR")
-                        if cutty in allFuncs:
-                            if commax or decl:
-                                line = line.replace(cutty, "rdi_ObjectX->" + allFuncs[cutty].split("(")[0]) + " // find rdi val and set as proper object"
-                            else:
-                                rdix = line[line.index(cutty):]
-                                if rdix.find(",") >= 0:
-                                    rdix = rdix[0:rdix.index(",")]
-                                    if rdix.find("(") >= 0:
-                                        rdix = rdix.split("(")[1]
-                                    los = rdix + ", "
-                                    rdix = rdix.split()
-                                    if len(rdix) > 0:
-                                        rdix = rdix[len(rdix) - 1]
-                                    else:
-                                        rdix = ""
-                                elif rdix.find(")") >= 0:
-                                    rdix = rdix[0:rdix.index(")")]
-                                    if rdix.find("(") >= 0:
-                                        rdix = rdix.split("(")[1]
-                                    los = rdix
-                                    rdix = rdix.split()
-                                    if len(rdix) > 0:
-                                        rdix = rdix[len(rdix) - 1]
-                                    else:
-                                        rdix = ""
-                                rdix = rdix.strip()
-                                if rdix == "":
-                                    rdix = "UNKNOWN_OBJECT_RDI"
-                                line = line.replace(cutty, rdix + "->" + allFuncs[cutty].split("(")[0]).replace(los, "") + " // remove rdi val and set as proper object"
+                    line = self.replaceSymbolsInLine(line)
 
                     for varx in variables:
                         if varx in line and not varx + " =" in line :

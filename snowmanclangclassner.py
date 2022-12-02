@@ -39,6 +39,7 @@ def main():
     if not skip_class_write:
         classStorer = ClassStorer(structer, classes)
         classStorer.writeClasses()
+        classStorer.update_new_cpp_file(file_path, classes)
     
     reinterp = ReinterpretAlter()
     reinterp.removeReinterpret(classes)
