@@ -27,3 +27,7 @@ generated_classes/*
 main
 main.bin
 
+
+ccompiled/build/
+ccompiled/build/*
+
