@@ -56,18 +56,19 @@ class Classner:
                             if len(mo.group(0)) > 0:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
-                elif "_Z" in line and not ";" in line:
+                elif "_Z" in line:
                     regex = re.compile(r'(_Z[a-zA-Z0-9-_]+\([a-zA-Z,.<>:0-9-_& \*]*\))')
                     mo = regex.search(line)
                     # FIXME: a lot of classes and their functions are still not included
                     # TODO: handle functions that have different names/class structures later!!! Do not forget!!!
                     if mo:
                         if len(mo.group(0)) > 0:
-                            class_functions.append(["NO_COMMENT"]) # probably correct function name, without return type
-                            cur_class_index = len(class_functions) - 1
-                            class_functions[cur_class_index].append(line) # decompilated mangled name
-                            class_functions[cur_class_index].append([]) # body of function
-                            class_body = True
+                            if not ";" in line: # ignore just names, only except with function body!
+                                class_functions.append(["NO_COMMENT"]) # probably correct function name, without return type
+                                cur_class_index = len(class_functions) - 1
+                                class_functions[cur_class_index].append(line) # decompilated mangled name
+                                class_functions[cur_class_index].append([]) # body of function
+                                class_body = True
                 else:
                     ignored_lines.append(line + "\n")
 
