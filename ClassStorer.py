@@ -113,11 +113,47 @@ class ClassStorer:
         print("DONE")
 
 
+    def writeClassesJust(self, fixed_classes):
+        if not os.path.exists(ClassStorer.export_dir):
+            os.mkdir(ClassStorer.export_dir)
+
+        print("WRITING FIXED CLASSES BEGIN")
+        for cls in fixed_classes:
+            start_lines = []
+            my_funcs = []
+            with open(ClassStorer.export_dir + "/" + cls + ".cpp") as fr:
+                mol_mode = False
+                for line in fr:
+                    if cls + "::" in line:
+                        my_funcs.append(line)
+                        mol_mode = True
+                    if not mol_mode:
+                        start_lines.append(line)
+
+            with open(ClassStorer.export_dir + "/" + cls + ".cpp", "w") as fw:
+                for line in start_lines:
+                    fw.write(line)
+
+                for func in fixed_classes[cls]:
+                    for fun in my_funcs:
+                        if "::" + func + "(" in fun:
+                            fw.write(fun) # write func head
+                            break
+
+                    for line in fixed_classes[cls][func]:
+                        fw.write(line)
+
+                    fw.write("\n\n\n")
+
+        print("WRITING FIXED CLASSES END")
+        print()
+
+
     def writeClasses(self):
         if not os.path.exists(ClassStorer.export_dir):
             os.mkdir(ClassStorer.export_dir)
 
-        self.allFuncs = {"DUMMY":"DUMMY"}
+        self.allFuncs = dict()
         for cls in self.classList:
             funcy = self.classList[cls]
             for func in funcy:
@@ -129,7 +165,6 @@ class ClassStorer:
                         break
                 if folyr:
                     self.allFuncs[folyr] = func[0].strip()
-        self.allFuncs.pop("DUMMY") # remove dummy func data
 
         print("WRITING CLASSES BEGIN")
         for cls in self.classList:
