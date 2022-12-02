@@ -4,6 +4,7 @@ import re
 import os
 
 from ClassStorer import ClassStorer
+from collections import OrderedDict
 
 
 class Classner:
@@ -12,7 +13,7 @@ class Classner:
         pass
 
     def get_classes(self):
-        return self.classes
+        return OrderedDict(sorted(self.classes.items())) # return sorted dict but keep unsorted in original
 
 
     def readClassFunctions(self, file_path):
