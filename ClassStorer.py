@@ -229,14 +229,15 @@ class ClassStorer:
                 allFuncs = {"DUMMY":"DUMMY"}
                 for cls in self.classList:
                     funcy = self.classList[cls]
-                    folyr = None
-                    foly = funcy[0][1].split()
-                    for ll in foly:
-                        if ll.find("_Z") == 0:
-                            folyr = ll.split("(")[0]
-                            break
-                    if folyr:
-                        allFuncs[folyr] = funcy[0][0].strip()
+                    for func in funcy:
+                        folyr = None
+                        foly = func[1].split()
+                        for ll in foly:
+                            if ll.find("_Z") == 0:
+                                folyr = ll.split("(")[0]
+                                break
+                        if folyr:
+                            allFuncs[folyr] = func[0].strip()
                 allFuncs.pop("DUMMY") # remove dummy func data
 
                 f.write("{\n")
