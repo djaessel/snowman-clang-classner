@@ -22,8 +22,9 @@ class ReinterpretAlter:
                         #for c in line[0:indy]:
                         #    if c == "(":
                         #        clammer += 1
-                        tempx = len(line[indy:].split("(")[0]) + 1 #2 # clammer plus exclusive end
-                        line = line[0:indy] + line[tempx:] # remove all in between
+                        tempx = len(line[indy:].split("(")[0]) #2 # clammer plus exclusive end
+                        line = line[0:indy] + line[indy + tempx:] # remove all in between
+                        indy = line.find("reinterpret_cast<")
                         #closeClammer = 0
                         #checls = -1
                         #iff = len(line) - 1
@@ -38,7 +39,7 @@ class ReinterpretAlter:
                     lines.append(line)
 
             with open(ClassStorer.export_dir + "/" + cls + ".cpp", "w") as fw:
-                for line in lines:
-                    fw.write(line + "\n")
+                for line in lines: # maybe use writelines()
+                    fw.write(line)
 
             print("DONE")
