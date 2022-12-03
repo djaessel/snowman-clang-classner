@@ -11,7 +11,7 @@ class FunctionAnalyzer:
         for cls in classes:
             tracerx = dict()
             fixed_classes[cls] = dict()
-            found_something = False
+            #found_something = False
             for func in classes[cls]:
                 fixed_classes[cls][func] = []
                 for line in classes[cls][func]:
@@ -25,9 +25,9 @@ class FunctionAnalyzer:
                                         skip = True
                                         break
                                 if not skip and (lll + "(" in line or lll + ";" in line or lll + ")" in line):
-                                    if not found_something:
-                                        print(cls + ":", "[fixing 1]")
-                                        found_something = True
+                                    #if not found_something:
+                                    #    print(cls + ":", "[fixing 1]")
+                                    #    found_something = True
                                     # print("FOUND TRACE:", cls2, func2, line.rstrip("\n"))
                                     idx = line.index("->" + func2)
                                     tmpx = line[0:idx].split(" ")
@@ -46,15 +46,15 @@ class FunctionAnalyzer:
                     fixed_classes[cls][func].append(line)
 
             for func in fixed_classes[cls]:
-                found_something = False
+                #found_something = False
                 for i, line in enumerate(fixed_classes[cls][func]):
                     for trace in tracerx:
                         if " " + trace + ";" in line:
                             linx = line.strip().split(";")[0]
                             if len(linx.split()) <= 2:
-                                if not found_something:
-                                    print(cls + ":", func, "[fixing 2.1]")
-                                    found_something = True
+                                #if not found_something:
+                                #    print(cls + ":", func, "[fixing 2.1]")
+                                #    found_something = True
                                 line = line.replace(linx + ";", tracerx[trace] + "* " + trace + ";") # make pointer for class for now!
                                 fixed_classes[cls][func][i] = line
                                 # print(cls + ":", "[fixing 2.1]", trace, line)
@@ -62,9 +62,9 @@ class FunctionAnalyzer:
                             linx = line.lstrip()
                             linx = linx.split(" = ")[0]
                             if len(linx.split()) <= 2:
-                                if not found_something:
-                                    print(cls + ":", func, "[fixing 2.2]")
-                                    found_something = True
+                                #if not found_something:
+                                #    print(cls + ":", func, "[fixing 2.2]")
+                                #    found_something = True
                                 line = line.replace(linx + " = ", tracerx[trace] + "* " + trace + " = ") # make pointer for class for now!
                                 fixed_classes[cls][func][i] = line
                                 # print(cls + ":", "[fixing 2.2]", trace, line)

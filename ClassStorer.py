@@ -207,8 +207,16 @@ class ClassStorer:
             f.write("#ifndef " + cls.upper() + "_H" + "\n")
             f.write("#define " + cls.upper() + "_H" + "\n")
             f.write("\n")
+            f.write("#include <inttypes.h>\n")
+            f.write("#include <iostream>\n")
+            f.write("#include <boost/multiprecision/cpp_int.hpp>\n")
+            f.write("#include <string>\n") # maybe add more later on (e.g. used classes)
+            f.write("\n")
+            f.write("// USED_CLASSES" + "\n")
+            f.write("\n")
             f.write("#define BYTE unsigned char" + "\n")
             f.write("#define S_BYTE signed char" + "\n")
+            f.write("\n")
             f.write("\n")
             f.write("// STRUCTS_GEN" + "\n") # to be replaced by structs later
             f.write("\n")
@@ -340,16 +348,6 @@ class ClassStorer:
                             to_be_deleted[monem[2]] = i
                         # else:
                         #     print("NOT VALID?", monem)
-                    else:
-                        for varx in variables:
-                            if varx in line and not varx + " = " in line :
-                                if ("(" + varx in line and varx + "," in line) or " " + varx + "," in line or varx + ")" in line or varx + " +" in line or varx + " -" in line or varx + " *" in line:
-                                    used_as_pointer.append(varx)
-                        for uap in used_as_pointer:
-                            if uap in variables:
-                                variables.pop(uap) # only add type declaration for the first occurance
-                            if uap in to_be_deleted:
-                                to_be_deleted.pop(uap)
 
                 # remove just var definitions
                 # to_be_deleted.reverse()
@@ -364,14 +362,14 @@ class ClassStorer:
                 for line in func_body:
                     line = self.replaceSymbolsInLine(line)
 
-                    #for varx in variables:
-                    #    if varx in line and not varx + " =" in line :
-                    #        if ("(" + varx in line and varx + "," in line) or " " + varx + "," in line or varx + ")" in line or varx + " +" in line or varx + " -" in line or varx + " *" in line:
-                    #            used_as_pointer.append(varx)
+                    for varx in variables:
+                        if varx in line and not varx + " =" in line :
+                            if ("(" + varx in line and varx + "," in line) or " " + varx + "," in line or varx + ")" in line or varx + " +" in line or varx + " -" in line or varx + " *" in line:
+                                used_as_pointer[varx] = variables[varx]
 
-                    #for uap in used_as_pointer:
-                    #    if uap in variables:
-                    #        variables.pop(uap) # only add type declaration for the first occurance
+                    for uap in used_as_pointer:
+                        if uap in variables:
+                            variables.pop(uap) # only add type declaration for the first occurance
 
                     if "=" in line:
                         tmpp = line.split("=")[0].lstrip()
@@ -401,8 +399,8 @@ class ClassStorer:
 
                 if len(used_as_pointer) > 0:
                     f.write("  // possible pointer usage or inline declarations" + "\n")
-                #    for uap in used_as_pointer:
-                #        f.write("  // " + uap + "\n")
+                    for uap in used_as_pointer:
+                        f.write("  // " + used_as_pointer[uap] + " " + uap + "\n")
 
                 f.write("}\n\n\n")
         print("DONE")
