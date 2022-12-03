@@ -399,8 +399,8 @@ class ClassStorer:
 
                     f.write(line + "\n")
 
-                #if len(used_as_pointer) > 0:
-                #    f.write("  // possible pointer usage or inline declarations" + "\n")
+                if len(used_as_pointer) > 0:
+                    f.write("  // possible pointer usage or inline declarations" + "\n")
                 #    for uap in used_as_pointer:
                 #        f.write("  // " + uap + "\n")
 
