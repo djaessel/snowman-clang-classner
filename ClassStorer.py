@@ -324,7 +324,7 @@ class ClassStorer:
 
                 func_body = func[2]
 
-                used_as_pointer = []
+                used_as_pointer = dict()
                 to_be_deleted = dict()
 
                 # extract variable declarations
