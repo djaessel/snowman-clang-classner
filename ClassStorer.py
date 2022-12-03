@@ -302,7 +302,7 @@ class ClassStorer:
 
             classFuncs = self.classList[clsxxx]
             for func in classFuncs:
-                variables = {"DUMMY": "DUMMY"}
+                variables = dict()
 
                 # func1 = func[1].rstrip("}").rstrip().rstrip("{").rstrip()
                 return_type = "void" # void until proven otherwise
@@ -316,7 +316,9 @@ class ClassStorer:
 
                 func_body = func[2]
 
-                to_be_deleted = []
+                used_as_pointer = []
+                to_be_deleted = dict()
+
                 # extract variable declarations
                 for i, line in enumerate(func_body):
                     # if regex:
@@ -328,39 +330,48 @@ class ClassStorer:
                     if monemLen == 2:
                         if monem[0] in ClassStorer.all_valid_types:
                             variables[monem[1]] = monem[0]
-                            to_be_deleted.append(i)
+                            to_be_deleted[monem[1]] = i
                         # else:
                         #     print("NOT VALID?", monem)
                     elif monemLen == 3:
                         if monem[0] in ClassStorer.all_valid_special_types:
                             # variables[monem[2]] = monem[1] # change later to meaningful name or fix
                             variables[monem[2]] = "STRUCT_" + monem[1][1:] # change later to meaningful name or fix
-                            to_be_deleted.append(i)
+                            to_be_deleted[monem[2]] = i
                         # else:
                         #     print("NOT VALID?", monem)
-                variables.pop("DUMMY") # remove DUMMY variable
+                    else:
+                        for varx in variables:
+                            if varx in line and not varx + " = " in line :
+                                if ("(" + varx in line and varx + "," in line) or " " + varx + "," in line or varx + ")" in line or varx + " +" in line or varx + " -" in line or varx + " *" in line:
+                                    used_as_pointer.append(varx)
+                        for uap in used_as_pointer:
+                            if uap in variables:
+                                variables.pop(uap) # only add type declaration for the first occurance
+                            if uap in to_be_deleted:
+                                to_be_deleted.pop(uap)
+
                 # remove just var definitions
-                to_be_deleted.reverse()
-                for i in to_be_deleted:
-                    del func_body[i]
+                # to_be_deleted.reverse()
+                to_be_deleted_sorted_keys = sorted(to_be_deleted, key=to_be_deleted.get, reverse=True)
+                for key in to_be_deleted_sorted_keys:
+                    del func_body[to_be_deleted[key]]
 
                 if len(func_body) > 0 and len(func_body[0].strip()) == 0:
                     del func_body[0] # remove empty starting line
-
-                used_as_pointer = []
 
                 f.write("{\n")
                 for line in func_body:
                     line = self.replaceSymbolsInLine(line)
 
-                    for varx in variables:
-                        if varx in line and not varx + " =" in line :
-                            if ("(" + varx in line and varx + "," in line) or " " + varx + "," in line or varx + ")" in line or varx + " +" in line or varx + " -" in line or varx + " *" in line:
-                                used_as_pointer.append(varx)
+                    #for varx in variables:
+                    #    if varx in line and not varx + " =" in line :
+                    #        if ("(" + varx in line and varx + "," in line) or " " + varx + "," in line or varx + ")" in line or varx + " +" in line or varx + " -" in line or varx + " *" in line:
+                    #            used_as_pointer.append(varx)
 
-                    for uap in used_as_pointer:
-                        if uap in variables:
-                            variables.pop(uap) # only add type declaration for the first occurance
+                    #for uap in used_as_pointer:
+                    #    if uap in variables:
+                    #        variables.pop(uap) # only add type declaration for the first occurance
 
                     if "=" in line:
                         tmpp = line.split("=")[0].lstrip()
@@ -388,10 +399,10 @@ class ClassStorer:
 
                     f.write(line + "\n")
 
-                if len(used_as_pointer) > 0:
-                    f.write("  // possible pointer usage or inline declarations" + "\n")
-                    for uap in used_as_pointer:
-                        f.write("  // " + uap + "\n")
+                #if len(used_as_pointer) > 0:
+                #    f.write("  // possible pointer usage or inline declarations" + "\n")
+                #    for uap in used_as_pointer:
+                #        f.write("  // " + uap + "\n")
 
                 f.write("}\n\n\n")
         print("DONE")
