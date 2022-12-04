@@ -49,10 +49,13 @@ class ClassStorer:
     #    "signed char","signed char*","signed char**","signed char***",
         "BYTE","BYTE*","BYTE**","BYTE***",
         "S_BYTE","S_BYTE*","S_BYTE**","S_BYTE***",
+        "float","float*","float**","float***",
+        "double","double*","double**","double***",
     ]
 
     all_valid_special_types = [
         "struct","struct*","struct**","struct***",
+        # are there more?
     ]
 
 
