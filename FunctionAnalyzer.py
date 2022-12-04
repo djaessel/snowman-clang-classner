@@ -8,7 +8,9 @@ class FunctionAnalyzer:
 
     def findOriginalClass(self, classes):
         fixed_classes = dict()
+        print("Analyzing - finding original classes...")
         for cls in classes:
+            print("Analyzing", cls, "...", end="", flush=True)
             tracerx = dict()
             fixed_classes[cls] = dict()
             #found_something = False
@@ -44,7 +46,9 @@ class FunctionAnalyzer:
                                         print(cls2, ">", "ERROR: EMPTY RDI_OBJECT!", line.rstrip("\n")) # FIXME: fix this in original generation of these rdi->func() lines
 
                     fixed_classes[cls][func].append(line)
+            print("DONE")
 
+            print("Fixing", cls, "...", end="", flush=True)
             for func in fixed_classes[cls]:
                 #found_something = False
                 for i, line in enumerate(fixed_classes[cls][func]):
@@ -68,6 +72,7 @@ class FunctionAnalyzer:
                                 line = line.replace(linx + " = ", tracerx[trace] + "* " + trace + " = ") # make pointer for class for now!
                                 fixed_classes[cls][func][i] = line
                                 # print(cls + ":", "[fixing 2.2]", trace, line)
+            print("DONE")
 
         return fixed_classes
 
