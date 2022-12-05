@@ -1,6 +1,7 @@
 # This Python file uses the following encoding: utf-8
 
 import os
+import multiprocessing as mp
 
 
 class ClassStorer:
@@ -152,6 +153,20 @@ class ClassStorer:
         print()
 
 
+    def _help_write_classes(self, partNum, maxPartCount):
+        packSize = int(len(self.classList) / maxPartCount)
+        startIndex = int(packSize * partNum)
+        endIndex = startIndex + packSize
+        if partNum + 1 == maxPartCount:
+            endIndex = len(self.classList.keys())
+        keyList = list(self.classList.keys())[startIndex:endIndex]
+        for cls in keyList:
+            self.writeClassHeaderFile(cls)
+            self.writeClassCodeFile(cls)
+            self.writeStructsForHeader(cls)
+        #print("Process", partNum, "finished!")
+
+
     def writeClasses(self):
         if not os.path.exists(ClassStorer.export_dir):
             os.mkdir(ClassStorer.export_dir)
@@ -170,10 +185,20 @@ class ClassStorer:
                     self.allFuncs[folyr] = func[0].strip()
 
         print("WRITING CLASSES BEGIN")
-        for cls in self.classList:
-            self.writeClassHeaderFile(cls)
-            self.writeClassCodeFile(cls)
-            self.writeStructsForHeader(cls)
+        #for cls in self.classList:
+        #    self.writeClassHeaderFile(cls)
+        #    self.writeClassCodeFile(cls)
+        #    self.writeStructsForHeader(cls)
+        maxProcs = os.cpu_count()
+        running_procs = []
+        for i in range(maxProcs):
+            proc = mp.Process(target=self._help_write_classes, args=(i, maxProcs))
+            proc.start()
+            running_procs.append(proc)
+        for p in running_procs:
+            p.join()
+        print(f"Finished with {maxProcs} threads!")
+
         print("WRITING CLASSES END")
         print()
 
