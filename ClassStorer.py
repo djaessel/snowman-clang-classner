@@ -189,7 +189,7 @@ class ClassStorer:
         #    self.writeClassHeaderFile(cls)
         #    self.writeClassCodeFile(cls)
         #    self.writeStructsForHeader(cls)
-        maxProcs = os.cpu_count()
+        maxProcs = int(os.cpu_count() * 0.5) # 16 -> 8
         running_procs = []
         for i in range(maxProcs):
             proc = mp.Process(target=self._help_write_classes, args=(i, maxProcs))

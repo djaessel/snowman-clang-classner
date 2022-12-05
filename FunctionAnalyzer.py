@@ -97,7 +97,7 @@ class FunctionAnalyzer:
         fixed_classes = dict()
         print("Analyzing - finding original classes...")
 
-        maxProcs = os.cpu_count()
+        maxProcs = int(os.cpu_count() * 0.5) # 16 -> 8
         running_procs = []
         for i in range(maxProcs):
             proc = mp.Process(target=self._help_find_original_class, args=(classes, fixed_classes, i, maxProcs))
