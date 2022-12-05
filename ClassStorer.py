@@ -5,6 +5,7 @@ import os
 from multiprocessing import Pool
 import concurrent.futures
 from os import getpid
+from specialvals import *
 
 
 class ClassStorer:
@@ -168,7 +169,8 @@ class ClassStorer:
             self.writeClassCodeFile(cls)
             self.writeStructsForHeader(cls)
         #print("Process", partNum, "finished!")
-        return [len(keyList), None, os.getpid()]
+        reserved = None
+        return [len(keyList), reserved, os.getpid()]
 
 
     def writeClasses(self):
@@ -205,15 +207,15 @@ class ClassStorer:
 
         maxProcs = os.cpu_count()
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            results = [executor.submit(self._help_write_classes, args=(i, maxProcs)) for i in range(maxProcs)]
+            results = [executor.submit(self._help_write_classes, i, maxProcs) for i in range(maxProcs)]
 
         values_list = []
         for f in concurrent.futures.as_completed(results):
             values = f.result()
             values_list.append(values)
 
-        for vx in values_list:
-            print("Processed", vx[0], "classes with process", vx[2])
+        #for vx in values_list:
+        #    print("Processed", vx[0], "classes with process", vx[2])
 
         print("WRITING CLASSES END")
         print()
@@ -221,7 +223,8 @@ class ClassStorer:
 
     def writeStructsForHeader(self, cls):
         structs = self.structer.get_structs()
-        print("  Writing", cls, "class used structs...", end="", flush=True)
+        if __DEBUGMODE__:
+            print("  Writing", cls, "class used structs...", end="", flush=True)
 
         with open(ClassStorer.export_dir + "/" + cls + ".cpp") as fread:
             allCode = fread.read()
@@ -242,11 +245,13 @@ class ClassStorer:
         with open(ClassStorer.export_dir + "/" + cls + ".h", "w") as fwrite:
             fwrite.write(allHeader + "\n")
 
-        print("DONE")
+        if __DEBUGMODE__:
+            print("DONE")
 
 
     def writeClassHeaderFile(self, cls):
-        print("  Writing", cls, "class header...", end="", flush=True)
+        if __DEBUGMODE__:
+            print("  Writing", cls, "class header...", end="", flush=True)
         with open(ClassStorer.export_dir + "/" + cls + ".h", "w") as f:
             f.write("#ifndef " + cls.upper() + "_H" + "\n")
             f.write("#define " + cls.upper() + "_H" + "\n")
@@ -284,7 +289,8 @@ class ClassStorer:
             f.write("\n")
             f.write("#endif // " + cls.upper() + "_H" + "\n")
             f.write("\n")
-        print("DONE")
+        if __DEBUGMODE__:
+            print("DONE")
 
 
     def replaceSymbolsInLine(self, line):
@@ -346,7 +352,8 @@ class ClassStorer:
 
     def writeClassCodeFile(self, clsxxx):
         structs = self.structer.get_structs()
-        print("  Writing", clsxxx, "class functions...", end="", flush=True)
+        if __DEBUGMODE__:
+            print("  Writing", clsxxx, "class functions...", end="", flush=True)
 
         with open(ClassStorer.export_dir + "/" + clsxxx + ".cpp", "w") as f:
             f.write('#include "' + clsxxx + '.h"' + "\n")
@@ -447,4 +454,5 @@ class ClassStorer:
                         f.write("  // " + used_as_pointer[uap] + " " + uap + "\n")
 
                 f.write("}\n\n\n")
-        print("DONE")
+        if __DEBUGMODE__:
+            print("DONE")

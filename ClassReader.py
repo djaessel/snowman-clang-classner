@@ -3,6 +3,7 @@
 import os
 from ClassStorer import ClassStorer
 from collections import OrderedDict
+from specialvals import *
 
 
 class ClassReader:

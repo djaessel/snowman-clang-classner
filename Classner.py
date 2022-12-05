@@ -5,11 +5,12 @@ import os
 
 from ClassStorer import ClassStorer
 from collections import OrderedDict
+from specialvals import *
 
 
 class Classner:
     def __init__(self):
-        self.classes = {"DUMMY": []}
+        self.classes = dict()
         pass
 
     def get_classes(self):

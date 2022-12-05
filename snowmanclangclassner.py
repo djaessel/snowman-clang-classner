@@ -11,6 +11,9 @@ from ReinterpretAlter import ReinterpretAlter
 from FunctionAnalyzer import FunctionAnalyzer
 
 
+__DEBUGMODE__ = False
+
+
 def main():
     skip_class_write = False
     skip_reinterpret = False

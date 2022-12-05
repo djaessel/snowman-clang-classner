@@ -2,6 +2,8 @@
 
 from ClassStorer import ClassStorer
 
+from specialvals import *
+
 
 class ReinterpretAlter:
     def __init__(self):
@@ -13,7 +15,8 @@ class ReinterpretAlter:
 
         for cls in classList:
             lines = []
-            print(cls, "removing interprets...", end="", flush=True)
+            if __DEBUGMODE__:
+                print(cls, "removing interprets...", end="", flush=True)
             with open(ClassStorer.export_dir + "/" + cls + ".cpp") as fr:
                 for line in fr:
                     indy = line.find("reinterpret_cast<")
@@ -42,4 +45,5 @@ class ReinterpretAlter:
                 for line in lines: # maybe use writelines()
                     fw.write(line)
 
-            print("DONE")
+            if __DEBUGMODE__:
+                print("DONE")

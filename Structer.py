@@ -1,11 +1,12 @@
 # This Python file uses the following encoding: utf-8
 
 import re
+from specialvals import *
 
 
 class Structer:
     def __init__(self):
-        self.structs = {"STRUCT_DUMMY": "struct DUMMY {}"}
+        self.structs = dict()
         pass
 
 

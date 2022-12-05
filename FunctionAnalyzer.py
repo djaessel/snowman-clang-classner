@@ -5,6 +5,7 @@ import os
 from multiprocessing import Pool
 import concurrent.futures
 from os import getpid
+from specialvals import *
 
 
 class FunctionAnalyzer:
@@ -27,7 +28,8 @@ class FunctionAnalyzer:
 
 
     def _findOriginalClassS(self, cls, classes):
-        print("Analyzing", cls, "...", end="", flush=True)
+        if __DEBUGMODE__:
+            print("Analyzing", cls, "...", end="", flush=True)
         tracerx = dict()
         fixed_class = dict()
         #found_something = False
@@ -63,9 +65,11 @@ class FunctionAnalyzer:
                                     print(cls2, ">", "ERROR: EMPTY RDI_OBJECT!", line.rstrip("\n")) # FIXME: fix this in original generation of these rdi->func() lines
 
                 fixed_class[func].append(line)
-        print("DONE")
 
-        print("Fixing", cls, "...", end="", flush=True)
+        if __DEBUGMODE__:
+            print("DONE")
+            print("Fixing", cls, "...", end="", flush=True)
+
         for func in fixed_class:
             #found_something = False
             for i, line in enumerate(fixed_class[func]):
@@ -93,7 +97,8 @@ class FunctionAnalyzer:
                             line = line.replace(linx + " = ", tracerx[trace] + "* " + trace + " = ") # make pointer for class for now!
                             fixed_class[func][i] = line
                             # print(cls + ":", "[fixing 2.2]", trace, line)
-        print("DONE")
+        if __DEBUGMODE__:
+            print("DONE")
         return fixed_class
 
 
@@ -114,7 +119,7 @@ class FunctionAnalyzer:
 
         maxProcs = os.cpu_count()
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            results = [executor.submit(self._help_find_original_class, args=(classes, i, maxProcs)) for i in range(maxProcs)]
+            results = [executor.submit(self._help_find_original_class, classes, i, maxProcs) for i in range(maxProcs)]
 
         values_list = []
         for f in concurrent.futures.as_completed(results):
@@ -125,7 +130,9 @@ class FunctionAnalyzer:
         for vx in values_list:
             for fc in vx[1]:
                 fixed_classes[fc] = vx[1][fc]
-            print("Processed", vx[0], "classes with process", vx[2])
+            #print("Processed", vx[0], "classes with process", vx[2])
+
+        print("Analyzing - finding original classes...DONE")
 
         return fixed_classes
 
