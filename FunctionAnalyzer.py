@@ -55,11 +55,15 @@ class FunctionAnalyzer:
                     for trace in tracerx:
                         if " " + trace + ";" in line:
                             linx = line.strip().split(";")[0]
-                            if len(linx.split()) <= 2:
+                            declax = linx.split()
+                            if len(declax) <= 2:
                                 #if not found_something:
                                 #    print(cls + ":", func, "[fixing 2.1]")
                                 #    found_something = True
                                 line = line.replace(linx + ";", tracerx[trace] + "* " + trace + ";") # make pointer for class for now!
+                                if "STRUCT_" in declax[0]:
+                                    line = "  // was STRUCT before --> " + declax[0] + "\n" + line
+
                                 fixed_classes[cls][func][i] = line
                                 # print(cls + ":", "[fixing 2.1]", trace, line)
                         elif trace + " = " in line:
