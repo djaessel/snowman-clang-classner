@@ -1,7 +1,10 @@
 # This Python file uses the following encoding: utf-8
 
 import os
-import multiprocessing as mp
+# import multiprocessing as mp
+from multiprocessing import Pool
+import concurrent.futures
+from os import getpid
 
 
 class ClassStorer:
@@ -165,6 +168,7 @@ class ClassStorer:
             self.writeClassCodeFile(cls)
             self.writeStructsForHeader(cls)
         #print("Process", partNum, "finished!")
+        return [len(keyList), None, os.getpid()]
 
 
     def writeClasses(self):
@@ -189,15 +193,27 @@ class ClassStorer:
         #    self.writeClassHeaderFile(cls)
         #    self.writeClassCodeFile(cls)
         #    self.writeStructsForHeader(cls)
-        maxProcs = int(os.cpu_count() * 0.5) # 16 -> 8
-        running_procs = []
-        for i in range(maxProcs):
-            proc = mp.Process(target=self._help_write_classes, args=(i, maxProcs))
-            proc.start()
-            running_procs.append(proc)
-        for p in running_procs:
-            p.join()
-        print(f"Finished with {maxProcs} threads!")
+        #maxProcs = int(os.cpu_count() * 0.5) # 16 -> 8
+        #running_procs = []
+        #for i in range(maxProcs):
+        #    proc = mp.Process(target=self._help_write_classes, args=(i, maxProcs))
+        #    proc.start()
+        #    running_procs.append(proc)
+        #for p in running_procs:
+        #    p.join()
+        #print(f"Finished with {maxProcs} threads!")
+
+        maxProcs = os.cpu_count()
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            results = [executor.submit(self._help_write_classes, args=(i, maxProcs)) for i in range(maxProcs)]
+
+        values_list = []
+        for f in concurrent.futures.as_completed(results):
+            values = f.result()
+            values_list.append(values)
+
+        for vx in values_list:
+            print("Processed", vx[0], "classes with process", vx[2])
 
         print("WRITING CLASSES END")
         print()
