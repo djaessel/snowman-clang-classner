@@ -5,7 +5,7 @@ import os
 
 from ClassStorer import ClassStorer
 from collections import OrderedDict
-from specialvals import *
+from specialvals import DEBUGMODE
 
 
 class Classner:

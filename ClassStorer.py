@@ -5,7 +5,7 @@ import os
 from multiprocessing import Pool
 import concurrent.futures
 from os import getpid
-from specialvals import *
+from specialvals import DEBUGMODE
 
 
 class ClassStorer:
@@ -223,7 +223,7 @@ class ClassStorer:
 
     def writeStructsForHeader(self, cls):
         structs = self.structer.get_structs()
-        if __DEBUGMODE__:
+        if DEBUGMODE:
             print("  Writing", cls, "class used structs...", end="", flush=True)
 
         with open(ClassStorer.export_dir + "/" + cls + ".cpp") as fread:
@@ -245,12 +245,12 @@ class ClassStorer:
         with open(ClassStorer.export_dir + "/" + cls + ".h", "w") as fwrite:
             fwrite.write(allHeader + "\n")
 
-        if __DEBUGMODE__:
+        if DEBUGMODE:
             print("DONE")
 
 
     def writeClassHeaderFile(self, cls):
-        if __DEBUGMODE__:
+        if DEBUGMODE:
             print("  Writing", cls, "class header...", end="", flush=True)
         with open(ClassStorer.export_dir + "/" + cls + ".h", "w") as f:
             f.write("#ifndef " + cls.upper() + "_H" + "\n")
@@ -289,7 +289,7 @@ class ClassStorer:
             f.write("\n")
             f.write("#endif // " + cls.upper() + "_H" + "\n")
             f.write("\n")
-        if __DEBUGMODE__:
+        if DEBUGMODE:
             print("DONE")
 
 
@@ -352,7 +352,7 @@ class ClassStorer:
 
     def writeClassCodeFile(self, clsxxx):
         structs = self.structer.get_structs()
-        if __DEBUGMODE__:
+        if DEBUGMODE:
             print("  Writing", clsxxx, "class functions...", end="", flush=True)
 
         with open(ClassStorer.export_dir + "/" + clsxxx + ".cpp", "w") as f:
@@ -454,5 +454,5 @@ class ClassStorer:
                         f.write("  // " + used_as_pointer[uap] + " " + uap + "\n")
 
                 f.write("}\n\n\n")
-        if __DEBUGMODE__:
+        if DEBUGMODE:
             print("DONE")

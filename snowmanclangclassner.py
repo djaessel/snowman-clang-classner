@@ -9,9 +9,7 @@ from Structer import Structer
 from Stopwatch import Stopwatch
 from ReinterpretAlter import ReinterpretAlter
 from FunctionAnalyzer import FunctionAnalyzer
-
-
-__DEBUGMODE__ = False
+from specialvals import DEBUGMODE
 
 
 def main():

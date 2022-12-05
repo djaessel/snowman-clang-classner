@@ -2,7 +2,7 @@
 
 from ClassStorer import ClassStorer
 
-from specialvals import *
+from specialvals import DEBUGMODE
 
 
 class ReinterpretAlter:
@@ -15,7 +15,7 @@ class ReinterpretAlter:
 
         for cls in classList:
             lines = []
-            if __DEBUGMODE__:
+            if DEBUGMODE:
                 print(cls, "removing interprets...", end="", flush=True)
             with open(ClassStorer.export_dir + "/" + cls + ".cpp") as fr:
                 for line in fr:
@@ -45,5 +45,5 @@ class ReinterpretAlter:
                 for line in lines: # maybe use writelines()
                     fw.write(line)
 
-            if __DEBUGMODE__:
+            if DEBUGMODE:
                 print("DONE")

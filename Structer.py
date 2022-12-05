@@ -1,7 +1,7 @@
 # This Python file uses the following encoding: utf-8
 
 import re
-from specialvals import *
+from specialvals import DEBUGMODE
 
 
 class Structer:

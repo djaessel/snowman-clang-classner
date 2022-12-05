@@ -5,7 +5,7 @@ import os
 from multiprocessing import Pool
 import concurrent.futures
 from os import getpid
-from specialvals import *
+from specialvals import DEBUGMODE
 
 
 class FunctionAnalyzer:
@@ -28,7 +28,7 @@ class FunctionAnalyzer:
 
 
     def _findOriginalClassS(self, cls, classes):
-        if __DEBUGMODE__:
+        if DEBUGMODE:
             print("Analyzing", cls, "...", end="", flush=True)
         tracerx = dict()
         fixed_class = dict()
@@ -66,7 +66,7 @@ class FunctionAnalyzer:
 
                 fixed_class[func].append(line)
 
-        if __DEBUGMODE__:
+        if DEBUGMODE:
             print("DONE")
             print("Fixing", cls, "...", end="", flush=True)
 
@@ -97,7 +97,7 @@ class FunctionAnalyzer:
                             line = line.replace(linx + " = ", tracerx[trace] + "* " + trace + " = ") # make pointer for class for now!
                             fixed_class[func][i] = line
                             # print(cls + ":", "[fixing 2.2]", trace, line)
-        if __DEBUGMODE__:
+        if DEBUGMODE:
             print("DONE")
         return fixed_class
 
