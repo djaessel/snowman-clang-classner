@@ -6,6 +6,7 @@ from multiprocessing import Pool
 import concurrent.futures
 from os import getpid
 from specialvals import DEBUGMODE
+from ClassStorer import ClassStorer
 
 
 class FunctionAnalyzer:
@@ -35,36 +36,43 @@ class FunctionAnalyzer:
         #found_something = False
         for func in classes[cls]:
             fixed_class[func] = []
+            declar_mode = False
             for line in classes[cls][func]:
-                for cls2 in classes:
-                    for func2 in classes[cls2]:
-                        if "->" + func2 in line:
-                            lll = "->" + func2
-                            skip = False
-                            for trx in tracerx:
-                                if trx + lll in line:
-                                    skip = True
-                                    break
-                            if not skip and (lll + "(" in line or lll + ";" in line or lll + ")" in line):
-                                #if not found_something:
-                                #    print(cls + ":", "[fixing 1]")
-                                #    found_something = True
-                                # print("FOUND TRACE:", cls2, func2, line.rstrip("\n"))
-                                idx = line.index("->" + func2)
-                                tmpx = line[0:idx].split(" ")
-                                if len(tmpx) > 0:
-                                    tmpx = tmpx[len(tmpx) - 1]
-                                else:
-                                    tmpx = ""
-                                tmpx = tmpx.lstrip("&").lstrip("*") # remove extras # TODO: check again alter
-                                if func2 in classes[cls]:
-                                    line = line.replace(tmpx + "->" + func2, "this->" + func2)
-                                elif len(tmpx) > 0 and not tmpx in tracerx:
-                                    tracerx[tmpx] = cls2 # store actual class type for variable
-                                else:
-                                    print(cls2, ">", "ERROR: EMPTY RDI_OBJECT!", line.rstrip("\n")) # FIXME: fix this in original generation of these rdi->func() lines
+                if "possible pointer usage or inline declarations" in line:
+                    declar_mode = True
+                if declar_mode:
+                    fixed_class[func].insert(0, line.replace("//", " ") + ";\n")
+                else:
+                    for cls2 in classes:
+                        for func2 in classes[cls2]:
+                            if "->" + func2 in line:
+                                lll = "->" + func2
+                                skip = False
+                                for trx in tracerx:
+                                    if trx + lll in line:
+                                        skip = True
+                                        break
+                                if not skip and (lll + "(" in line or lll + ";" in line or lll + ")" in line):
+                                    #if not found_something:
+                                    #    print(cls + ":", "[fixing 1]")
+                                    #    found_something = True
+                                    # print("FOUND TRACE:", cls2, func2, line.rstrip("\n"))
+                                    idx = line.index("->" + func2)
+                                    tmpx = line[0:idx].split(" ")
+                                    if len(tmpx) > 0:
+                                        tmpx = tmpx[len(tmpx) - 1]
+                                    else:
+                                        tmpx = ""
+                                    tmpx = tmpx.lstrip("&").lstrip("*") # remove extras # TODO: check again alter
+                                    if func2 in classes[cls]:
+                                        line = line.replace(tmpx + "->" + func2, "this->" + func2)
+                                    elif len(tmpx) > 0 and not tmpx in tracerx:
+                                        tracerx[tmpx] = cls2 # store actual class type for variable
+                                    else:
+                                        print(cls2, ">", "ERROR: EMPTY RDI_OBJECT!", line.rstrip("\n")) # FIXME: fix this in original generation of these rdi->func() lines
 
-                fixed_class[func].append(line)
+                if not declar_mode:
+                    fixed_class[func].append(line)
 
         if DEBUGMODE:
             print("DONE")
@@ -90,13 +98,15 @@ class FunctionAnalyzer:
                     elif trace + " = " in line:
                         linx = line.lstrip()
                         linx = linx.split(" = ")[0]
-                        if len(linx.split()) <= 2:
+                        jo = linx.split()
+                        if len(jo) <= 2:
                             #if not found_something:
                             #    print(cls + ":", func, "[fixing 2.2]")
                             #    found_something = True
-                            line = line.replace(linx + " = ", tracerx[trace] + "* " + trace + " = ") # make pointer for class for now!
-                            fixed_class[func][i] = line
-                            # print(cls + ":", "[fixing 2.2]", trace, line)
+                            if "STRUCT" in jo[0] or jo[0] in ClassStorer.all_valid_types:
+                                line = line.replace(linx + " = ", tracerx[trace] + "* " + trace + " = ") # make pointer for class for now!
+                                fixed_class[func][i] = line
+                                # print(cls + ":", "[fixing 2.2]", trace, line)
         if DEBUGMODE:
             print("DONE")
         return fixed_class
