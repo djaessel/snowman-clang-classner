@@ -41,7 +41,10 @@ class FunctionAnalyzer:
                 if "possible pointer usage or inline declarations" in line:
                     declar_mode = True
                 if declar_mode:
-                    fixed_class[func].insert(0, line.replace("//", " ") + ";\n")
+                    if not "}" in line:
+                        fixed_class[func].insert(0, line.replace("//", " ").rstrip('\n') + ";\n")
+                    else:
+                        fixed_class[func].append(line)
                 else:
                     for cls2 in classes:
                         for func2 in classes[cls2]:
@@ -90,7 +93,7 @@ class FunctionAnalyzer:
                             #    print(cls + ":", func, "[fixing 2.1]")
                             #    found_something = True
                             line = line.replace(linx + ";", tracerx[trace] + "* " + trace + ";") # make pointer for class for now!
-                            if "STRUCT_" in declax[0]:
+                            if "STRUCT" in declax[0]:
                                 line = "  // was STRUCT before --> " + declax[0] + "\n" + line
 
                             fixed_class[func][i] = line
