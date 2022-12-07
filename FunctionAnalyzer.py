@@ -40,9 +40,9 @@ class FunctionAnalyzer:
             for line in classes[cls][func]:
                 if "possible pointer usage or inline declarations" in line:
                     declar_mode = True
-                if declar_mode:
+                elif declar_mode:
                     if not "}" in line:
-                        fixed_class[func].insert(0, line.replace("//", " ").rstrip('\n') + ";\n")
+                        fixed_class[func].insert(1, line.replace("//", " ").rstrip('\n') + ";\n")
                     else:
                         fixed_class[func].append(line)
                 else:
