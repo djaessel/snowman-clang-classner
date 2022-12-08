@@ -71,6 +71,9 @@ class FunctionAnalyzer:
                                         line = line.replace(tmpx + "->" + func2, "this->" + func2)
                                     elif len(tmpx) > 0 and not tmpx in tracerx:
                                         tracerx[tmpx] = cls2 # store actual class type for variable
+                                        if tmpx.isdigit():
+                                            with open("abcabc.txt", "a") as fff:
+                                                fff.write(tmpx + ";" + cls + ";" + func2 + ";" + func + ";" + cls2 + ";" + line + "\n")
                                     else:
                                         print(cls2, ">", "ERROR: EMPTY RDI_OBJECT!", line.rstrip("\n")) # FIXME: fix this in original generation of these rdi->func() lines
 
@@ -84,7 +87,7 @@ class FunctionAnalyzer:
         remove_trace = []
         for trace in tracerx:
             if trace.isdigit():
-                print("Found wrong trace:", trace)
+                #print("Found wrong trace:", trace)
                 remove_trace.append(trace)
 
         for t in remove_trace:

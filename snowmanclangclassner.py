@@ -37,12 +37,11 @@ def main():
     
     structer = Structer()
     structer.readStructs(file_path)
-    stopwatch.printElapsed()
 
     classner = Classner()
     classner.readClassFunctions(file_path)
     classes = classner.get_classes()
-    print("CLASSES:", len(classes))
+
     stopwatch.printElapsed()
 
     classStorer = ClassStorer(structer, classes)
