@@ -81,6 +81,11 @@ class FunctionAnalyzer:
             print("DONE")
             print("Fixing", cls, "...", end="", flush=True)
 
+        for trace in tracerx:
+            if trace.isdigit():
+                print("Found wrong trace:", trace)
+                del tracerx[trace]
+
         for func in fixed_class:
             #found_something = False
             for i, line in enumerate(fixed_class[func]):
