@@ -99,7 +99,7 @@ class FunctionAnalyzer:
                 for trace in tracerx:
                     if " " + trace + ";" in line:
                         linx = line.strip().split(";")[0]
-                        declax = linx.split()
+                        declax = linx.split(" ")
                         if len(declax) <= 2:
                             #if not found_something:
                             #    print(cls + ":", func, "[fixing 2.1]")
@@ -113,7 +113,7 @@ class FunctionAnalyzer:
                     elif trace + " = " in line:
                         linx = line.lstrip()
                         linx = linx.split(" = ")[0]
-                        jo = linx.split()
+                        jo = linx.split(" ")
                         if len(jo) <= 2:
                             #if not found_something:
                             #    print(cls + ":", func, "[fixing 2.2]")

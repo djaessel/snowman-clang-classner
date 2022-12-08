@@ -315,37 +315,73 @@ class ClassStorer:
             else:
                 print("ERROR")
 
+            operx = "operator"
             if cutty in self.allFuncs:
-                if commax or decl:
-                    line = line.replace(cutty, "UNKNOWN_OBJECT_RDI_1->" + self.allFuncs[cutty].split("(")[0]) + " // find rdi val and set as proper object"
+                if operx in cutty:
+                    cur_operator = cutty[cutty.index(operx) + len(operx)][0:1]
+                    secto = self.allFuncs[cutty].split("(")[1].split(")")[0].replace(" ","").split(',')
+                    if commax or decl:
+                        line = line.replace(cutty, "UNKNOWN_OBJECT_RDI_1 " + cur_operator + " " + secto[1])
+                    else:
+                        rdix = line[line.index(cutty):]
+                        if rdix.find(",") >= 0:
+                            rdix = rdix[0:rdix.index(",")]
+                            if rdix.find("(") >= 0:
+                                rdix = rdix.split("(")[1]
+                            los = rdix + ", "
+                            molto = ""
+                            rdix = rdix.split(" ")
+                            if len(rdix) > 0:
+                                rdix = rdix[len(rdix) - 1]
+                            else:
+                                rdix = ""
+                        elif rdix.find(")") >= 0:
+                            rdix = rdix[0:rdix.index(")")]
+                            if rdix.find("(") >= 0:
+                                rdix = rdix.split("(")[1]
+                            los = "(" + rdix + ")"
+                            molto = "()"
+                            rdix = rdix.split(" ")
+                            if len(rdix) > 0:
+                                rdix = rdix[len(rdix) - 1]
+                            else:
+                                rdix = ""
+                        rdix = rdix.strip()
+                        if len(rdix) <= 0:
+                            rdix = "UNKNOWN_OBJECT_RDI_2"
+                        line = line.replace(cutty, rdix + " " + cur_operator + " " +  secto[1]).rstrip('\n') + " // remove rdi val and set as proper object\n"
+
                 else:
-                    rdix = line[line.index(cutty):]
-                    if rdix.find(",") >= 0:
-                        rdix = rdix[0:rdix.index(",")]
-                        if rdix.find("(") >= 0:
-                            rdix = rdix.split("(")[1]
-                        los = rdix + ", "
-                        molto = ""
-                        rdix = rdix.split()
-                        if len(rdix) > 0:
-                            rdix = rdix[len(rdix) - 1]
-                        else:
-                            rdix = ""
-                    elif rdix.find(")") >= 0:
-                        rdix = rdix[0:rdix.index(")")]
-                        if rdix.find("(") >= 0:
-                            rdix = rdix.split("(")[1]
-                        los = "(" + rdix + ")"
-                        molto = "()"
-                        rdix = rdix.split()
-                        if len(rdix) > 0:
-                            rdix = rdix[len(rdix) - 1]
-                        else:
-                            rdix = ""
-                    rdix = rdix.strip()
-                    if len(rdix) <= 0:
-                        rdix = "UNKNOWN_OBJECT_RDI_2"
-                    line = line.replace(cutty, rdix + "->" + self.allFuncs[cutty].split("(")[0]).replace(los, molto) + " // remove rdi val and set as proper object"
+                    if commax or decl:
+                        line = line.replace(cutty, "UNKNOWN_OBJECT_RDI_1->" + self.allFuncs[cutty].split("(")[0]) + " // find rdi val and set as proper object"
+                    else:
+                        rdix = line[line.index(cutty):]
+                        if rdix.find(",") >= 0:
+                            rdix = rdix[0:rdix.index(",")]
+                            if rdix.find("(") >= 0:
+                                rdix = rdix.split("(")[1]
+                            los = rdix + ", "
+                            molto = ""
+                            rdix = rdix.split(" ")
+                            if len(rdix) > 0:
+                                rdix = rdix[len(rdix) - 1]
+                            else:
+                                rdix = ""
+                        elif rdix.find(")") >= 0:
+                            rdix = rdix[0:rdix.index(")")]
+                            if rdix.find("(") >= 0:
+                                rdix = rdix.split("(")[1]
+                            los = "(" + rdix + ")"
+                            molto = "()"
+                            rdix = rdix.split(" ")
+                            if len(rdix) > 0:
+                                rdix = rdix[len(rdix) - 1]
+                            else:
+                                rdix = ""
+                        rdix = rdix.strip()
+                        if len(rdix) <= 0:
+                            rdix = "UNKNOWN_OBJECT_RDI_2"
+                        line = line.replace(cutty, rdix + "->" + self.allFuncs[cutty].split("(")[0]).replace(los, molto) + " // remove rdi val and set as proper object"
 
         return line
 
