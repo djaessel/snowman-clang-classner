@@ -94,7 +94,7 @@ class FunctionAnalyzer:
                             #    found_something = True
                             line = line.replace(linx + ";", tracerx[trace] + "* " + trace + ";") # make pointer for class for now!
                             if "STRUCT" in declax[0]:
-                                line = "  // was STRUCT before --> " + declax[0] + "\n" + line
+                                line = line.rstrip('\n') + " // was STRUCT before --> " + declax[0] + "\n"
 
                             fixed_class[func][i] = line
                             # print(cls + ":", "[fixing 2.1]", trace, line)
