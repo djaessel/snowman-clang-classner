@@ -351,7 +351,23 @@ class ClassStorer:
                         rdix = rdix.strip()
                         if len(rdix) <= 0:
                             rdix = "UNKNOWN_OBJECT_RDI_2"
-                        line = line.replace(cutty + "(" + sectox + ")", rdix + " " + cur_operator + " " +  secto[len(secto) - 1]).rstrip('\n') + " // remove rdi val and set as proper object\n"
+                        solom = line[line.index(cutty):]
+                        solom = solom[solom.index("("):]
+                        clam = 0
+                        iid = -1
+                        for i in range(len(solom)):
+                            if solom[i] == "(":
+                                clam += 1
+                            elif solom[i] == ")":
+                                clam -= 1
+                            if clam <= 0:
+                                iid = i
+                                break
+                        if iid >= 0:
+                            solom = solom[0:iid] + ")"
+                        else:
+                            print("ERROR", solom, line)
+                        line = line.replace(cutty + solom, rdix + " " + cur_operator + " " +  secto[len(secto) - 1]).rstrip('\n') + " // remove rdi val and set as proper object\n"
 
                 else:
                     if commax or decl:
