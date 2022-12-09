@@ -50,7 +50,7 @@ class Classner:
                     if line.endswith("*/") and "::" in line:
                         line = line[3:len(line)-2].strip()
 
-                        regex = re.compile(r'([a-zA-Z0-9-_]+::[a-zA-Z0-9-_]+\([a-zA-Z,.<>:0-9-_& \*]*\))')
+                        regex = re.compile(r'([a-zA-Z0-9-_]+::[a-zA-Z0-9-_]+[=&|^*+\/-]*\([a-zA-Z,.<>:0-9-_& \*]*\))')
                         mo = regex.search(line)
                         # FIXME: a lot of classes and their functions are still not included
                         # TODO: handle functions that have different names/class structures later!!! Do not forget!!!
@@ -59,7 +59,7 @@ class Classner:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
                 elif "_Z" in line and "(" in line and ")" in line:
-                    regex = re.compile(r'(_Z[a-zA-Z0-9-_]+[=&|^*+\/-]*\([a-zA-Z,.<>:0-9-_& \*]*\))')
+                    regex = re.compile(r'(_Z[a-zA-Z0-9-_]+\([a-zA-Z,.<>:0-9-_& \*]*\))')
                     mo = regex.search(line)
                     # FIXME: a lot of classes and their functions are still not included
                     # TODO: handle functions that have different names/class structures later!!! Do not forget!!!

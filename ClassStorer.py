@@ -205,7 +205,7 @@ class ClassStorer:
         #    p.join()
         #print(f"Finished with {maxProcs} threads!")
 
-        maxProcs = os.cpu_count()
+        maxProcs = int(os.cpu_count() * 0.75) # 16 -> 12, 8 -> 6, 4 -> 3
         with concurrent.futures.ProcessPoolExecutor() as executor:
             results = [executor.submit(self._help_write_classes, i, maxProcs) for i in range(maxProcs)]
 
@@ -317,11 +317,13 @@ class ClassStorer:
 
             operx = "operator"
             if cutty in self.allFuncs:
-                if operx in cutty:
-                    cur_operator = cutty[cutty.index(operx) + len(operx)][0:1]
-                    secto = self.allFuncs[cutty].split("(")[1].split(")")[0].replace(" ","").split(',')
+                if operx in self.allFuncs[cutty]:
+                    lem = self.allFuncs[cutty]
+                    cur_operator = lem[lem.index(operx) + len(operx):][0:1]
+                    sectox = lem.split("(")[1].split(")")[0]
+                    secto = sectox.split(',')
                     if commax or decl:
-                        line = line.replace(cutty, "UNKNOWN_OBJECT_RDI_1 " + cur_operator + " " + secto[1])
+                        line = line.replace(cutty + "(" + sectox + ")", "UNKNOWN_OBJECT_RDI_1 " + cur_operator + " " + secto[len(secto) - 1])
                     else:
                         rdix = line[line.index(cutty):]
                         if rdix.find(",") >= 0:
@@ -330,26 +332,26 @@ class ClassStorer:
                                 rdix = rdix.split("(")[1]
                             los = rdix + ", "
                             molto = ""
-                            rdix = rdix.split(" ")
-                            if len(rdix) > 0:
-                                rdix = rdix[len(rdix) - 1]
-                            else:
-                                rdix = ""
+                            #rdix = rdix.split(" ")
+                            #if len(rdix) > 0:
+                            #    rdix = rdix[len(rdix) - 1]
+                            #else:
+                            #    rdix = ""
                         elif rdix.find(")") >= 0:
                             rdix = rdix[0:rdix.index(")")]
                             if rdix.find("(") >= 0:
                                 rdix = rdix.split("(")[1]
                             los = "(" + rdix + ")"
                             molto = "()"
-                            rdix = rdix.split(" ")
-                            if len(rdix) > 0:
-                                rdix = rdix[len(rdix) - 1]
-                            else:
-                                rdix = ""
+                            #rdix = rdix.split(" ")
+                            #if len(rdix) > 0:
+                            #    rdix = rdix[len(rdix) - 1]
+                            #else:
+                            #    rdix = ""
                         rdix = rdix.strip()
                         if len(rdix) <= 0:
                             rdix = "UNKNOWN_OBJECT_RDI_2"
-                        line = line.replace(cutty, rdix + " " + cur_operator + " " +  secto[1]).rstrip('\n') + " // remove rdi val and set as proper object\n"
+                        line = line.replace(cutty + "(" + sectox + ")", rdix + " " + cur_operator + " " +  secto[len(secto) - 1]).rstrip('\n') + " // remove rdi val and set as proper object\n"
 
                 else:
                     if commax or decl:

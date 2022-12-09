@@ -142,7 +142,7 @@ class FunctionAnalyzer:
         #    p.join()
         #print(f"Finished with {maxProcs} threads!")
 
-        maxProcs = os.cpu_count()
+        maxProcs = int(os.cpu_count() * 0.75) # 16 -> 12, 8 -> 6, 4 -> 3
         with concurrent.futures.ProcessPoolExecutor() as executor:
             results = [executor.submit(self._help_find_original_class, classes, i, maxProcs) for i in range(maxProcs)]
 
