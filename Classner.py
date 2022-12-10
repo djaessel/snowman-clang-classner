@@ -106,6 +106,8 @@ class Classner:
                 #if class_name.strip() == "std":
                 #    continue # skip somtimes strange std function -> can be imported anyway (hopefully)
                 if len(ddd) > 2:
+                    with open("extra_namespace_funcs.csv", "a") as fen:
+                        fen.write(func[0] + "\n")
                     continue # skip any namespace functions - they are usually importable and not from the main proram
 
                 class_name = class_name.replace("non-virtual thunk to", "").strip() # maybe add that info later on
@@ -113,11 +115,28 @@ class Classner:
                 regex = re.compile(r'[^<>]+[<>]+[^<>]+[<>]+[^<>]*')
                 mo = regex.search(class_name)
                 if mo and len(mo.group(0)) > 0:
+                    with open("extra_namespace_funcs.csv", "a") as fen:
+                        fen.write(func[0] + "\n")
                     continue # skip weird class functions for now
 
                 if not class_name in self.classes.keys():
                     self.classes[class_name] = []
 
                 self.classes[class_name].append((ddd[1], func[1], func[2]))
+            elif len(ddd) == 1: # when no class func
+                class_name = "DecompiledSpecialFuncs"
+                regex = re.compile(r'[^<>]+[<>]+[^<>]+[<>]+[^<>]*')
+                mo = regex.search(class_name)
+                if mo and len(mo.group(0)) > 0:
+                    with open("extra_namespace_funcs.csv", "a") as fen:
+                        fen.write(func[0] + "\n")
+                    continue # skip weird class functions for now
+
+                if not class_name in self.classes.keys():
+                    self.classes[class_name] = []
+
+                self.classes[class_name].append((ddd[1], func[1], func[2]))
+
+
         print("DONE", flush=True)
 
