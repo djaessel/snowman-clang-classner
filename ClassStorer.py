@@ -365,9 +365,12 @@ class ClassStorer:
                                 break
                         if iid >= 0:
                             solom = solom[0:iid] + ")"
+                            secto = solom.split(',')
+                            endo = max(len(secto) - 1, 0)
                         else:
+                            endo = 0
                             print("ERROR", solom, line)
-                        line = line.replace(cutty + solom, rdix + " " + cur_operator + " " +  secto[len(secto) - 1]).rstrip('\n') + " // remove rdi val and set as proper object\n"
+                        line = line.replace(cutty + solom, "(" + rdix + ") " + cur_operator + " (" +  secto[endo].rstrip(')') + ")").rstrip('\n') + " // remove rdi val and set as proper object\n"
 
                 else:
                     if commax or decl:
