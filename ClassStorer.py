@@ -192,7 +192,11 @@ class ClassStorer:
                     self.allFuncs[folyr] = func[0].strip()
                     self.allFuncClass[folyr] = cls
 
-        print("WRITING CLASSES BEGIN")
+        if DEBUGMODE:
+            print("WRITING CLASSES BEGIN")
+        else:
+            print("Writing classes...", end="", flush=True)
+
         #for cls in self.classList:
         #    self.writeClassHeaderFile(cls)
         #    self.writeClassCodeFile(cls)
@@ -219,8 +223,11 @@ class ClassStorer:
         #for vx in values_list:
         #    print("Processed", vx[0], "classes with process", vx[2])
 
-        print("WRITING CLASSES END")
-        print()
+        if DEBUGMODE:
+            print("WRITING CLASSES END")
+            print()
+        else:
+            print("DONE")
 
 
     def writeStructsForHeader(self, cls):

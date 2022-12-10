@@ -42,8 +42,6 @@ def main():
     classner.readClassFunctions(file_path)
     classes = classner.get_classes()
 
-    stopwatch.printElapsed()
-
     classStorer = ClassStorer(structer, classes)
 
     if not skip_class_write:
