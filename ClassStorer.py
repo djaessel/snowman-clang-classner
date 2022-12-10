@@ -115,7 +115,7 @@ class ClassStorer:
 
         with open(ClassStorer.export_dir + "/" + file_name, "w") as fw:
             for line in lines:
-                line = self.replaceSymbolsInLine(line)
+                line = self.replaceSymbolsInLine(line, "main.cpp")
                 fw.write(line.rstrip("\n") + "\n")
 
         print("DONE")
@@ -293,7 +293,7 @@ class ClassStorer:
             print("DONE")
 
 
-    def replaceSymbolsInLine(self, line):
+    def replaceSymbolsInLine(self, line, cls):
         for repl in ClassStorer.replaces:
             line = line.replace(repl[0], repl[1])
 
@@ -370,7 +370,7 @@ class ClassStorer:
                         else:
                             endo = 0
                             print("ERROR", solom, line)
-                        line = line.replace(cutty + solom, "(" + rdix + ") " + cur_operator + " (" +  secto[endo].lstrip(" ").rstrip(')') + ")").rstrip('\n') + " // remove rdi val and set as proper object\n"
+                        line = line.replace(cutty + solom, cls + "(" + rdix + ") " + cur_operator + " " + cls + "(" +  secto[endo].lstrip(" ").rstrip(')') + ")").rstrip('\n') + " // remove rdi val and set as proper object\n"
 
                 else:
                     if commax or decl:
@@ -468,7 +468,7 @@ class ClassStorer:
 
                 f.write("{\n")
                 for line in func_body:
-                    line = self.replaceSymbolsInLine(line)
+                    line = self.replaceSymbolsInLine(line, clsxxx)
 
                     for varx in variables:
                         if varx in line and not varx + " =" in line :
