@@ -135,7 +135,7 @@ class Classner:
                 if not class_name in self.classes.keys():
                     self.classes[class_name] = []
 
-                self.classes[class_name].append((ddd[1], func[1], func[2]))
+                self.classes[class_name].append((ddd[0], func[1], func[2]))
 
 
         print("DONE", flush=True)
