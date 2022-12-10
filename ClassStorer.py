@@ -321,7 +321,8 @@ class ClassStorer:
             if cutty in self.allFuncs:
                 if operx in self.allFuncs[cutty]:
                     lem = self.allFuncs[cutty]
-                    cur_operator = lem[lem.index(operx) + len(operx):][0:1]
+                    cur_operator = lem[lem.index(operx) + len(operx):][0:]
+                    cur_operator = cur_operator[0:cur_operator.index("(")] # FIXME: make correct operator handling!
                     sectox = lem.split("(")[1].split(")")[0]
                     secto = sectox.split(',')
                     cls = self.allFuncClass[cutty]
@@ -358,11 +359,14 @@ class ClassStorer:
                         solom = solom[solom.index("("):]
                         clam = 0
                         iid = -1
+                        charActive = False
                         for i in range(len(solom)):
-                            if solom[i] == "(":
+                            if not charActive and solom[i] == "(":
                                 clam += 1
-                            elif solom[i] == ")":
+                            elif not charActive and solom[i] == ")":
                                 clam -= 1
+                            elif solom[i] == '"':
+                                charActive = not charActive
                             if clam <= 0:
                                 iid = i
                                 break
@@ -378,7 +382,7 @@ class ClassStorer:
                 else:
                     if commax or decl:
                         line = line.replace(cutty, "UNKNOWN_OBJECT_RDI_1->" + self.allFuncs[cutty].split("(")[0]) + " // find rdi val and set as proper object"
-                    else:
+                    else: # FIXME: change the rdix code to work correctly or not use it at all!
                         rdix = line[line.index(cutty):]
                         if rdix.find(",") >= 0:
                             rdix = rdix[0:rdix.index(",")]
