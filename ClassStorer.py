@@ -115,7 +115,7 @@ class ClassStorer:
 
         with open(ClassStorer.export_dir + "/" + file_name, "w") as fw:
             for line in lines:
-                line = self.replaceSymbolsInLine(line, "main.cpp")
+                line = self.replaceSymbolsInLine(line)
                 fw.write(line.rstrip("\n") + "\n")
 
         print("DONE")
@@ -178,6 +178,7 @@ class ClassStorer:
             os.mkdir(ClassStorer.export_dir)
 
         self.allFuncs = dict()
+        self.allFuncClass = dict()
         for cls in self.classList:
             funcy = self.classList[cls]
             for func in funcy:
@@ -189,6 +190,7 @@ class ClassStorer:
                         break
                 if folyr:
                     self.allFuncs[folyr] = func[0].strip()
+                    self.allFuncClass[folyr] = cls
 
         print("WRITING CLASSES BEGIN")
         #for cls in self.classList:
@@ -293,7 +295,7 @@ class ClassStorer:
             print("DONE")
 
 
-    def replaceSymbolsInLine(self, line, cls):
+    def replaceSymbolsInLine(self, line):
         for repl in ClassStorer.replaces:
             line = line.replace(repl[0], repl[1])
 
@@ -322,8 +324,9 @@ class ClassStorer:
                     cur_operator = lem[lem.index(operx) + len(operx):][0:1]
                     sectox = lem.split("(")[1].split(")")[0]
                     secto = sectox.split(',')
+                    cls = self.allFuncClass[cutty]
                     if commax or decl:
-                        line = line.replace(cutty + "(" + sectox + ")", "UNKNOWN_OBJECT_RDI_1 " + cur_operator + " " + secto[len(secto) - 1])
+                        line = line.replace(cutty + "(" + sectox + ")", cls + "(UNKNOWN_OBJECT_RDI_1) " + cur_operator + " " + cls + "(" + secto[len(secto) - 1] + ")")
                     else:
                         rdix = line[line.index(cutty):]
                         if rdix.find(",") >= 0:
@@ -468,7 +471,7 @@ class ClassStorer:
 
                 f.write("{\n")
                 for line in func_body:
-                    line = self.replaceSymbolsInLine(line, clsxxx)
+                    line = self.replaceSymbolsInLine(line)
 
                     for varx in variables:
                         if varx in line and not varx + " =" in line :
