@@ -72,35 +72,36 @@ class ClassStorer:
 
     def classFunctionParameterFix(self, fname, assembly_func_name):
         if fname.find("(") < 0:
-            print("classFunctionParameterFix", fname)
-            input("ERROR") # FIXME: make real error handling
-        telp = fname.split("(")[1].split(")")[0].split(",")
+            print("classFunctionParameterFix", ":", fname, ":", assembly_func_name)
+            fname = assembly_func_name # temporary fix?
+        else:
+            telp = fname.split("(")[1].split(")")[0].split(",")
+            fname = fname.split("(")[0] + "(" # base name without parameters
 
-        fname = fname.split("(")[0] + "(" # base name without parameters
+            if len(telp) > 1 or len(telp[0]) > 0:
+                parax = assembly_func_name.split("(")[1].split(")")[0].split(",")
+                for i, p in enumerate(telp):
+                    lasx = None
+                    if len(parax) > (i + 1):
+                        lasxList = parax[i+1].split()
+                        if len(lasxList) > 0:
+                            lasx = lasxList[len(lasxList) - 1]
+                    # else:
+                    #     # FIXME: bug with sometimes missing parameters mentioned in assembly func name!!!
+                    #     # print(parax[i], len(parax), i, assembly_func_name, p, telp)
+                    #     # x = input("ROOOOOOOOOOOR")
+                    #     pass
 
-        if len(telp) > 1 or len(telp[0]) > 0:
-            parax = assembly_func_name.split("(")[1].split(")")[0].split(",")
-            for i, p in enumerate(telp):
-                lasx = None
-                if len(parax) > (i + 1):
-                    lasxList = parax[i+1].split()
-                    if len(lasxList) > 0:
-                        lasx = lasxList[len(lasxList) - 1]
-                # else:
-                #     # FIXME: bug with sometimes missing parameters mentioned in assembly func name!!!
-                #     # print(parax[i], len(parax), i, assembly_func_name, p, telp)
-                #     # x = input("ROOOOOOOOOOOR")
-                #     pass
+                    idx = i - 1
+                    if idx >= len(ClassStorer.param_asm_names):
+                        idx = len(ClassStorer.param_asm_names) - 1
+                    nox = ClassStorer.param_asm_names[idx].replace("<x>", str(i))
+                    if lasx != None and lasx != nox:
+                        nox = lasx
+                    fname += p + " " + nox + ","
 
-                idx = i - 1
-                if idx >= len(ClassStorer.param_asm_names):
-                    idx = len(ClassStorer.param_asm_names) - 1
-                nox = ClassStorer.param_asm_names[idx].replace("<x>", str(i))
-                if lasx != None and lasx != nox:
-                    nox = lasx
-                fname += p + " " + nox + ","
+            fname = fname.rstrip(",") + ")"
 
-        fname = fname.rstrip(",") + ")"
         return fname
 
 
