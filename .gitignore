@@ -31,3 +31,7 @@ main.bin
 ccompiled/build/
 ccompiled/build/*
 
+
+build*/
+build*/*
+
