@@ -127,6 +127,67 @@ class FunctionAnalyzer:
         return fixed_class
 
 
+    def _addUsedClassImportsS(cls, classes):
+        includes = []
+
+        for func in classes[cls]:
+            for line in classes[cls][func]:
+                for cls2 in classes:
+                    if cls2 in line:
+                        if " " + cls2 + "*" in line or " " + cls2 + " " in line:
+                            includes.append(cls2)
+                        else:
+                            print("X1", "ignored?", cls2, line)
+                            # TODO: do something with this
+
+        return includes
+
+
+    def _help_addUsedClassImports(self, i, maxProcs):
+        packSize = int(len(classes) / maxPartCount)
+        startIndex = int(packSize * partNum)
+        endIndex = startIndex + packSize
+        if partNum + 1 == maxPartCount:
+            endIndex = len(classes.keys())
+        keyList = list(classes.keys())[startIndex:endIndex]
+        class_includes = dict()
+        for cls in keyList:
+            class_includes[cls] = self._addUsedClassImportsS(cls, classes)
+        #print("Process", partNum, "finished!")
+        return [len(keyList), class_includes, os.getpid()]
+
+
+    def addUsedClassImports(self, classes):
+        print("Analyzing - adding cöass imports...")
+
+        #maxProcs = int(os.cpu_count() * 0.5) # 16 -> 8
+        #running_procs = []
+        #for i in range(maxProcs):
+        #    proc = mp.Process(target=self._help_find_original_class, args=(classes, i, maxProcs))
+        #    proc.start()
+        #    running_procs.append(proc)
+        #for p in running_procs:
+        #    p.join()
+        #print(f"Finished with {maxProcs} threads!")
+
+        maxProcs = int(os.cpu_count() * 0.75) # 16 -> 12, 8 -> 6, 4 -> 3
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            results = [executor.submit(self._help_addUsedClassImports, classes, i, maxProcs) for i in range(maxProcs)]
+
+        values_list = []
+        for f in concurrent.futures.as_completed(results):
+            values = f.result()
+            values_list.append(values)
+
+        class_includes = dict()
+        for vx in values_list:
+            for fc in vx[1]:
+                class_includes[fc] = vx[1][fc]
+            #print("Processed", vx[0], "classes with process", vx[2])
+
+        print("Analyzing - adding class imports...DONE")
+
+        return class_includes
 
 
     def findOriginalClass(self, classes):

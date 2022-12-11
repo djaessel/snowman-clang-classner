@@ -122,7 +122,7 @@ class ClassStorer:
         print("DONE")
 
 
-    def writeClassesJust(self, fixed_classes):
+    def writeClassesJust(self, fixed_classes, class_includes):
         if not os.path.exists(ClassStorer.export_dir):
             os.mkdir(ClassStorer.export_dir)
 
@@ -153,6 +153,17 @@ class ClassStorer:
                         fw.write(line)
 
                     fw.write("\n\n\n")
+
+            all_lines_x = []
+            with open(ClassStorer.export_dir + "/" + cls + ".h") as fr:
+                for line in fr:
+                    if "// USED_CLASSES" in line:
+                        line = "\n".join(class_includes[cls])
+                    all_line_x.append(line)
+
+            with open(ClassStorer.export_dir + "/" + cls + ".h", "w") as fw:
+                for line in all_line_x:
+                    fw.write(line.rstrip('\n') + '\n')
 
         print("WRITING FIXED CLASSES END")
         print()

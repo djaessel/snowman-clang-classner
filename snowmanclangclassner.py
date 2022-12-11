@@ -63,8 +63,9 @@ def main():
 
     analyzer = FunctionAnalyzer()
     fixed_classes = analyzer.findOriginalClass(modified_classes)
+    class_includes = analyzer.addUsedClassImports(fixed_classes)
 
-    classStorer.writeClassesJust(fixed_classes)
+    classStorer.writeClassesJust(fixed_classes, class_includes)
 
     print("\nProcessing DONE", flush=True)
 
