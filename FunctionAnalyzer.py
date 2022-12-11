@@ -143,7 +143,7 @@ class FunctionAnalyzer:
         return includes
 
 
-    def _help_addUsedClassImports(self, i, maxProcs):
+    def _help_addUsedClassImports(self, classes, partNum, maxPartCount):
         packSize = int(len(classes) / maxPartCount)
         startIndex = int(packSize * partNum)
         endIndex = startIndex + packSize

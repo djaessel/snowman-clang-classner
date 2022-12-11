@@ -101,7 +101,7 @@ class Classner:
         for func in funcs:
             ddd = func[0].split("::")
             if len(ddd) > 1:
-                tmpXX = ddd[0].split(" ")
+                tmpXX = ddd[0].replace(", ",",").replace("< ","<").replace(" >",">").split(" ")
                 class_name = tmpXX[len(tmpXX) - 1] # sometimes there are data types in front of the actual class name
                 #if class_name.strip() == "std":
                 #    continue # skip somtimes strange std function -> can be imported anyway (hopefully)
