@@ -160,7 +160,10 @@ class ClassStorer:
             with open(ClassStorer.export_dir + "/" + cls + ".h") as fr:
                 for line in fr:
                     if "// USED_CLASSES" in line:
-                        line = "\n".join(class_includes[cls])
+                        line = ""
+                        for include in class_includes:
+                            line += '#include "' + include + '.h"\n'
+                        line += "\n"
                     all_lines_x.append(line)
 
             with open(ClassStorer.export_dir + "/" + cls + ".h", "w") as fw:

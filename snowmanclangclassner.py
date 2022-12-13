@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import os
 import sys
 
 from Classner import Classner
@@ -66,6 +67,8 @@ def main():
     class_includes = analyzer.addUsedClassImports(fixed_classes)
 
     classStorer.writeClassesJust(fixed_classes, class_includes)
+
+    os.system("cd generated_classes && python3 remove_included.py")
 
     print("\nProcessing DONE", flush=True)
 
