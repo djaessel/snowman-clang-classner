@@ -133,7 +133,7 @@ class FunctionAnalyzer:
         for func in classes[cls]:
             for line in classes[cls][func]:
                 for cls2 in classes:
-                    if cls2 in line:
+                    if cls2 in line and not cls2 in includes:
                         if " " + cls2 + "*" in line or " " + cls2 + " " in line or cls2 + "(" in line:
                             includes.append(cls2)
                         else:
