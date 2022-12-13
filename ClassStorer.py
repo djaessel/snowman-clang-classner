@@ -48,6 +48,8 @@ class ClassStorer:
         "uint16_t","uint16_t*","uint16_t**","uint16_t***",
         "int32_t","int32_t*","int32_t**","int32_t***",
         "uint32_t","uint32_t*","uint32_t**","uint32_t***",
+        "int","int*","int**","int***",
+        "uint","uint*","uint**","uint***",
         "int64_t","int64_t*","int64_t**","int64_t***",
         "uint64_t","uint64_t*","uint64_t**","uint64_t***",
         "char","char*","char**","char***",
@@ -159,10 +161,10 @@ class ClassStorer:
                 for line in fr:
                     if "// USED_CLASSES" in line:
                         line = "\n".join(class_includes[cls])
-                    all_line_x.append(line)
+                    all_lines_x.append(line)
 
             with open(ClassStorer.export_dir + "/" + cls + ".h", "w") as fw:
-                for line in all_line_x:
+                for line in all_lines_x:
                     fw.write(line.rstrip('\n') + '\n')
 
         print("WRITING FIXED CLASSES END")

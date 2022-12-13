@@ -58,6 +58,17 @@ class Classner:
                             if len(mo.group(0)) > 0:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
+                    elif line.endswith("*/"):
+                        line = line[3:len(line)-2].strip()
+
+                        regex = re.compile(r'([a-zA-Z0-9-_<>*]+\([a-zA-Z,.<>:0-9-_& \*]*\))')
+                        mo = regex.search(line)
+                        # FIXME: a lot of classes and their functions are still not included
+                        # TODO: handle functions that have different names/class structures later!!! Do not forget!!!
+                        if mo:
+                            if len(mo.group(0)) > 0:
+                                class_functions.append([line]) # probably correct function name, without return type
+                                next_is_decl = True
                 elif "_Z" in line and "(" in line and ")" in line:
                     regex = re.compile(r'(_Z[a-zA-Z0-9-_]+\([a-zA-Z,.<>:0-9-_& \*]*\))')
                     mo = regex.search(line)
@@ -97,12 +108,24 @@ class Classner:
 
     def sort_funcs_into_classes(self, funcs):
         self.classes.clear()
+
+        with open("extra_namespace_funcs.csv", "w") as f:
+            f.write("")
+
         print("Sort functions into classes...", end="", flush=True)
         for func in funcs:
+            #ddd = func[0].replace(", ",",").replace("< ","<").replace(" >",">").split("::")
             ddd = func[0].split("::")
             if len(ddd) > 1:
-                tmpXX = ddd[0].replace(", ",",").replace("< ","<").replace(" >",">").split(" ")
-                class_name = tmpXX[len(tmpXX) - 1] # sometimes there are data types in front of the actual class name
+                #tmpXX = ddd[0].replace(", ",",").replace("< ","<").replace(" >",">").split(" ")
+                tmpXXX = ddd[0].replace(", ",",").replace("< ","<").replace(" >",">")
+                tmpXX = tmpXXX.split("<")[0].split(" ")
+                lenx = 0
+                if tmpXX[0] in ClassStorer.all_valid_types:
+                    lenx = 1
+                elif tmpXX[0] == "non-virtual" and "non-virtual thunk to " in func[0]:
+                    lenx = 3
+                class_name = tmpXX[lenx] # sometimes there are data types in front of the actual class name
                 #if class_name.strip() == "std":
                 #    continue # skip somtimes strange std function -> can be imported anyway (hopefully)
                 if len(ddd) > 2:

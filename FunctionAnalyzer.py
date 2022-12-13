@@ -127,14 +127,14 @@ class FunctionAnalyzer:
         return fixed_class
 
 
-    def _addUsedClassImportsS(cls, classes):
+    def _addUsedClassImportsS(self, cls, classes):
         includes = []
 
         for func in classes[cls]:
             for line in classes[cls][func]:
                 for cls2 in classes:
                     if cls2 in line:
-                        if " " + cls2 + "*" in line or " " + cls2 + " " in line:
+                        if " " + cls2 + "*" in line or " " + cls2 + " " in line or cls2 + "(" in line:
                             includes.append(cls2)
                         else:
                             print("X1", "ignored?", cls2, line)
