@@ -62,11 +62,10 @@ class Classner:
                                 next_is_decl = True
                             else:
                                 line = tmpax
-                                modo = True
                         else:
                             line = tmpax
-                            modo = True
-                    if modo and line.endswith("*/"):
+                        modo = True
+                    if modo and not next_is_decl and line.endswith("*/"):
                         #tmpax = line
                         line = line[3:len(line)-2].strip()
 

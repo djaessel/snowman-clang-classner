@@ -131,8 +131,9 @@ class FunctionAnalyzer:
         includes = []
 
         if cls == "Troop":
-            print(classes[cls])
-            input("XXX")
+            with open("TTTTTTTTT.txt", "w") as fwf:
+                for func in classes[cls]
+                    fwf.write(func + "\n")
 
         for func in classes[cls]:
             for line in classes[cls][func]:
