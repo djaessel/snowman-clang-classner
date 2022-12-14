@@ -132,7 +132,7 @@ class FunctionAnalyzer:
 
         if cls == "Troop":
             with open("TTTTTTTTT.txt", "w") as fwf:
-                for func in classes[cls]
+                for func in classes[cls]:
                     fwf.write(func + "\n")
 
         for func in classes[cls]:

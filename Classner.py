@@ -50,6 +50,7 @@ class Classner:
                     modo = False
                     if line.endswith("*/") and "::" in line:
                         tmpax = line
+                        modo = True
                         line = line[3:len(line)-2].strip()
 
                         regex = re.compile(r'([a-zA-Z0-9-_<>*]+::[~]*[a-zA-Z0-9-_<>*]+[ a-z]*[<>=&|^*+\/-~\(\)\[\]]*\([a-zA-Z,.<>:0-9-_& \*]*\))')
@@ -64,9 +65,7 @@ class Classner:
                                 line = tmpax
                         else:
                             line = tmpax
-                        modo = True
-                    if modo and not next_is_decl and line.endswith("*/"):
-                        #tmpax = line
+                    if (modo or not "::" in line) and not next_is_decl and line.endswith("*/"):
                         line = line[3:len(line)-2].strip()
 
                         regex = re.compile(r'([a-zA-Z0-9-_<>*]+\([a-zA-Z,.<>:0-9-_& \*]*\))')
@@ -77,8 +76,6 @@ class Classner:
                             if len(mo.group(0)) > 0:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
-                        #else:
-                        #    line = tmpax
                 elif "_Z" in line and not (" while " in line or " if " in line) and "(" in line and ")" in line:
                     regex = re.compile(r'(_Z[a-zA-Z0-9-_]+\([a-zA-Z,.<>:0-9-_& \*]*\))')
                     mo = regex.search(line)
