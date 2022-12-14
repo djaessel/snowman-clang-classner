@@ -127,13 +127,14 @@ class FunctionAnalyzer:
         return fixed_class
 
 
-    def _addUsedClassImportsS(self, cls, classes):
+    def _addUsedClassImportsS(self, cls, classes, mod_classes):
         includes = []
 
-        if cls == "Troop":
-            with open("TTTTTTTTT.txt", "w") as fwf:
-                for func in classes[cls]:
-                    fwf.write(func + "\n")
+        for obj in mod_classes:
+            for cls2 in classes:
+                if cls2 in obj[0] and not cls2 in includes:
+                    if "(" + cls2 + " " in obj[0] or "(" + cls2 + "*" in obj[0] or " " + cls2 + " " in obj[0] or " " + cls2 + "*" in obj[0]:
+                        includes.append(cls2)
 
         for func in classes[cls]:
             for line in classes[cls][func]:
@@ -145,7 +146,7 @@ class FunctionAnalyzer:
         return includes
 
 
-    def _help_addUsedClassImports(self, classes, partNum, maxPartCount):
+    def _help_addUsedClassImports(self, classes, mod_classes, partNum, maxPartCount):
         packSize = int(len(classes) / maxPartCount)
         startIndex = int(packSize * partNum)
         endIndex = startIndex + packSize
@@ -154,12 +155,12 @@ class FunctionAnalyzer:
         keyList = list(classes.keys())[startIndex:endIndex]
         class_includes = dict()
         for cls in keyList:
-            class_includes[cls] = self._addUsedClassImportsS(cls, classes)
+            class_includes[cls] = self._addUsedClassImportsS(cls, classes, mod_classes)
         #print("Process", partNum, "finished!")
         return [len(keyList), class_includes, os.getpid()]
 
 
-    def addUsedClassImports(self, classes):
+    def addUsedClassImports(self, classes, mod_classes):
         print("Analyzing - adding class imports...")
 
         #maxProcs = int(os.cpu_count() * 0.5) # 16 -> 8
@@ -174,7 +175,7 @@ class FunctionAnalyzer:
 
         maxProcs = int(os.cpu_count() * 0.75) # 16 -> 12, 8 -> 6, 4 -> 3
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            results = [executor.submit(self._help_addUsedClassImports, classes, i, maxProcs) for i in range(maxProcs)]
+            results = [executor.submit(self._help_addUsedClassImports, classes, mod_classes, i, maxProcs) for i in range(maxProcs)]
 
         values_list = []
         for f in concurrent.futures.as_completed(results):
