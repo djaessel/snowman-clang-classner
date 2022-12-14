@@ -47,18 +47,24 @@ class Classner:
                         class_functions[cur_class_index][2].append(line)
                 elif line.startswith("/*"):
                     line = line.strip()
+                    modo = False
                     if line.endswith("*/") and "::" in line:
+                        tmpax = line
                         line = line[3:len(line)-2].strip()
 
-                        regex = re.compile(r'([a-zA-Z0-9-_<>*]+::[~]*[a-zA-Z0-9-_<>*]+[<>=&|^*+\/-~]*\([a-zA-Z,.<>:0-9-_& \*]*\))')
+                        regex = re.compile(r'([a-zA-Z0-9-_<>*]+::[~]*[a-zA-Z0-9-_<>*]+[ a-z]*[<>=&|^*+\/-~\(\)\[\]]*\([a-zA-Z,.<>:0-9-_& \*]*\))')
                         mo = regex.search(line)
+                        modo = True
                         # FIXME: a lot of classes and their functions are still not included
                         # TODO: handle functions that have different names/class structures later!!! Do not forget!!!
                         if mo:
                             if len(mo.group(0)) > 0:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
-                    elif line.endswith("*/"):
+                        else:
+                            line = tmpax
+                    if not next_is_decl and line.endswith("*/"):
+                        #tmpax = line
                         line = line[3:len(line)-2].strip()
 
                         regex = re.compile(r'([a-zA-Z0-9-_<>*]+\([a-zA-Z,.<>:0-9-_& \*]*\))')
@@ -69,6 +75,8 @@ class Classner:
                             if len(mo.group(0)) > 0:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
+                        #else:
+                        #    line = tmpax
                 elif "_Z" in line and not (" while " in line or " if " in line) and "(" in line and ")" in line:
                     regex = re.compile(r'(_Z[a-zA-Z0-9-_]+\([a-zA-Z,.<>:0-9-_& \*]*\))')
                     mo = regex.search(line)

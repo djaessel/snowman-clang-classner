@@ -130,6 +130,10 @@ class FunctionAnalyzer:
     def _addUsedClassImportsS(self, cls, classes):
         includes = []
 
+        if cls == "Troop":
+            print(classes[cls])
+            input("XXX")
+
         for func in classes[cls]:
             for line in classes[cls][func]:
                 for cls2 in classes:
