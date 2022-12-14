@@ -54,16 +54,19 @@ class Classner:
 
                         regex = re.compile(r'([a-zA-Z0-9-_<>*]+::[~]*[a-zA-Z0-9-_<>*]+[ a-z]*[<>=&|^*+\/-~\(\)\[\]]*\([a-zA-Z,.<>:0-9-_& \*]*\))')
                         mo = regex.search(line)
-                        modo = True
                         # FIXME: a lot of classes and their functions are still not included
                         # TODO: handle functions that have different names/class structures later!!! Do not forget!!!
                         if mo:
                             if len(mo.group(0)) > 0:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
+                            else:
+                                line = tmpax
+                                modo = True
                         else:
                             line = tmpax
-                    if not next_is_decl and line.endswith("*/"):
+                            modo = True
+                    if modo and line.endswith("*/"):
                         #tmpax = line
                         line = line[3:len(line)-2].strip()
 
@@ -123,7 +126,10 @@ class Classner:
         print("Sort functions into classes...", end="", flush=True)
         for func in funcs:
             #ddd = func[0].replace(", ",",").replace("< ","<").replace(" >",">").split("::")
-            ddd = func[0].split("::")
+            if func[0].find("::") < func[0].find("("):
+                ddd = func[0].split("::")
+            else:
+                ddd = [func[0]]
             if len(ddd) > 1:
                 #tmpXX = ddd[0].replace(", ",",").replace("< ","<").replace(" >",">").split(" ")
                 tmpXXX = ddd[0].replace(", ",",").replace("< ","<").replace(" >",">")
