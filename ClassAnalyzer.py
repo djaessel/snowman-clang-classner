@@ -18,8 +18,7 @@ class ClassAnalyzer:
             for line in classes[cls][func]:
                 mo = re.search("\*\(rdi [+ ]*[x0-9]*\)", line)
                 if mo:
-                    for g in mo.group():
-                        class_attributes.append(g)
+                    class_attributes.append(";".join(mo.group()))
 
         with open(cls + ".endl", "w") as f:
             for attr in class_attributes:
