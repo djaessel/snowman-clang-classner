@@ -10,22 +10,34 @@ from Structer import Structer
 from Stopwatch import Stopwatch
 from ReinterpretAlter import ReinterpretAlter
 from FunctionAnalyzer import FunctionAnalyzer
+from ClassAnalyzer import ClassAnalyzer
+
 from specialvals import DEBUGMODE
 
 
 def main():
     skip_class_write = False
     skip_reinterpret = False
+    skip_analyze = False
+    skip_remove_included = True
     file_path = ""
 
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
         if len(sys.argv) > 2:
-            if sys.argv[2] == "-sc":
+            if "-sc" in sys.argv:
                 skip_class_write = True
-            if len(sys.argv) > 3:
-                if sys.argv[3] == "-sr":
-                    skip_reinterpret = True
+            if "-sr" in sys.argv:
+                skip_reinterpret = True
+            if "-sa" in sys.argv:
+                skip_analyze = True
+            if "-si" in sys.argv:
+                skip_remove_included = True
+            if "--skip-all" in sys.argv:
+                skip_class_write = True
+                skip_reinterpret = True
+                skip_analyze = True
+                skip_remove_included = True
 
     if file_path == "":
         print("No file given!")
@@ -62,13 +74,17 @@ def main():
     file_name = path_array[len(path_array) - 1].split(".")[0]
     modified_classes.pop(file_name)
 
-    analyzer = FunctionAnalyzer()
-    fixed_classes = analyzer.findOriginalClass(modified_classes)
-    class_includes = analyzer.addUsedClassImports(fixed_classes, classes)
+    if not skip_analyze:
+        analyzer = FunctionAnalyzer()
+        fixed_classes = analyzer.findOriginalClass(modified_classes)
+        class_includes = analyzer.addUsedClassImports(fixed_classes, classes)
+        classStorer.writeClassesJust(fixed_classes, class_includes)
 
-    classStorer.writeClassesJust(fixed_classes, class_includes)
+    if not skip_remove_included:
+        os.system("cd generated_classes && python3 remove_included.py")
 
-    os.system("cd generated_classes && python3 remove_included.py")
+    classAnalyzer = ClassAnalyzer()
+    classAnalyzer.findClassAttributes(fixed_classes)
 
     print("\nProcessing DONE", flush=True)
 
