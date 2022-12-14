@@ -95,7 +95,7 @@ class Classner:
 
         print("DONE", flush=True)
 
-        if skip_new_cpp:
+        if not skip_new_cpp:
             self.save_new_cpp_file(file_path, ignored_lines)
 
         self.sort_funcs_into_classes(class_functions)
