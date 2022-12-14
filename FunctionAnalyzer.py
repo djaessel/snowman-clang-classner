@@ -134,7 +134,7 @@ class FunctionAnalyzer:
             for line in classes[cls][func]:
                 for cls2 in classes:
                     if cls2 in line and not cls2 in includes:
-                        if " " + cls2 + "*" in line or " " + cls2 + " " in line or cls2 + "(" in line:
+                        if " " + cls2 + "*" in line or " " + cls2 + " " in line or " " + cls2 + "(" in line:
                             includes.append(cls2)
                         else:
                             print("X1", "ignored?", cls2, line)
@@ -158,7 +158,7 @@ class FunctionAnalyzer:
 
 
     def addUsedClassImports(self, classes):
-        print("Analyzing - adding cöass imports...")
+        print("Analyzing - adding class imports...")
 
         #maxProcs = int(os.cpu_count() * 0.5) # 16 -> 8
         #running_procs = []
