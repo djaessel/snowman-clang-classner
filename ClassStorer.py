@@ -161,7 +161,7 @@ class ClassStorer:
                 for line in fr:
                     if "// USED_CLASSES" in line:
                         line = ""
-                        for include in class_includes:
+                        for include in class_includes[cls]:
                             line += '#include "' + include + '.h"\n'
                         line += "\n"
                     all_lines_x.append(line)
