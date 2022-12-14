@@ -52,7 +52,7 @@ def main():
     structer.readStructs(file_path)
 
     classner = Classner()
-    classner.readClassFunctions(file_path)
+    classner.readClassFunctions(file_path, skip_class_write)
     classes = classner.get_classes()
 
     classStorer = ClassStorer(structer, classes)

@@ -17,7 +17,7 @@ class Classner:
         return OrderedDict(sorted(self.classes.items())) # return sorted dict but keep unsorted in original
 
 
-    def readClassFunctions(self, file_path):
+    def readClassFunctions(self, file_path, skip_new_cpp=False):
         class_functions = []
         line_index = -1
         ignored_lines = []
@@ -95,7 +95,9 @@ class Classner:
 
         print("DONE", flush=True)
 
-        self.save_new_cpp_file(file_path, ignored_lines)
+        if skip_new_cpp:
+            self.save_new_cpp_file(file_path, ignored_lines)
+
         self.sort_funcs_into_classes(class_functions)
 
 
