@@ -69,7 +69,7 @@ class Classner:
                             if len(mo.group(0)) > 0:
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
-                elif "_Z" in line and "(" in line and ")" in line:
+                elif "_Z" in line and not (" while " in line or " if " in line) and "(" in line and ")" in line:
                     regex = re.compile(r'(_Z[a-zA-Z0-9-_]+\([a-zA-Z,.<>:0-9-_& \*]*\))')
                     mo = regex.search(line)
                     # FIXME: a lot of classes and their functions are still not included
