@@ -193,6 +193,7 @@ hkThreadMemory::getMemoryStatistics(hkMemoryAllocator::MemoryStatistics&) const
 hkLargeBlockAllocator::_unlinkLargeChunk(hkLargeBlockAllocator::MemTreeChunk*)
 hkLargeBlockAllocator::_insertLargeChunk(hkLargeBlockAllocator::MemTreeChunk*, unsigned long)
 hkLargeBlockAllocator::nextBlock(hkLargeBlockAllocator::Iterator&)
+void hkAlgorithm::quickSortRecursive<hkMemorySnapshot::Allocation, unsigned int (*)(hkMemorySnapshot::Allocation const&, hkMemorySnapshot::Allocation const&)>(hkMemorySnapshot::Allocation*, int, int, unsigned int (*)(hkMemorySnapshot::Allocation const&, hkMemorySnapshot::Allocation const&))
 hkMonitorStreamAnalyzer::Node::Node(hkMonitorStreamAnalyzer::Node*, char const*, hkMonitorStreamAnalyzer::Node::NodeType)
 hkMonitorStreamAnalyzer::Node::~Node()
 hkMonitorStreamAnalyzer::findMaxTimerNameIndent(hkMonitorStreamAnalyzer::Node*, int, int, bool)
@@ -213,6 +214,7 @@ hkStackTracer::CallTree::quit()
 hkStackTracer::CallTree::~CallTree()
 hkMultiThreadCheck::accessCheck(hkMultiThreadCheck::AccessType) const
 hkAlgorithm::_sortList(hkAlgorithm::ListElement*)
+void hkAlgorithm::quickSortRecursive<hkFreeList::Element*, hkBool (*)(hkFreeList::Element const*, hkFreeList::Element const*)>(hkFreeList::Element**, int, int, hkBool (*)(hkFreeList::Element const*, hkFreeList::Element const*))
 hkFreeList::_calcBlockFree(hkFreeList::Block*)
 hkcdPlanarSolid::hkcdPlanarSolid(hkcdPlanarSolid::NodeStorage*, hkHandle<unsigned int, 4294967295u, hkcdPlanarSolid::NodeIdDiscriminant>, hkcdPlanarGeometryPlanesCollection const*, hkcdPlanarEntityDebugger*)
 void hkAlgorithm::quickSortRecursive<unsigned int, hkAlgorithm::less<unsigned int> >(unsigned int*, int, int, hkAlgorithm::less<unsigned int>)
@@ -314,6 +316,7 @@ void hkcdTreeQueries<hkcdTreeQueriesStacks::Dynamic, 64, 0>::unary<hkcdStaticTre
 void hkcdTreeQueries<hkcdTreeQueriesStacks::Dynamic, 64, 0>::unary<hkcdStaticTree::DefaultTreeStorage6, hkcdTreeQueriesStacks::Dynamic<64, hkcdStaticTree::Tree<hkcdStaticTree::DynamicStorage6>::Slot>, hkcdTreeQueries<hkcdTreeQueriesStacks::Dynamic, 64, 0>::SphereCastWrapper<WrappedRaycastQuery<hkcdStaticTree::DefaultTreeStorage6> > >(hkcdStaticTree::DefaultTreeStorage6 const&, hkcdTreeQueriesStacks::Dynamic<64, hkcdStaticTree::Tree<hkcdStaticTree::DynamicStorage6>::Slot>&, hkcdTreeQueries<hkcdTreeQueriesStacks::Dynamic, 64, 0>::SphereCastWrapper<WrappedRaycastQuery<hkcdStaticTree::DefaultTreeStorage6> >&)
 hkVersionUtil::updateSingleVersion(hkArray<hkVariant, hkContainerHeapAllocator>&, hkObjectUpdateTracker&, hkVersionRegistry::UpdateDescription const&, hkClassNameRegistry const*)
 hkCompat_hk403r1_hk410b1::calcQuantizedSize(unsigned int, hkCompat_hk403r1_hk410b1::DummyQuantizeDesc const&)
+void hkAlgorithm::quickSortRecursive<hkCompat_hk600b2_hk600r1::LocalRangeEntry, hkBool (*)(hkCompat_hk600b2_hk600r1::LocalRangeEntry const&, hkCompat_hk600b2_hk600r1::LocalRangeEntry const&)>(hkCompat_hk600b2_hk600r1::LocalRangeEntry*, int, int, hkBool (*)(hkCompat_hk600b2_hk600r1::LocalRangeEntry const&, hkCompat_hk600b2_hk600r1::LocalRangeEntry const&))
 hkStringBuf::replace(char const*, char const*, hkStringBuf::ReplaceType)
 hkVersionPatchManager::addPatch(hkVersionPatchManager::PatchInfo const*)
 hkTypeManager::makePointer(hkTypeManager::Type*)
@@ -350,6 +353,7 @@ hkReflect::Detail::typesEqual(hkClass const&, hkClass const&)
 hkMeshPrimitiveUtil::appendTriangleIndices16(hkMeshSection::PrimitiveType, unsigned short const*, int, int, hkArray<unsigned short, hkContainerHeapAllocator>&)
 hkMeshPrimitiveUtil::appendTriangleIndices32(hkMeshSection::PrimitiveType, unsigned int const*, int, int, hkArray<unsigned int, hkContainerHeapAllocator>&)
 hkVertexFormat::findNextSubUsage(hkVertexFormat::ComponentUsage) const
+void hkAlgorithm::quickSortRecursive<hkVertexFormat::Element, bool (*)(hkVertexFormat::Element const&, hkVertexFormat::Element const&)>(hkVertexFormat::Element*, int, int, bool (*)(hkVertexFormat::Element const&, hkVertexFormat::Element const&))
 hkMeshVertexBufferUtil::getElementIntArray(hkMeshVertexBuffer::LockedVertices const&, int, int*)
 hkMeshVertexBufferUtil::setElementIntArray(hkMeshVertexBuffer::LockedVertices const&, int, int const*)
 hkMeshVertexBufferUtil::getElementVectorArray(hkMeshVertexBuffer::LockedVertices::Buffer const&, float*, int)
@@ -359,8 +363,10 @@ hkMeshVertexBufferUtil::transform(hkMeshVertexBuffer::LockedVertices::Buffer con
 hkMeshVertexBufferUtil::copy(hkMeshVertexBuffer::LockedVertices const&, hkMeshVertexBuffer::LockedVertices const&)
 hkMeshVertexBufferUtil::isBufferDataEqual(hkMeshVertexBuffer::LockedVertices::Buffer const&, hkMeshVertexBuffer::LockedVertices::Buffer const&, hkSimdFloat32 const&)
 hkVertexFormat::findElementIndex(hkVertexFormat::ComponentUsage, int) const
+void hkAlgorithm::quickSortRecursive<hkMeshVertexBuffer::LockedVertices::Buffer, bool (*)(hkMeshVertexBuffer::LockedVertices::Buffer const&, hkMeshVertexBuffer::LockedVertices::Buffer const&)>(hkMeshVertexBuffer::LockedVertices::Buffer*, int, int, bool (*)(hkMeshVertexBuffer::LockedVertices::Buffer const&, hkMeshVertexBuffer::LockedVertices::Buffer const&))
 hkMeshVertexBufferUtil::convert(hkMeshVertexBuffer::LockedVertices::Buffer const&, hkMeshVertexBuffer::LockedVertices::Buffer const&, int)
 hkMemoryMeshVertexBuffer::getLockedVerticesBuffer(int, hkMeshVertexBuffer::LockedVertices::Buffer&)
+void hkAlgorithm::quickSortRecursive<hkMultipleVertexBuffer::LockedElement, bool (*)(hkMultipleVertexBuffer::LockedElement const&, hkMultipleVertexBuffer::LockedElement const&)>(hkMultipleVertexBuffer::LockedElement*, int, int, bool (*)(hkMultipleVertexBuffer::LockedElement const&, hkMultipleVertexBuffer::LockedElement const&))
 hkSkinnedMeshShape::BoneSection::BoneSection()
 hkImage::Descriptor::getNumBitsPerPixel() const
 hkImage::Descriptor::Descriptor()
@@ -446,6 +452,7 @@ hkpWorldOperationUtil::addConstraintImmediately(hkpWorld*, hkpConstraintInstance
 hkpSimpleConstraintContactMgr::Factory::Factory(hkpWorld*)
 hkpReportContactMgr::Factory::Factory(hkpWorld*)
 hkpCollisionDispatcher::initCollisionQualityInfo(hkpCollisionDispatcher::InitCollisionQualityInfo&)
+void hkAlgorithm::quickSortRecursive<hkWorldOperation::BiggestOperation, hkBool (*)(hkWorldOperation::BiggestOperation const&, hkWorldOperation::BiggestOperation const&)>(hkWorldOperation::BiggestOperation*, int, int, hkBool (*)(hkWorldOperation::BiggestOperation const&, hkWorldOperation::BiggestOperation const&))
 hkpRigidBody::createDynamicRigidMotion(hkpMotion::MotionType, hkVector4f const&, hkQuaternionf const&, float, hkMatrix3f const&, hkVector4f const&, float, float, hkpMaxSizeMotion*)
 hkpWorldOperationUtil::removeAttachedAgentsConnectingTheEntityAndAFixedPartnerEntityPlus(hkpAgentNnTrack&, hkpEntity*, hkpAgentNnTrack&, hkpMotion::MotionType)
 void hkAlgorithm::quickSortRecursive<hkpCollidable*, hkpAabbPhantom::OrderByUid>(hkpCollidable**, int, int, hkpAabbPhantom::OrderByUid)
@@ -920,6 +927,7 @@ hkFreeList::_freeBlocks(hkFreeList::Block*)
 hkFreeList::getMemoryStatistics(hkMemoryAllocator::MemoryStatistics&) const
 hkFreeListAllocator::Cinfo::add(unsigned long, unsigned long, unsigned long)
 hkFreeListAllocator::setFixedSizeCinfo(unsigned long, hkFreeListAllocator::Cinfo&)
+hkFreeList::_walkMemoryBlockList(hkFreeList::Block*, void (*)(void*, unsigned long, bool, int, void*), int, void*)
 hkLargeBlockAllocator::FixedMemoryBlockServer::resize(void*, int, unsigned long, unsigned long&)
 hkMonitorStreamAnalyzer::Node::createSelfTimer(hkMonitorStreamFrameInfo const&, hkMonitorStreamAnalyzer::Node*)
 hkMonitorStreamAnalyzer::writeStatisticsDetailsToTexture(hkArrayBase<hkMonitorStreamAnalyzer::Node*> const&, hkMonitorStreamAnalyzer::ThreadDrawInput const&, hkArray<hkArray<hkMonitorStreamFrameInfo, hkContainerHeapAllocator>, hkContainerHeapAllocator>&, int*&, int&, hkMonitorStreamAnalyzer::SampleInfo*)
@@ -952,6 +960,7 @@ hkSimdInt128Impl::Shr<53, (hkMathValueType)0>::shr(hkSimdInt<128> const&, hkSimd
 hkcdMathErrorBoundsCalculator::Vector::setAdd(hkcdMathErrorBoundsCalculator::Vector const&, hkcdMathErrorBoundsCalculator::Vector const&)
 hkcdPlanarSolid::NodeStorage::NodeStorage(hkcdPlanarSolid::NodeStorage const&)
 hkArrayBase<hkcdPlanarGeometryPrimitives::Plane>::_pushBack(hkMemoryAllocator&, hkcdPlanarGeometryPrimitives::Plane const&)
+void hkAlgorithm::quickSortRecursive<hkcdBspImpl::MatPoly, unsigned int (*)(hkcdBspImpl::MatPoly const&, hkcdBspImpl::MatPoly const&)>(hkcdBspImpl::MatPoly*, int, int, unsigned int (*)(hkcdBspImpl::MatPoly const&, hkcdBspImpl::MatPoly const&))
 hkFreeListArray<hkcdPlanarSolid::ArraySlot, hkHandle<unsigned int, 4294967295u, hkcdPlanarSolid::ArrayIdDiscriminant>, 128, hkDefaultFreeListArrayOperations<hkcdPlanarSolid::ArraySlot> >::grow(int)
 hkcdPlanarGeometryPlanesCollection::addPlane(hkcdPlanarGeometryPrimitives::Plane const&)
 hkcdPlanarSolid::createInsideNode(hkHandle<unsigned int, 4294967295u, hkcdPlanarSolid::NodeIdDiscriminant>)
@@ -976,6 +985,7 @@ void hkcdSimdTreeUtils::Build::IRefit::_refitBranch<hkcdSimdTreeUtils::Build::IR
 void hkcdSimdTreeUtils::Build::IRefit::_refitNode<hkcdSimdTreeUtils::Build::IRefit::GetClusterAabb<hkcdSimdTreeUtils::Build::GetLeafAabbFromAabbs> >(hkcdSimdTreeUtils::Build::IRefit::GetClusterAabb<hkcdSimdTreeUtils::Build::GetLeafAabbFromAabbs> const&, hkcdSimdTree::Node const*, hkcdSimdTree::Node*)
 void hkcdSimdTreeUtils::Build::IRefit::_refitNode<hkcdSimdTreeUtils::Build::IRefit::GetClusterAabb<hkcdSimdTreeUtils::Build::GetLeafAabbFromAabbs16> >(hkcdSimdTreeUtils::Build::IRefit::GetClusterAabb<hkcdSimdTreeUtils::Build::GetLeafAabbFromAabbs16> const&, hkcdSimdTree::Node const*, hkcdSimdTree::Node*)
 hkCompatUtil::updateNamedVariantClassName(hkArray<hkVariant, hkContainerHeapAllocator>&, hkVersionRegistry::ClassRename const*, hkObjectUpdateTracker&)
+void hkAlgorithm::quickSortRecursive<hkCompat_hk600r1_hk610r1::hclMoveParticlesOperatorPair, hkBool (*)(hkCompat_hk600r1_hk610r1::hclMoveParticlesOperatorPair const&, hkCompat_hk600r1_hk610r1::hclMoveParticlesOperatorPair const&)>(hkCompat_hk600r1_hk610r1::hclMoveParticlesOperatorPair*, int, int, hkBool (*)(hkCompat_hk600r1_hk610r1::hclMoveParticlesOperatorPair const&, hkCompat_hk600r1_hk610r1::hclMoveParticlesOperatorPair const&))
 hkTypeManager::_addType(hkTypeManager::Type const&)
 hkVersionPatchManager::applyPatches(hkDataWorld&, hkVersionPatchManager::ClassWrapper*) const
 hkClassPointerVtable::TypeInfoRegistry::~TypeInfoRegistry()
@@ -992,6 +1002,7 @@ hkBindingClassNameRegistry::ClassAllocationsTracker::allocateClass(hkClass const
 hkMemoryMeshVertexBuffer::getLockedVertices(int, int, hkMeshVertexBuffer::LockedVertices&)
 hkMeshPrimitiveUtil::appendTriangleIndices(hkMeshSection::PrimitiveType, int, int, hkArrayBase<unsigned short>&, hkMemoryAllocator&)
 hkMeshPrimitiveUtil::appendTriangleIndices(hkMeshSection::PrimitiveType, int, int, hkArray<unsigned int, hkContainerHeapAllocator>&)
+void hkAlgorithm::quickSortRecursive<hkSkinnedMeshShape::Part, bool (*)(hkSkinnedMeshShape::Part const&, hkSkinnedMeshShape::Part const&)>(hkSkinnedMeshShape::Part*, int, int, bool (*)(hkSkinnedMeshShape::Part const&, hkSkinnedMeshShape::Part const&))
 hkImage::Descriptor::isInterleaved() const
 hkDefaultImage::hkDefaultImage(hkImage::Descriptor const&)
 hkTgaDecoderImpl::flipY(unsigned char*&, hkImage::Descriptor&)
@@ -1055,6 +1066,7 @@ hkpFirstPersonGun::sweepSphere(hkpWorld const*, hkVector4f const&, float, hkVect
 hkpSaveContactPointsUtil::saveContactPoints(hkpSaveContactPointsUtil::SavePointsInput const&, hkpWorld const*, hkpPhysicsSystemWithContacts*)
 hkpSaveContactPointsUtil::deserializeEntry(hkpSerializedAgentNnEntry const&, hkpSerializedAgentNnEntry::SerializedAgentType, hkpSerializedTrack1nInfo const&, hkpProcessCollisionInput const*, hkpAgentNnEntry*)
 hkpSaveContactPointsUtil::deserializeCollisionEntry(hkpSaveContactPointsUtil::LoadPointsInput const&, hkpSerializedAgentNnEntry const&, hkpEntity*, hkpEntity*, hkpProcessCollisionInput const*, hkpAgentNnEntry*)
+void hkAlgorithm::quickSortRecursive<hkpTriggerVolume::EventInfo, hkBool (*)(hkpTriggerVolume::EventInfo const&, hkpTriggerVolume::EventInfo const&)>(hkpTriggerVolume::EventInfo*, int, int, hkBool (*)(hkpTriggerVolume::EventInfo const&, hkpTriggerVolume::EventInfo const&))
 hkArrayBase<hkpBallSocketChainData::ConstraintInfo>::_spliceInto(hkMemoryAllocator&, int, int, hkpBallSocketChainData::ConstraintInfo const*, int)
 hkpMultithreadedVehicleManager::getVehicleBatchFromBuffer(hkArray<hkpVehicleInstance*, hkContainerHeapAllocator>&, void*, hkpMultithreadedVehicleManager::VehicleCommandBatch&)
 hkpVehicleSteeringAckerman::calcMainSteeringAngle(float, hkpVehicleInstance const*, hkpVehicleDriverInput::FilteredDriverInputOutput const&, hkpVehicleSteering::SteeringAnglesOutput&)
@@ -1128,6 +1140,7 @@ hkgpIndexedMesh::collapseEdge(hkArray<hkgpIndexedMeshDefinitions::Triangle*, hkC
 hkgpIndexedMesh::flipEdge(hkgpIndexedMeshDefinitions::Edge)
 void hkAlgorithm::quickSortRecursive<int, hkAlgorithm::less<int> >(int*, int, int, hkAlgorithm::less<int>)
 hkgpIndexedMesh::computeSets(hkgpIndexedMesh::EdgeBarrier const&)
+void hkAlgorithm::quickSortRecursive<hkpLinkedCollidable::CollisionEntry, bool (*)(hkpLinkedCollidable::CollisionEntry const&, hkpLinkedCollidable::CollisionEntry const&)>(hkpLinkedCollidable::CollisionEntry*, int, int, bool (*)(hkpLinkedCollidable::CollisionEntry const&, hkpLinkedCollidable::CollisionEntry const&))
 hkListAgent3::initAgentFunc(hkpCollisionDispatcher::Agent3Funcs&)
 hkpLimitedHingeConstraintData::Atoms::Atoms(hkFinishLoadedObjectFlag)
 hkpLinearClearanceConstraintData::Atoms::Atoms(hkFinishLoadedObjectFlag)
@@ -1251,6 +1264,7 @@ void hkcdTreeQueries<hkcdTreeQueriesStacks::Dynamic, 64, 0>::unary<hkcdDynamicTr
 hkMemoryMeshTexture::Sampler::Sampler(hkStringPtr const&)
 hkMeshVertexBufferUtil::getElementVectorArray(hkMeshVertexBuffer::LockedVertices const&, int, float*)
 hkpGskfAgent::initAgentFunc(hkpCollisionDispatcher::AgentFuncs&)
+hkContentPredicate::hkContentPredicate(hkEnum<hkContentPredicate::PredicateIdEnum, unsigned short>, char const*, bool (*)(hkVariant))
 void std::vector<rglRender_postFX_Node*, std::allocator<rglRender_postFX_Node*> >::emplace_back<rglRender_postFX_Node*>(rglRender_postFX_Node*&&)
 hkMonitorStreamStringMap::StringMap::StringMap(hkFinishLoadedObjectFlag)
 hkVariantDataUtil::getReal(hkClassMember::Type, void const*)
@@ -1566,7 +1580,10 @@ hkMeshVertexBufferUtil::setElementVectorArray(hkMeshVertexBuffer::LockedVertices
 hkMultipleVertexBuffer::getElementIntArray(hkMeshVertexBuffer::LockedVertices const&, int, int*)
 hkMultipleVertexBuffer::unlock(hkMeshVertexBuffer::LockedVertices const&)
 hkMultipleVertexBuffer::lock(hkMeshVertexBuffer::LockInput const&, hkMeshVertexBuffer::LockedVertices&)
+hkStorageSkinnedMeshShape::getBoneSet(hkHandle<unsigned short, (unsigned short)65535, hkSkinnedMeshShape::BoneSetIdDiscriminant>, hkSkinnedMeshShape::BoneSet&) const
+hkStorageSkinnedMeshShape::getBoneSetBones(hkHandle<unsigned short, (unsigned short)65535, hkSkinnedMeshShape::BoneSetIdDiscriminant>, hkArray<short, hkContainerHeapAllocator>&) const
 hkStorageSkinnedMeshShape::getBoneSection(int, hkSkinnedMeshShape::BoneSection&) const
+hkStorageSkinnedMeshShape::addBoneSection(hkMeshShape*, hkHandle<unsigned short, (unsigned short)65535, hkSkinnedMeshShape::BoneSetIdDiscriminant>, short)
 hkDefaultImage::getDescriptor(hkImage::Descriptor&) const
 hkp3AxisSweep::castRay(hkpBroadPhase::hkpCastRayInput const&, hkpBroadPhaseCastCollector*, int) const
 hkpBoxShape::calcSizeForSpu(hkpShape::CalcSizeForSpuInput const&, int) const
@@ -1881,6 +1898,7 @@ hkpTriangleShape::calcSizeForSpu(hkpShape::CalcSizeForSpuInput const&, int) cons
 hkpCompressedMeshShape::initWeldingInfo(hkpWeldingUtility::WeldingType)
 hkpCylinderShape::calcSizeForSpu(hkpShape::CalcSizeForSpuInput const&, int) const
 hkpMeshShape::initWeldingInfo(hkpWeldingUtility::WeldingType)
+hkpCallbackConstraintMotor::hkpCallbackConstraintMotor(hkpCallbackConstraintMotor::CallbackType, void (*)(hkpCallbackConstraintMotor const&, hkpConstraintMotorInput const*, hkpConstraintMotorOutput*))
 hkpCogWheelConstraintData::getConstraintInfo(hkpConstraintData::ConstraintInfo&) const
 hkpRackAndPinionConstraintData::getConstraintInfo(hkpConstraintData::ConstraintInfo&) const
 hkpStiffSpringConstraintData::getConstraintInfo(hkpConstraintData::ConstraintInfo&) const
@@ -1928,6 +1946,7 @@ hkcdSimdTreeUtils::Build::RefitT<hkcdSimdTreeUtils::Build::GetLeafAabbFromICusto
 hkVersionPatchManager::ClassWrapper::~ClassWrapper()
 hkMemoryMeshVertexBuffer::partialLock(hkMeshVertexBuffer::LockInput const&, hkMeshVertexBuffer::PartialLockInput const&, hkMeshVertexBuffer::LockedVertices&)
 hkMultipleVertexBuffer::_less(hkMultipleVertexBuffer::LockedElement const&, hkMultipleVertexBuffer::LockedElement const&)
+hkSkinnedMeshShape::addBoneSection(hkMeshShape*, hkHandle<unsigned short, (unsigned short)65535, hkSkinnedMeshShape::BoneSetIdDiscriminant>, short)
 hkpSimpleMeshShape::Triangle::staticClass()
 hkpTriSampledHeightFieldBvTreeShape::calcSizeForSpu(hkpShape::CalcSizeForSpuInput const&, int) const
 hkpCompressedMeshShape::calcSizeForSpu(hkpShape::CalcSizeForSpuInput const&, int) const
