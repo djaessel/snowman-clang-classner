@@ -135,6 +135,9 @@ class Classner:
                     lenx = 1
                 elif tmpXX[0] == "non-virtual" and "non-virtual thunk to " in func[0]:
                     lenx = 3
+                elif tmpXX[0] == "unsigned" and tmpXX[1] in ClassStorer.all_valid_types:
+                    lenx = 2
+
                 class_name = tmpXX[lenx] # sometimes there are data types in front of the actual class name
                 #if class_name.strip() == "std":
                 #    continue # skip somtimes strange std function -> can be imported anyway (hopefully)
