@@ -84,7 +84,7 @@ def main():
         os.system("cd generated_classes && python3 remove_included.py")
 
     classAnalyzer = ClassAnalyzer()
-    classAnalyzer.findClassAttributes(fixed_classes)
+    classAnalyzer.findClassAttributes(modified_classes)
 
     print("\nProcessing DONE", flush=True)
 

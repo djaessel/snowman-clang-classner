@@ -43,7 +43,7 @@ class ClassAnalyzer:
 
 
     def findClassAttributes(self, classes):
-        print("Analyzing - adding class imports...")
+        print("Analyzing - adding class attributes...")
 
         maxProcs = int(os.cpu_count() * 0.75) # 16 -> 12, 8 -> 6, 4 -> 3
         with concurrent.futures.ProcessPoolExecutor() as executor:
@@ -60,6 +60,6 @@ class ClassAnalyzer:
                 class_attributes[fc] = vx[1][fc]
             #print("Processed", vx[0], "classes with process", vx[2])
 
-        print("Analyzing - adding class imports...DONE")
+        print("Analyzing - adding class attributes...DONE")
 
         return class_attributes
