@@ -16,13 +16,21 @@ class ClassAnalyzer:
         class_attributes = []
         for func in classes[cls]:
             for line in classes[cls][func]:
-                mo = re.search("\*\(rdi [+ ]*[x0-9]*\)", line)
+                tmo = line
+                if tmo.find("//") >= 0:
+                    tmo = tmo[0:tmo.index("//")]
+                mo = re.search("[\*]*[\(]*\(rdi[ +]*[^a-zA-Z0-9]+[ \+\*\[\]\(\)x0-9a-zA-Z]+\)[\)]*", tmo)
+                mo2 = re.search(" rdi[ +]*[^a-zA-Z0-9]+[ \+\*\[\]\(\)x0-9a-zA-Z]*", tmo)
                 if mo:
-                    class_attributes.append(";".join(mo.group()))
+                    class_attributes.append(mo.group() + ";" + tmo.lstrip("(").rstrip(")"))
+                elif mo2:
+                    class_attributes.append(mo2.group() + ";" + tmo.lstrip("(").rstrip(")"))
+                elif "rdi*" in tmo or "rdi " in tmo or ("this->" in tmo and not tmo[tmo.index("this->") + 6:].split("(")[0] in classes[cls]):
+                    class_attributes.append("rdi;" + tmo)
 
         with open(cls + ".endl", "w") as f:
             for attr in class_attributes:
-                f.write(attr + "\n")
+                f.write(attr)
 
         return class_attributes
 
