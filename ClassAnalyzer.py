@@ -20,7 +20,7 @@ class ClassAnalyzer:
         for clsx in classes:
             if clsx != cls:
                 for func in classes[clsx]:
-                    #allLines = "\n".join(classes[clsx][func])
+                    active_attribs = []
                     for line in classes[clsx][func]:
                         tmo = line.rstrip("\n")
                         if tmo.find("//") >= 0:
@@ -29,24 +29,26 @@ class ClassAnalyzer:
                         if cls in line:
                             regex = '( '+cls+'[\*]* [a-z0-9_]+ = )'
                             mo = re.search(regex, tmo)
-
-                            mo2 = re.search('([a-z0-9_]\-\>[a-zA-Z_<>0-9\*]\()', tmo)
+                            mo2 = re.search('([a-z0-9_]+\-\>[a-zA-Z_<>0-9\*]+\()', tmo)
 
                             nomo = ""
                             if mo:
                                 tx = mo.group().strip().rstrip('=').rstrip()
-                                nomo = '"' + tx.split(' ')[1] + '";"' + tmo.strip().rstrip(';') + '";"'
+                                tx = tx.split(' ')[1]
+                                active_attribs.append(tx)
+                                nomo = '"' + tx + '";"' + tmo.strip().rstrip(';')
                             elif mo2:
-                                tx = mo2.group()
+                                tx = mo2.group().strip()
                                 txa = tx[tx.index('>') + 1:]
                                 txa = txa[0:tx.index('(')]
-                                with open("padada.txt", "a") as fff:
-                                    fff.write('"' + txa + '";"' + tx + '"\n')
                                 if txa in myFuncs:
-                                    nomo = '"' + tx.split('(')[0] + '";"' + tmo.strip().rstrip(';') + '";"'
+                                    nomo = '"' + tx.split('(')[0] + '";"' + tmo.strip().rstrip(';')
+                            else:
+                                for frag in active_attribs:
+                                    self._benulf(line, class_attributes, frag)
 
                             if len(nomo) > 0:
-                                nomo += clsx + '";"' + func + '"\n'
+                                nomo += '";"' + clsx + '";"' + func + '"\n'
                                 key = nomo.split(';')[0]
                                 if not key in class_attributes:
                                     class_attributes[key] = nomo
@@ -58,42 +60,45 @@ class ClassAnalyzer:
         return [class_attributes[_] for _ in class_attributes]
 
 
+    def _benulf(self, line, class_attributes, fragger="rdi"):
+        tmo = line.rstrip("\n")
+        if tmo.find("//") >= 0:
+            tmo = tmo[0:tmo.index("//")]
+
+        mo = re.search("[\*]*[\(]*\("+fragger+"[ +]*[^a-zA-Z0-9]+[ \+\*\[\]\(\)x0-9a-zA-Z]+\)[\)]*", tmo)
+        mo2 = re.search(" "+fragger+"[ +]*[^a-zA-Z0-9]+[ \+\*\[\]\(\)x0-9a-zA-Z]*", tmo)
+        mo3 = re.search("(STRUCT_[0-9\*]+ [a-z0-9_]+ = "+fragger+"[;])", tmo)
+
+        nomo = ""
+        if mo:
+            tx = self._clamsFix(tmo, mo.group())
+            nomo = '"' + tx + '";"' + tmo.strip().rstrip(';')
+        elif mo2:
+            tx = self._clamsFix(tmo, mo2.group())
+            nomo = '"' + tx + '";"' + tmo.strip().rstrip(';')
+        elif fragger + "*" in tmo or fragger + " " in tmo or (fragger == "rdi" and "this->" in tmo and not tmo[tmo.index("this->") + 6:].split("(")[0] in classes[cls]):
+            nomo = '"' + fragger + '";"' + tmo.strip().rstrip(';')
+
+        if len(nomo) > 0:
+            nomo += '";"' + cls + '";"' + func + '"\n'
+            key = nomo.split(';')[0]
+            if not key in class_attributes:
+                class_attributes[key] = nomo
+
+        if mo3:
+            xa = tmo[tmo.index("STRUCT_"):]
+            xa = xa[0:xa.index(" ")]
+            nomo = '"' + xa + '";"' + tmo.strip().rstrip(';') + '";"' + cls + '";"' + func + '"\n'
+            key = nomo.split(';')[0]
+            if not key in class_attributes:
+                class_attributes[key] = nomo
+
+
     def _findClassAttributesS(self, cls, classes):
         class_attributes = dict()
         for func in classes[cls]:
             for line in classes[cls][func]:
-                tmo = line.rstrip("\n")
-                if tmo.find("//") >= 0:
-                    tmo = tmo[0:tmo.index("//")]
-
-                mo = re.search("[\*]*[\(]*\(rdi[ +]*[^a-zA-Z0-9]+[ \+\*\[\]\(\)x0-9a-zA-Z]+\)[\)]*", tmo)
-                mo2 = re.search(" rdi[ +]*[^a-zA-Z0-9]+[ \+\*\[\]\(\)x0-9a-zA-Z]*", tmo)
-                mo3 = re.search("(STRUCT_[0-9\*]+ [a-z0-9_]+ = rdi[;])", tmo)
-
-                nomo = ""
-                if mo:
-                    tx = self._clamsFix(tmo, mo.group())
-                    nomo = '"' + tx + '";"' + tmo.strip().rstrip(';') + '";"'
-                elif mo2:
-                    tx = self._clamsFix(tmo, mo2.group())
-                    nomo = '"' + tx + '";"' + tmo.strip().rstrip(';') + '";"'
-                elif "rdi*" in tmo or "rdi " in tmo or ("this->" in tmo and not tmo[tmo.index("this->") + 6:].split("(")[0] in classes[cls]):
-                    nomo = '"rdi";"' + tmo.strip().rstrip(';') + '";"'
-
-                if len(nomo) > 0:
-                    nomo += cls + '";"' + func + '"\n'
-                    key = nomo.split(';')[0]
-                    if not key in class_attributes:
-                        class_attributes[key] = nomo
-
-                if mo3:
-                    xa = tmo[tmo.index("STRUCT_"):]
-                    xa = xa[0:xa.index(" ")]
-                    nomo = '"' + xa + '";"' + tmo.strip().rstrip(';') + '";"' + cls + '";"' + func + '"\n'
-                    key = nomo.split(';')[0]
-                    if not key in class_attributes:
-                        class_attributes[key] = nomo
-
+                self._benulf(line, class_attributes)
 
         with open(cls + ".endl", "w") as f:
             for attr in class_attributes:
