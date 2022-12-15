@@ -12,6 +12,52 @@ class ClassAnalyzer:
         pass
 
 
+    def _findClassAttributesExternal(self, cls, classes):
+        class_attributes = dict()
+
+        myFuncs = [func for func in classes[cls]]
+
+        for clsx in classes:
+            if clsx != cls:
+                for func in classes[clsx]:
+                    #allLines = "\n".join(classes[clsx][func])
+                    for line in classes[clsx][func]:
+                        tmo = line.rstrip("\n")
+                        if tmo.find("//") >= 0:
+                            tmo = tmo[0:tmo.index("//")]
+
+                        if cls in line:
+                            regex = '( '+cls+'[\*]* [a-z0-9_]+ = )'
+                            mo = re.search(regex, tmo)
+
+                            mo2 = re.search('([a-z0-9_]\-\>[a-zA-Z_<>0-9\*]\()', tmo)
+
+                            nomo = ""
+                            if mo:
+                                tx = mo.group().strip().rstrip('=').rstrip()
+                                nomo = '"' + tx.split(' ')[1] + '";"' + tmo.strip().rstrip(';') + '";"'
+                            elif mo2:
+                                tx = mo2.group()
+                                txa = tx[tx.index('>') + 1:]
+                                txa = txa[0:tx.index('(')]
+                                with open("padada.txt", "a") as fff:
+                                    fff.write('"' + txa + '";"' + tx + '"\n')
+                                if txa in myFuncs:
+                                    nomo = '"' + tx.split('(')[0] + '";"' + tmo.strip().rstrip(';') + '";"'
+
+                            if len(nomo) > 0:
+                                nomo += clsx + '";"' + func + '"\n'
+                                key = nomo.split(';')[0]
+                                if not key in class_attributes:
+                                    class_attributes[key] = nomo
+
+        with open(cls + ".endl", "a") as f:
+            for attr in class_attributes:
+                f.write(class_attributes[attr])
+
+        return [class_attributes[_] for _ in class_attributes]
+
+
     def _findClassAttributesS(self, cls, classes):
         class_attributes = dict()
         for func in classes[cls]:
@@ -27,14 +73,15 @@ class ClassAnalyzer:
                 nomo = ""
                 if mo:
                     tx = self._clamsFix(tmo, mo.group())
-                    nomo = '"' + tx + '";"' + tmo.strip().rstrip(';') + '"\n'
+                    nomo = '"' + tx + '";"' + tmo.strip().rstrip(';') + '";"'
                 elif mo2:
                     tx = self._clamsFix(tmo, mo2.group())
-                    nomo = '"' + tx + '";"' + tmo.strip().rstrip(';') + '"\n'
+                    nomo = '"' + tx + '";"' + tmo.strip().rstrip(';') + '";"'
                 elif "rdi*" in tmo or "rdi " in tmo or ("this->" in tmo and not tmo[tmo.index("this->") + 6:].split("(")[0] in classes[cls]):
-                    nomo = '"rdi";"' + tmo.strip().rstrip(';') + '"\n'
+                    nomo = '"rdi";"' + tmo.strip().rstrip(';') + '";"'
 
                 if len(nomo) > 0:
+                    nomo += cls + '";"' + func + '"\n'
                     key = nomo.split(';')[0]
                     if not key in class_attributes:
                         class_attributes[key] = nomo
@@ -42,7 +89,7 @@ class ClassAnalyzer:
                 if mo3:
                     xa = tmo[tmo.index("STRUCT_"):]
                     xa = xa[0:xa.index(" ")]
-                    nomo = '"' + xa + '";"' + tmo.strip().rstrip(';') + '"\n'
+                    nomo = '"' + xa + '";"' + tmo.strip().rstrip(';') + '";"' + cls + '";"' + func + '"\n'
                     key = nomo.split(';')[0]
                     if not key in class_attributes:
                         class_attributes[key] = nomo
@@ -102,6 +149,7 @@ class ClassAnalyzer:
         class_attributes = dict()
         for cls in keyList:
             class_attributes[cls] = self._findClassAttributesS(cls, classes)
+            class_attributes[cls].extend(self._findClassAttributesExternal(cls, classes))
         #print("Process", partNum, "finished!")
         return [len(keyList), class_attributes, os.getpid()]
 
