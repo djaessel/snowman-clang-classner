@@ -45,7 +45,7 @@ class ClassAnalyzer:
                                     nomo = '"' + tx.split('(')[0] + '";"' + tmo.strip().rstrip(';')
                             else:
                                 for frag in active_attribs:
-                                    self._benulf(line, class_attributes, frag)
+                                    self._benulf(line, class_attributes, clsx, func, frag)
 
                             if len(nomo) > 0:
                                 nomo += '";"' + clsx + '";"' + func + '"\n'
@@ -60,7 +60,7 @@ class ClassAnalyzer:
         return [class_attributes[_] for _ in class_attributes]
 
 
-    def _benulf(self, line, class_attributes, fragger="rdi"):
+    def _benulf(self, line, class_attributes, cls, func, fragger="rdi"):
         tmo = line.rstrip("\n")
         if tmo.find("//") >= 0:
             tmo = tmo[0:tmo.index("//")]
@@ -98,7 +98,7 @@ class ClassAnalyzer:
         class_attributes = dict()
         for func in classes[cls]:
             for line in classes[cls][func]:
-                self._benulf(line, class_attributes)
+                self._benulf(line, class_attributes, cls, func)
 
         with open(cls + ".endl", "w") as f:
             for attr in class_attributes:
