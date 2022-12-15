@@ -37,6 +37,8 @@ class ClassStorer:
         ("int1_t", "bool"), # pointers included
         ("unsigned char", "BYTE"), # pointers included
         ("signed char", "S_BYTE"), # pointers included
+        ("__return_address()", "__builtin_extract_return_addr(__builtin_return_address(0))"), # return_address() from Decompiler GCC replacement(?)
+        ("__zero_stack_offset()", "zero_stack_offset()"), # __zero_stack_offset() from Decompiler GCC replacement(?)
     ]
 
     all_valid_types = [
@@ -284,8 +286,12 @@ class ClassStorer:
             f.write("\n")
             f.write("#include <inttypes.h>\n")
             f.write("#include <iostream>\n")
+            f.write("#include <stddef.h>\n")
             f.write("#include <boost/multiprecision/cpp_int.hpp>\n")
             f.write("#include <string>\n") # maybe add more later on (e.g. used classes)
+            f.write("\n")
+            f.write("/* CUSTOM INCLUDES */\n")
+            f.write('#include "snowmany.h"\n')
             f.write("\n")
             f.write("// USED_CLASSES" + "\n")
             f.write("\n")
