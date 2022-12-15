@@ -13,26 +13,83 @@ class ClassAnalyzer:
 
 
     def _findClassAttributesS(self, cls, classes):
-        class_attributes = []
+        class_attributes = dict()
         for func in classes[cls]:
             for line in classes[cls][func]:
-                tmo = line
+                tmo = line.rstrip("\n")
                 if tmo.find("//") >= 0:
                     tmo = tmo[0:tmo.index("//")]
+
                 mo = re.search("[\*]*[\(]*\(rdi[ +]*[^a-zA-Z0-9]+[ \+\*\[\]\(\)x0-9a-zA-Z]+\)[\)]*", tmo)
                 mo2 = re.search(" rdi[ +]*[^a-zA-Z0-9]+[ \+\*\[\]\(\)x0-9a-zA-Z]*", tmo)
+                mo3 = re.search("(STRUCT_[0-9\*]+ [a-z0-9_]+ = rdi[;])", tmo)
+
+                nomo = ""
                 if mo:
-                    class_attributes.append(mo.group() + ";" + tmo.lstrip("(").rstrip(")"))
+                    tx = self._clamsFix(tmo, mo.group())
+                    nomo = '"' + tx + '";"' + tmo.strip().rstrip(';') + '"\n'
                 elif mo2:
-                    class_attributes.append(mo2.group() + ";" + tmo.lstrip("(").rstrip(")"))
+                    tx = self._clamsFix(tmo, mo2.group())
+                    nomo = '"' + tx + '";"' + tmo.strip().rstrip(';') + '"\n'
                 elif "rdi*" in tmo or "rdi " in tmo or ("this->" in tmo and not tmo[tmo.index("this->") + 6:].split("(")[0] in classes[cls]):
-                    class_attributes.append("rdi;" + tmo)
+                    nomo = '"rdi";"' + tmo.strip().rstrip(';') + '"\n'
+
+                if len(nomo) > 0:
+                    key = nomo.split(';')[0]
+                    if not key in class_attributes:
+                        class_attributes[key] = nomo
+
+                if mo3:
+                    xa = tmo[tmo.index("STRUCT_"):]
+                    xa = xa[0:xa.index(" ")]
+                    nomo = '"' + xa + '";"' + tmo.strip().rstrip(';') + '"\n'
+                    key = nomo.split(';')[0]
+                    if not key in class_attributes:
+                        class_attributes[key] = nomo
+
 
         with open(cls + ".endl", "w") as f:
             for attr in class_attributes:
-                f.write(attr)
+                f.write(class_attributes[attr])
 
-        return class_attributes
+        return [class_attributes[_] for _ in class_attributes]
+
+
+    def _clamsFix(self, allText, text):
+        clam = 0
+        lok = False
+        for c in text:
+            if c == "(":
+                clam += 1
+                lok = True
+            elif c == ")":
+                clam -= 1
+        tx = text.rstrip("\n").strip()
+        xon = allText[allText.index(tx) + len(tx):]
+        for c in xon:
+            if c == "(":
+                clam += 1
+            elif c == ")":
+                clam -= 1
+            tx += c
+            if clam <= 0:
+                break
+        while clam < 0:
+            rev_tx = tx[::-1]
+            lastIndex = len(tx) - rev_tx.index(")") - 1
+            tx = tx[0:lastIndex]
+            clam += 1
+        tx = tx.rstrip(';')
+        lok = lok and tx[len(tx) - 1] != ")"
+        if lok:
+            rev_tx = tx[::-1]
+            x = 0
+            for c in rev_tx:
+                if c == ")":
+                    break
+                x += 1
+            tx = tx[0:len(tx) - x]
+        return tx
 
 
     def _help_findClassAttributes(self, classes, partNum, maxPartCount):
