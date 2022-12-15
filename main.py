@@ -19,7 +19,7 @@ def main():
     skip_class_write = False
     skip_reinterpret = False
     skip_analyze = False
-    skip_remove_included = True
+    skip_remove_included = False
     file_path = ""
 
     if len(sys.argv) > 1:
