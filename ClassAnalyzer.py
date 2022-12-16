@@ -60,7 +60,7 @@ class ClassAnalyzer:
                                 class_attributes.update(self._benulf(line, classes, class_attributes, clsx, cls, func, fragger=frag))
 
         # TODO: remove these later when attribs found!
-        with open(cls + ".endl", "a") as f:
+        with open("./endl/" + cls + ".endl", "a") as f:
             for attr in class_attributes:
                 f.write(class_attributes[attr])
 
@@ -109,7 +109,7 @@ class ClassAnalyzer:
             for line in classes[cls][func]:
                 class_attributes.update(self._benulf(line, classes, class_attributes, cls, cls, func))
 
-        with open(cls + ".endl", "w") as f:
+        with open("./endl/" + cls + ".endl", "w") as f:
             for attr in class_attributes:
                 f.write(class_attributes[attr])
 

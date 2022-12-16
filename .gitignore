@@ -35,3 +35,6 @@ ccompiled/build/*
 build*/
 build*/*
 
+endl/
+endl/*
+
