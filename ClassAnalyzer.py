@@ -49,9 +49,9 @@ class ClassAnalyzer:
                                 key = nomo.split(';')[0]
                                 if not key in class_attributes:
                                     class_attributes[key] = nomo
-
-                        for frag in active_attribs:
-                            self._benulf(line, classes, class_attributes, clsx, cls, func, fragger=frag)
+                        else:
+                            for frag in active_attribs:
+                                self._benulf(line, classes, class_attributes, clsx, cls, func, fragger=frag)
 
         # TODO: remove these later when attribs found!
         with open(cls + ".endl", "a") as f:
