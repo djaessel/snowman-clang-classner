@@ -15,7 +15,7 @@ class ClassAnalyzer:
     def _findClassAttributesExternal(self, cls, classes):
         class_attributes = dict()
 
-        myFuncs = [func for func in classes[cls]]
+        myFuncs = [_ for _ in classes[cls]]
 
         for clsx in classes:
             if clsx != cls:
@@ -49,12 +49,15 @@ class ClassAnalyzer:
                                 key = nomo.split(';')[0]
                                 if not key in class_attributes:
                                     class_attributes[key] = nomo
+                            else:
+                                for frag in active_attribs:
+                                    self._benulf(line, classes, class_attributes, clsx, cls, func, fragger=frag)
                         else:
                             for frag in active_attribs:
                                 self._benulf(line, classes, class_attributes, clsx, cls, func, fragger=frag)
 
         # TODO: remove these later when attribs found!
-        with open(cls + ".endl", "a") as f:
+        with open(cls + ".endl", "w") as f:
             for attr in class_attributes:
                 f.write(class_attributes[attr])
 
