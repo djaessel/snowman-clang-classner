@@ -40,12 +40,9 @@ class ClassAnalyzer:
                             elif mo2:
                                 tx = mo2.group().strip()
                                 txa = tx[tx.index('>') + 1:]
-                                txa = txa[0:tx.index('(')]
+                                txa = txa[0:tx.index('(')-1]
                                 if txa in myFuncs:
                                     nomo = '"' + tx.split('(')[0] + '";"' + tmo.strip().rstrip(';')
-                            else:
-                                for frag in active_attribs:
-                                    self._benulf(line, classes, class_attributes, clsx, func, frag)
 
                             if len(nomo) > 0:
                                 nomo += '";"' + clsx + '";"' + func + '"\n'
@@ -53,6 +50,10 @@ class ClassAnalyzer:
                                 if not key in class_attributes:
                                     class_attributes[key] = nomo
 
+                        for frag in active_attribs:
+                            self._benulf(line, classes, class_attributes, clsx, cls, func, fragger=frag)
+
+        # TODO: remove these later when attribs found!
         with open(cls + ".endl", "a") as f:
             for attr in class_attributes:
                 f.write(class_attributes[attr])
@@ -60,13 +61,13 @@ class ClassAnalyzer:
         return [class_attributes[_] for _ in class_attributes]
 
 
-    def _benulf(self, line, classes, class_attributes, cls, func, fragger="rdi"):
+    def _benulf(self, line, classes, class_attributes, cls, orgCls, func, fragger="rdi"):
         tmo = line.rstrip("\n")
         if tmo.find("//") >= 0:
             tmo = tmo[0:tmo.index("//")]
 
-        mo = re.search("[\*]*[\(]*\("+fragger+"[ +]*[^a-zA-Z0-9]+[ \+\*\[\]\(\)x0-9a-zA-Z]+\)[\)]*", tmo)
-        mo2 = re.search(" "+fragger+"[ +]*[^a-zA-Z0-9]+[ \+\*\[\]\(\)x0-9a-zA-Z]*", tmo)
+        mo = re.search("([\*]*[\(]*\("+fragger+"[ +]*[^a-zA-Z0-9]+[ \+\*\[\]\(\)x0-9a-zA-Z]+\)[\)]*)", tmo)
+        mo2 = re.search("([ ]"+fragger+"[ +]*[ \;][ \+\*\[\]\(\)x0-9a-zA-Z=]*)", tmo)
         mo3 = re.search("(STRUCT_[0-9\*]+ [a-z0-9_]+ = "+fragger+"[;])", tmo)
 
         nomo = ""
@@ -98,7 +99,7 @@ class ClassAnalyzer:
         class_attributes = dict()
         for func in classes[cls]:
             for line in classes[cls][func]:
-                self._benulf(line, classes, class_attributes, cls, func)
+                self._benulf(line, classes, class_attributes, cls, cls, func)
 
         with open(cls + ".endl", "w") as f:
             for attr in class_attributes:
