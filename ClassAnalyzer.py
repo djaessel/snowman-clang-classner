@@ -54,10 +54,10 @@ class ClassAnalyzer:
                                     class_attributes[key] = nomo
                             else:
                                 for frag in active_attribs:
-                                    self._benulf(line, classes, class_attributes, clsx, cls, func, fragger=frag)
+                                    class_attributes.update(self._benulf(line, classes, class_attributes, clsx, cls, func, fragger=frag))
                         else:
                             for frag in active_attribs:
-                                self._benulf(line, classes, class_attributes, clsx, cls, func, fragger=frag)
+                                class_attributes.update(self._benulf(line, classes, class_attributes, clsx, cls, func, fragger=frag))
 
         # TODO: remove these later when attribs found!
         with open(cls + ".endl", "w") as f:
@@ -100,12 +100,13 @@ class ClassAnalyzer:
             if not key in class_attributes:
                 class_attributes[key] = nomo
 
+        return class_attributes
 
     def _findClassAttributesS(self, cls, classes):
         class_attributes = dict()
         for func in classes[cls]:
             for line in classes[cls][func]:
-                self._benulf(line, classes, class_attributes, cls, cls, func)
+                class_attributes.update(self._benulf(line, classes, class_attributes, cls, cls, func))
 
         with open(cls + ".endl", "w") as f:
             for attr in class_attributes:
