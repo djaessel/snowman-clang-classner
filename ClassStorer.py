@@ -293,10 +293,8 @@ class ClassStorer:
             f.write("/* CUSTOM INCLUDES */\n")
             f.write('#include "snowmany.h"\n')
             f.write("\n")
-            f.write("// USED_CLASSES" + "\n")
-            f.write("\n")
-            f.write("#define BYTE unsigned char" + "\n")
-            f.write("#define S_BYTE signed char" + "\n")
+            f.write("/* GENERATED INCLUDES */\n")
+            f.write("// USED_CLASSES" + "\n") # will be replaced with includes
             f.write("\n")
             f.write("\n")
             f.write("// STRUCTS_GEN" + "\n") # to be replaced by structs later
