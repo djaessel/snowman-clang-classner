@@ -26,14 +26,17 @@ class ClassAnalyzer:
                         if tmo.find("//") >= 0:
                             tmo = tmo[0:tmo.index("//")]
 
-                        if cls in line:
-                            regex = '( '+cls+'[\*]* [a-z0-9_]+ = )'
-                            mo = re.search(regex, tmo)
+                        if cls in tmo:
+                            moa = re.search('( '+cls+'[\*]* [a-z0-9_]+ = )', tmo)
+                            mob = re.search('( '+cls+'[\*]* [a-z0-9_]+[;])', tmo)
                             mo2 = re.search('([a-z0-9_]+\-\>[a-zA-Z_<>0-9\*]+\()', tmo)
 
                             nomo = ""
-                            if mo:
-                                tx = mo.group().strip().rstrip('=').rstrip()
+                            if moa or mob:
+                                if moa:
+                                    tx = moa.group().strip().rstrip('=').rstrip()
+                                else:
+                                    tx = mob.group().strip().rstrip(';')
                                 tx = tx.split(' ')[1]
                                 active_attribs.append(tx)
                                 nomo = '"' + tx + '";"' + tmo.strip().rstrip(';')
