@@ -4,5 +4,5 @@ This is a project based around the snowman decompiler to make it easier to restr
 To execute, simple use the following command:
 
 ```
-python snowmanclangclassner.py <cpp_filename>
+python main.py <cpp_filename>
 ```
