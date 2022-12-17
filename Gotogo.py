@@ -42,12 +42,12 @@ class Gotogo:
             desty = None
             if adr in adresses:
                 desty = adresses[adr]
-            #elif adr[0:2] != "0x":
-            #    print("Not_Found1:", adr, ":", classFunc[gotos[adr]], end="")
-            #elif adr[0] != "v":
-            #    print("Not_Found2:", adr, ":", classFunc[gotos[adr]], end="")
+            #elif adr[0:2] == "0x":
+            #    print("Not_Found1:", adr, ":", classFunc[gotos[adr][0]], end="")
+            #elif adr[0] == "v":
+            #    print("Not_Found2:", adr, ":", classFunc[gotos[adr][0]], end="")
             #else:
-            #    print("Not_Found3:", adr, ":", classFunc[gotos[adr]], end="")
+            #    print("Not_Found3:", adr, ":", classFunc[gotos[adr][0]], end="")
 
             resox[adr] = (
                 gotos[adr],
