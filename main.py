@@ -94,6 +94,7 @@ def main():
 
     gotogo = Gotogo()
     gotogo.processClasses(modified_classes)
+    os.system("mv *_*.cpp endl/class_info/") # FIXME: change later
 
     print("\nProcessing DONE", flush=True)
 
