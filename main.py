@@ -11,6 +11,7 @@ from Stopwatch import Stopwatch
 from ReinterpretAlter import ReinterpretAlter
 from FunctionAnalyzer import FunctionAnalyzer
 from ClassAnalyzer import ClassAnalyzer
+from Gotogo import Gotogo
 
 from specialvals import DEBUGMODE
 
@@ -20,6 +21,7 @@ def main():
     skip_reinterpret = False
     skip_analyze = False
     skip_remove_included = False
+    skip_class_analyze = False
     file_path = ""
 
     if len(sys.argv) > 1:
@@ -33,11 +35,14 @@ def main():
                 skip_analyze = True
             if "-si" in sys.argv:
                 skip_remove_included = True
+            if "-sa2" in sys.argv:
+                skip_class_analyze = True
             if "--skip-all" in sys.argv:
                 skip_class_write = True
                 skip_reinterpret = True
                 skip_analyze = True
                 skip_remove_included = True
+                skip_class_analyze = True
 
     if file_path == "":
         print("No file given!")
@@ -83,8 +88,12 @@ def main():
     if not skip_remove_included:
         os.system("cd generated_classes && python3 remove_included.py")
 
-    classAnalyzer = ClassAnalyzer()
-    classAnalyzer.findClassAttributes(modified_classes)
+    if not skip_class_analyze:
+        classAnalyzer = ClassAnalyzer()
+        classAnalyzer.findClassAttributes(modified_classes)
+
+    gotogo = Gotogo()
+    gotogo.processClasses(modified_classes)
 
     print("\nProcessing DONE", flush=True)
 
