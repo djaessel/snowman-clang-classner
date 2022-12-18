@@ -24,12 +24,26 @@ def processFath():
         if os.path.exists(source_file) and os.path.isfile(source_file):
             os.system("rm ./" + source_file)
 
+
+    cortess = dict()
     with open(output_file, "w") as f:
         for filex in files:
             file_name =  filex.split("/")[-1]
             if file_name in file_names_found:
                 filex = filex[filex.index(havok_name):].replace(havok_name, havok_dir)
                 f.write(file_name + ";" + filex + "\n")
+                cortess[file_name] = filex
+
+    flof = os.listdir(".")
+    for fx in flof:
+        if ".h" in fx:
+            alla = ""
+            with open(fx) as f:
+                alla = f.read()
+                for incl in cortess:
+                    alla = alla.replace('"' + incl + '"', '"' + cortess[incl] + '"')
+            with open(fx, "w") as f:
+                f.write(alla)
 
 
 processFath()
