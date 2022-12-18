@@ -15,6 +15,10 @@ class ClassAnalyzer:
     def _findClassAttributesExternal(self, cls, classes):
         class_attributes = dict()
 
+        if not os.path.exists("./endl"):
+            os.mkdir("./endl")
+            os.mkdir("./endl/class_info")
+
         myFuncs = [_ for _ in classes[cls]]
 
         for clsx in classes:
