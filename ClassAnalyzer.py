@@ -9,16 +9,13 @@ from specialvals import DEBUGMODE
 
 class ClassAnalyzer:
     def __init__(self):
-        pass
-
-
-    def _findClassAttributesExternal(self, cls, classes):
-        class_attributes = dict()
-
         if not os.path.exists("./endl"):
             os.mkdir("./endl")
             os.mkdir("./endl/class_info")
 
+
+    def _findClassAttributesExternal(self, cls, classes):
+        class_attributes = dict()
         myFuncs = [_ for _ in classes[cls]]
 
         for clsx in classes:
