@@ -79,6 +79,10 @@ def main():
     file_name = path_array[len(path_array) - 1].split(".")[0]
     modified_classes.pop(file_name)
 
+    bak_mod_classes = dict()
+    for x in modified_classes:
+        bak_mod_classes[x] = modified_classes[x]
+
     if not skip_analyze:
         analyzer = FunctionAnalyzer()
         fixed_classes = analyzer.findOriginalClass(modified_classes)
@@ -90,7 +94,7 @@ def main():
 
     if not skip_class_analyze:
         classAnalyzer = ClassAnalyzer()
-        classAnalyzer.findClassAttributes(modified_classes)
+        classAnalyzer.findClassAttributes(bak_mod_classes)
 
     gotogo = Gotogo()
     gotogo.processClasses(modified_classes)
