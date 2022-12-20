@@ -79,14 +79,13 @@ def main():
     file_name = path_array[len(path_array) - 1].split(".")[0]
     modified_classes.pop(file_name)
 
-    bak_mod_classes = dict()
-    for x in modified_classes:
-        bak_mod_classes[x] = modified_classes[x]
+    bak_mod_classes = modified_classes.copy()
 
     if not skip_analyze:
         analyzer = FunctionAnalyzer()
         fixed_classes = analyzer.findOriginalClass(modified_classes)
         class_includes = analyzer.addUsedClassImports(fixed_classes, classes)
+        fixed_classes = analyzer.removeInvalidParams(fixed_classes, classes)
         classStorer.writeClassesJust(fixed_classes, class_includes)
 
     if not skip_remove_included:

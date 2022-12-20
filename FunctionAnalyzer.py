@@ -14,6 +14,71 @@ class FunctionAnalyzer:
         pass
 
 
+    def _removeInvalidParamsS(self, cls, classes, raw_classes):
+        fixed_class = dict()
+
+        for func in classes[cls]:
+            fixed_class[func] = []
+            for line in classes[cls][func]:
+                if "(" in line and ")" in line:
+                    for clx in raw_classes:
+                        for func in raw_classes[clx]:
+                            ttt = func[0].split('(')
+                            sut = ttt[0].split(' ')
+                            if len(ttt) == 2 and sut[len(sut)-1] in line:
+                                ttx = ttt[1]
+                                ttx = ttx.split(')')[0]
+                                ttt = ttx.split(',')
+                                actux = line.split('(')[1].split(')')[0].split(',')
+                                ex = ","
+                                if len(ttt) <= 0:
+                                    ex = ""
+                                line = line.replace(ex + ",".join(actux[len(ttt)]), "")
+
+                                break
+
+                fixed_class[func].append(line)
+
+        return fixed_class
+
+
+    def _help_removeInvalidParams(self, classes, raw_classes, partNum, maxPartCount):
+        packSize = int(len(classes) / maxPartCount)
+        startIndex = int(packSize * partNum)
+        endIndex = startIndex + packSize
+        if partNum + 1 == maxPartCount:
+            endIndex = len(classes.keys())
+        keyList = list(classes.keys())[startIndex:endIndex]
+        fixed_classes = dict()
+        for cls in keyList:
+            fixed_classes[cls] = self._removeInvalidParamsS(cls, classes, raw_classes)
+        #print("Process", partNum, "finished!")
+        return [len(keyList), fixed_classes, os.getpid()]
+
+
+    def removeInvalidParams(self, classes, raw_classes):
+        print("Analyzing - finding invalid params...")
+
+        maxProcs = int(os.cpu_count() * 0.75) # 16 -> 12, 8 -> 6, 4 -> 3
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            results = [executor.submit(self._help_removeInvalidParams, classes, raw_classes, i, maxProcs) for i in range(maxProcs)]
+
+        values_list = []
+        for f in concurrent.futures.as_completed(results):
+            values = f.result()
+            values_list.append(values)
+
+        fixed_classes = dict()
+        for vx in values_list:
+            for fc in vx[1]:
+                fixed_classes[fc] = vx[1][fc]
+            #print("Processed", vx[0], "classes with process", vx[2])
+
+        print("Analyzing - finding invalid params...DONE")
+
+        return fixed_classes
+
+
     def _help_find_original_class(self, classes, partNum, maxPartCount):
         packSize = int(len(classes) / maxPartCount)
         startIndex = int(packSize * partNum)
