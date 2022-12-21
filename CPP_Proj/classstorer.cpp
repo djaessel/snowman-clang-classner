@@ -477,4 +477,10 @@ void ClassStorer::writeClasses()
       this->writeClassCodeFile(cls);
       //this->writeStructsForHeader(cls);
   }
+
+#ifdef DEBUGMODE
+  cout << "WRITING CLASSES END" << endl << endl;
+#else
+  cout << "DONE" << endl;
+#endif
 }

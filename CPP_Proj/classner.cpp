@@ -37,7 +37,7 @@ void Classner::saveNewCppFile(QString filePath, QStringList linesToStore)
 {
   cout << "Writing cleaned cpp file...";
 
-  QDir exportDir("Folder");
+  QDir exportDir(ClassStorer::ExportDir);
   if (!exportDir.exists()) {
       QDir().mkdir(exportDir.absolutePath());
   }
@@ -222,7 +222,7 @@ void Classner::sortFuncsIntoClasses(vector<RawFunction> funcs)
           newFunc.setCodeLines(func.getCodeLines());
           this->classes[classIndex].addFunction(newFunc);
       }
-
-      cout << "DONE" << endl;
   }
+
+  cout << "DONE" << endl;
 }
