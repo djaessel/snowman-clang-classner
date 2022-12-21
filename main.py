@@ -85,7 +85,7 @@ def main():
         analyzer = FunctionAnalyzer()
         fixed_classes = analyzer.findOriginalClass(modified_classes)
         class_includes = analyzer.addUsedClassImports(fixed_classes, classes)
-        fixed_classes = analyzer.removeInvalidParams(fixed_classes, classes)
+        #fixed_classes = analyzer.removeInvalidParams(fixed_classes, classes) # FIXME: broken at the moment
         classStorer.writeClassesJust(fixed_classes, class_includes)
 
     if not skip_remove_included:

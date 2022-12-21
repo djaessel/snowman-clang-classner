@@ -30,14 +30,21 @@ class FunctionAnalyzer:
                                 ttx = ttx.split(')')[0]
                                 ttt = ttx.split(',')
                                 actux = line.split('(')[1].split(')')[0].split(',')
-                                ex = ","
-                                if len(ttt) <= 0:
+                                if len(ttt) < len(actux):
                                     ex = ""
-                                line = line.replace(ex + ",".join(actux[len(ttt)]), "")
+                                    if len(ttt) > 0:
+                                        ex = ","
+                                    ex = ex + ",".join(actux[len(ttt):])
+                                    line = line.replace(ex, "")
 
                                 break
 
-                fixed_class[func].append(line)
+                try:
+                    print(type(fixed_class[func]), fixed_class[func])
+                    #fixed_class[func].append(line)
+                except:
+                    print(type(line), line)
+                    input("xx")
 
         return fixed_class
 
