@@ -59,6 +59,7 @@ def main():
     classner = Classner()
     classner.readClassFunctions(file_path, skip_class_write)
     classes = classner.get_classes()
+    selex = classes.copy()
 
     classStorer = ClassStorer(structer, classes)
 
@@ -93,7 +94,7 @@ def main():
 
     if not skip_class_analyze:
         classAnalyzer = ClassAnalyzer()
-        classAnalyzer.findClassAttributes(bak_mod_classes)
+        classAnalyzer.findClassAttributes(bak_mod_classes) # FIXME: only works when previous are done and skipped second run
 
     gotogo = Gotogo()
     gotogo.processClasses(modified_classes)
