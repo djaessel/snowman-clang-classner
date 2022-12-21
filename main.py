@@ -59,7 +59,7 @@ def main():
     classner = Classner()
     classner.readClassFunctions(file_path, skip_class_write)
     classes = classner.get_classes()
-    selex = classes.copy()
+    # selex = classes.copy()
 
     classStorer = ClassStorer(structer, classes)
 

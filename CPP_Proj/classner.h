@@ -12,6 +12,7 @@
 
 #include "rawclass.h"
 #include "rawfunction.h"
+#include "classstorer.h"
 
 using namespace std;
 

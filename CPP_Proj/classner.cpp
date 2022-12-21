@@ -180,13 +180,13 @@ void Classner::sortFuncsIntoClasses(vector<RawFunction> funcs)
           tmpXX = tmpXXX.split("<")[0].split(" ");
 
           int lenx = 0;
-          /*if (ClassStorer.AllValidTypes.contains(tmpXX[0])) {
+          if (ClassStorer::AllValidTypes.contains(tmpXX[0])) {
               lenx = 1;
-          } else */if (tmpXX[0] == QString("non-virtual") && curDeclar.contains("non-virtual thunk to ")) {
+          } else if (tmpXX[0] == QString("non-virtual") && curDeclar.contains("non-virtual thunk to ")) {
               lenx = 3;
-          }/* else if (tmpXX[0] == QString("unsigned") && ClassStorer.AllValidTypes.contains(tmpXX[1])) {
+          } else if (tmpXX[0] == QString("unsigned") && ClassStorer::AllValidTypes.contains(tmpXX[1])) {
               lenx = 2;
-          }*/
+          }
 
           className = tmpXX[lenx];
           if (ddd.size() > 2) {

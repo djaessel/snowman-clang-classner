@@ -5,6 +5,7 @@
 
 #include "classner.h"
 #include "rawclass.h"
+#include "classstorer.h"
 
 using namespace std;
 
@@ -57,9 +58,14 @@ int main(int argc, char *argv[])
   //structer = Structer()
   //structer.readStructs(file_path)
 
+  ClassStorer::initValues();
+
   Classner classner;
   classner.readClassFunctions(filePath, skipClassWrite);
   vector<RawClass> classes = classner.getClasses();
+
+  ClassStorer classStorer(classes);
+  classStorer.writeClasses();
 
 //  return a.exec();
   return 0;

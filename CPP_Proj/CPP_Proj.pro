@@ -9,6 +9,7 @@ CONFIG -= app_bundle
 
 SOURCES += \
         classner.cpp \
+        classstorer.cpp \
         main.cpp \
         rawclass.cpp \
         rawfunction.cpp
@@ -20,5 +21,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     classner.h \
+    classstorer.h \
     rawclass.h \
     rawfunction.h

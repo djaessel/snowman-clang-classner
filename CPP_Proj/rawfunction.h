@@ -15,6 +15,7 @@ public:
   void setMangledName(QString mangledName) {_mangledName = mangledName;}
   void addCodeLine(QString line) {_codeLines.append(line);}
   void setCodeLines(QStringList codeLines) {_codeLines = codeLines;}
+  void removeCodeLine(int index) {_codeLines.removeAt(index);}
   QString getDeclar() {return _declar;}
   QString getMangledName() {return _mangledName;}
   QString getCodeLine(int index) {return _codeLines[index];}
