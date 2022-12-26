@@ -77,9 +77,9 @@ void Classner::readClassFunctions(QString filePath, bool skipNewCpp)
 
   // FIXME: a lot of classes and their functions are still not included
   // TODO: handle functions that have different names/class structures later!!! Do not forget!!!
-  QRegExp regex1(QLatin1String("([a-zA-Z0-9-_<>*]+::[~]*[a-zA-Z0-9-_<>*]+[ a-z]*[<>=&|^*+\\/-~\(\\)\[\\]]*\([a-zA-Z,.<>:0-9-_& \\*\\(\\)]*\\))"));
-  QRegExp regex2(QLatin1String("([a-zA-Z0-9-_<>*]+\([a-zA-Z,.<>:0-9-_& \\*]*\\))"));
-  QRegExp regex3(QLatin1String("(_Z[a-zA-Z0-9-_]+\([a-zA-Z,.<>:0-9-_& \\*]*\\))"));
+  QRegExp regex1(R"([a-zA-Z0-9-_<>*]+::[~]*[a-zA-Z0-9-_<>*]+[ a-z]*[<>=&|^*+\/-~\(\)\[\]]*\([a-zA-Z,.<>:0-9-_& \*\(\)]*\))");
+  QRegExp regex2(R"([a-zA-Z0-9-_<>*]+\([a-zA-Z,.<>:0-9-_& \*]*\))");
+  QRegExp regex3(R"(_Z[a-zA-Z0-9-_]+\([a-zA-Z,.<>:0-9-_& \*]*\))");
 
   QTextStream in(&file);
   while(!in.atEnd()) {
@@ -160,7 +160,7 @@ void Classner::sortFuncsIntoClasses(vector<RawFunction> funcs)
 
   cout << "Sort functions into classes...";
 
-  QRegExp regex1(QLatin1String("[^<>]+[<>]+[^<>]+[<>]+[^<>]*"));
+  QRegExp regex1(R"([^<>]+[<>]+[^<>]+[<>]+[^<>]*)");
 
   QStringList tmpXX;
   QStringList ddd;

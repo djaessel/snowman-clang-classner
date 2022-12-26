@@ -288,6 +288,9 @@ QString ClassStorer::classFunctionParameterFix(QString fname, QString assemblyFu
               if (idx >= ClassStorer::ParamAsmNames.length())
                 idx = ClassStorer::ParamAsmNames.length() - 1;
 
+              if (idx < 0) // this was not in the original, but there is a bug with INDEX!!!
+                idx = ClassStorer::ParamAsmNames.length() - 1; // idx = 0;
+
               QString nox = ClassStorer::ParamAsmNames[idx].replace("<x>", QString(i));
               if (lasx != nullptr && lasx != nox)
                 nox = lasx;
@@ -296,7 +299,7 @@ QString ClassStorer::classFunctionParameterFix(QString fname, QString assemblyFu
           }
       }
 
-      fname = fname.remove(QRegExp("([,]+)$")) + ")";
+      fname = fname.remove(QRegExp(R"(([,]+)$)")) + ")";
   }
 
   return fname;
