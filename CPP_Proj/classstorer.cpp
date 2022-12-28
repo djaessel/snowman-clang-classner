@@ -3,13 +3,13 @@
 static bool ClassStorerInit = false;
 
 
-ClassStorer::ClassStorer(vector<RawClass> classList/*, Structer structer*/)
+ClassStorer::ClassStorer(Structer structer, vector<RawClass> classList)
 {
   if (!ClassStorerInit)
     ClassStorer::initValues();
 
   this->classList = classList;
-  //this->structer = structer;
+  this->structer = structer;
 }
 
 void ClassStorer::initValues()
@@ -305,6 +305,41 @@ QString ClassStorer::classFunctionParameterFix(QString fname, QString assemblyFu
   return fname;
 }
 
+void ClassStorer::updateNewCppFile(QString filePath, vector<RawClass> classes)
+{
+  cout << "Update cleaned cpp file...";
+
+  QStringList pathArray = filePath.split('/');
+  QString fileName = pathArray.back();
+
+  QFile file(ClassStorer::ExportDir + QString("/") + fileName);
+  if(!file.open(QIODevice::ReadOnly)) {
+      cout << "ERROR: File could not be opened - " << fileName.toStdString().c_str() << endl;
+  }
+
+  QTextStream in(&file);
+  QStringList lines;
+  while (!in.atEnd()) {
+      lines.append(in.readLine());
+  }
+  file.close();
+
+  QFile file2(ClassStorer::ExportDir + QString("/") + fileName);
+  if(!file.open(QIODevice::WriteOnly)) {
+      cout << "ERROR: File could not be opened - " << fileName.toStdString().c_str() << endl;
+  }
+
+  QTextStream out(&file2);
+  foreach (QString line, lines) {
+      line = this->replaceSymbolsInLine(line);
+      line = line.remove(QRegExp(R"([\n]+$)"));
+      out << line.toStdString().c_str() << "\n";
+  }
+  file2.close();
+
+  cout << "DONE" << endl;
+}
+
 void ClassStorer::writeClassCodeFile(RawClass cls)
 {
 #ifdef DEBUGMODE
@@ -320,7 +355,7 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
   out << "#include " << cls.getName().toStdString().c_str() << ".h" << "\n";
   out << "\n";
 
-  // structs = self.structer.get_structs()
+  auto structs = this->structer.getStructs();
 
   foreach (RawFunction func, cls.getFunctions()) {
       map<QString, QString> variables;
@@ -405,22 +440,19 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
           }
 
           if (line.contains("struct")) { // replace structs in code with "actual" name
-              //foreach (Struct struct, structs) {
-              //}
-              /*
-              for struct in structs:
-                  tetraTmp = "struct " + struct.replace("STRUCT_", "s")
-                  if tetraTmp in line:
-                      if tetraTmp + " " in line:
-                          line = line.replace(tetraTmp + " ", struct + " ")
-                      if tetraTmp + "***" in line: # TODO: check if triple pointer is max
-                          line = line.replace(tetraTmp + "***", struct + "***")
-                      if tetraTmp + "**" in line:
-                          line = line.replace(tetraTmp + "**", struct + "**")
-                      if tetraTmp + "*" in line:
-                          line = line.replace(tetraTmp + "*", struct + "*")
-
-              */
+              foreach (auto structx, structs) {
+                  QString tetraTmp = "struct " + QString(structx.first).replace("STRUCT_", "s");
+                  if (line.contains(tetraTmp)) {
+                      if (line.contains(tetraTmp + " "))
+                          line = line.replace(tetraTmp + " ", structx.first + " ");
+                      if (line.contains(tetraTmp + "***"))
+                          line = line.replace(tetraTmp + "***", structx.first + "***");
+                      if (line.contains(tetraTmp + "**"))
+                          line = line.replace(tetraTmp + "**", structx.first + "**");
+                      if (line.contains(tetraTmp + "*"))
+                          line = line.replace(tetraTmp + "*", structx.first + "*");
+                  }
+              }
           }
 
           out << line.toStdString().c_str() << "\n";

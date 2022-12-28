@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include "rawclass.h"
+#include "structer.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ using namespace std;
 class ClassStorer
 {
 private:
-  //Structer structer;
+  Structer structer;
   vector<RawClass> classList;
 
   map<QString, QString> allFuncs;
@@ -41,8 +42,9 @@ public:
   void writeClassHeaderFile(RawClass cls);
   void writeClassCodeFile(RawClass cls);
   void writeStructsForHeader(RawClass cls);
+  void updateNewCppFile(QString filePath, vector<RawClass> classes);
 
-  ClassStorer(vector<RawClass> classList/*, Structer structer*/);
+  ClassStorer(Structer structer, vector<RawClass> classList);
 };
 
 #endif // CLASSSTORER_H

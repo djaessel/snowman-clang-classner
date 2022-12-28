@@ -9,10 +9,15 @@ CONFIG -= app_bundle
 
 SOURCES += \
         classner.cpp \
+        classreader.cpp \
         classstorer.cpp \
+        fixedclass.cpp \
+        fixedfunction.cpp \
         main.cpp \
         rawclass.cpp \
-        rawfunction.cpp
+        rawfunction.cpp \
+        reinterpretalter.cpp \
+        structer.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -21,6 +26,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     classner.h \
+    classreader.h \
     classstorer.h \
+    fixedclass.h \
+    fixedfunction.h \
     rawclass.h \
-    rawfunction.h
+    rawfunction.h \
+    reinterpretalter.h \
+    structer.h

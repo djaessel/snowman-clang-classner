@@ -5,36 +5,46 @@
 
 #include "classner.h"
 #include "rawclass.h"
+#include "structer.h"
 #include "classstorer.h"
+#include "classreader.h"
+#include "reinterpretalter.h"
 
 using namespace std;
+
+static bool skipClassWrite = false;
+static bool skipReinterpret = false;
+static bool skipAnalyze = false;
+static bool skipRemoveIncluded = false;
+static bool skipClassAnalyze = false;
+
+
+static bool argumentExists(char* arg, const char* search)
+{
+  return QString::fromLocal8Bit((const char*)arg, strlen(arg)) == QString(search);
+}
 
 int main(int argc, char *argv[])
 {
 //  QCoreApplication a(argc, argv);
 
-  bool skipClassWrite = false;
-  bool skipReinterpret = false;
-  bool skipAnalyze = false;
-  bool skipRemoveIncluded = false;
-  bool skipClassAnalyze = false;
   QString filePath = "";
 
   if (argc > 0) {
       filePath = argv[1];
       if (argc > 1) {
           for (int i = 1; i < argc; i++) {
-              if (QString((const char*)argv[i]) == QString("-sc"))
+              if (argumentExists(argv[i], "-sc"))
                   skipClassWrite = true;
-              if (QString::fromLocal8Bit((const char*)argv[i], strlen(argv[i])) == QString("-sr"))
+              if (argumentExists(argv[i], "-sr"))
                   skipReinterpret = true;
-              if (QString::fromLocal8Bit((const char*)argv[i], strlen(argv[i])) == QString("-sa"))
+              if (argumentExists(argv[i], "-sa"))
                   skipAnalyze = true;
-              if (QString::fromLocal8Bit((const char*)argv[i], strlen(argv[i])) == QString("-si"))
+              if (argumentExists(argv[i], "-si"))
                   skipRemoveIncluded = true;
-              if (QString::fromLocal8Bit((const char*)argv[i], strlen(argv[i])) == QString("-sa2"))
+              if (argumentExists(argv[i], "-sa2"))
                   skipClassAnalyze = true;
-              if (QString::fromLocal8Bit((const char*)argv[i], strlen(argv[i])) == QString("--skip-all")) {
+              if (argumentExists(argv[i], "--skip-all")){
                   skipClassWrite = true;
                   skipReinterpret = true;
                   skipAnalyze = true;
@@ -55,17 +65,30 @@ int main(int argc, char *argv[])
 
   cout << "Processing cpp file ..." << endl;
 
-  //structer = Structer()
-  //structer.readStructs(file_path)
-
   ClassStorer::initValues();
+
+  Structer structer;
+  structer.readStructs(filePath);
 
   Classner classner;
   classner.readClassFunctions(filePath, skipClassWrite);
   vector<RawClass> classes = classner.getClasses();
 
-  ClassStorer classStorer(classes);
-  classStorer.writeClasses();
+  ClassStorer classStorer(structer, classes);
+
+  if (skipClassWrite) {
+    classStorer.writeClasses();
+    classStorer.updateNewCppFile(filePath, classes);
+  }
+
+  if (skipReinterpret) {
+    ReinterpretAlter reinterpret;
+    reinterpret.removeReinterpret(classes);
+  }
+
+  ClassReader classReader;
+  classReader.readClasses();
+  auto modified_classes = classReader.getClasses();
 
 //  return a.exec();
   return 0;
