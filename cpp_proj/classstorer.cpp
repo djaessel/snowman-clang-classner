@@ -448,7 +448,7 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
   }
 
   QTextStream out(&file);
-  out << "#include " << cls.getName().toStdString().c_str() << ".h" << "\n";
+  out << "#include \"" << cls.getName().toStdString().c_str() << ".h\"" << "\n";
   out << "\n";
 
   auto structs = this->structer.getStructs();
