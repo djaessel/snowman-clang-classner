@@ -9,7 +9,7 @@ output_file = "found_paths.csv"
 
 def processFath():
     files = glob.glob(havok_dir + '/**/*.h', recursive=True)
-    files_paths = [_ for _ in files if not dir_to_exclude in _]
+    # files_paths = [_ for _ in files if not dir_to_exclude in _]
     files_names = [_.split("/")[-1] for _ in files if not dir_to_exclude in _]
 
     # print(f'List of file names with path: {files_paths}')

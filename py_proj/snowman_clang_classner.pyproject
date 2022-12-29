@@ -1,0 +1,3 @@
+{
+    "files": ["ClassAnalyzer.py","ReinterpretAlter.py","specialvals.py","Gotogo.py","Structer.py","FunctionAnalyzer.py","ClassReader.py","Classner.py","ClassStorer.py","main.py","Stopwatch.py","remove_included.py"]
+}
