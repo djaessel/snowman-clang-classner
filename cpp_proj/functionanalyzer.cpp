@@ -11,7 +11,7 @@ map<QString, QStringList> FunctionAnalyzer::addUsedClassImports(map<QString, Fix
   //    includes.insert_or_assign(cls.first, this->addUsedClassImports(cls.first, classes, rawClasses));
   //}
 
-  uint processor_count = std::thread::hardware_concurrency();
+  uint processor_count = processorCount();
   int length = classes->size() / processor_count;
   for (uint i = 0; i < processor_count; i++) {
       int start = i * length;
@@ -64,9 +64,25 @@ QStringList FunctionAnalyzer::addUsedClassImports(QString cls, map<QString, Fixe
 map<QString, FixedClass> FunctionAnalyzer::findOriginalClass(map<QString, FixedClass> *classes)
 {
   map<QString, FixedClass> fixedClasses;
-  foreach (auto cls, *classes) {
-      fixedClasses.insert_or_assign(cls.first, this->findOriginalClass(cls.first, classes));
+
+//  foreach (auto cls, *classes) {
+//      fixedClasses.insert_or_assign(cls.first, this->findOriginalClass(cls.first, classes));
+//  }
+
+  uint processor_count = processorCount();
+  int length = classes->size() / processor_count;
+  for (uint i = 0; i < processor_count; i++) {
+      int start = i * length;
+      int end = start + length;
+      if (i == processor_count - 1)
+          end = classes->size();
+
+      FunctionAnalyzerTask *hello = new FunctionAnalyzerTask(this, &fixedClasses, classes, start, end);
+      // QThreadPool takes ownership and deletes 'hello' automatically
+      QThreadPool::globalInstance()->start(hello);
   }
+  QThreadPool::globalInstance()->waitForDone(); // waits for all to be done(?)
+
   return fixedClasses;
 }
 

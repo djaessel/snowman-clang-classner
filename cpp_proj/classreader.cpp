@@ -1,5 +1,6 @@
 #include "classreader.h"
 #include "classstorer.h"
+#include <QDir>
 
 void ClassReader::readClasses()
 {
@@ -10,7 +11,7 @@ void ClassReader::readClasses()
     QString fileP = QString(entry.path().generic_string().c_str());
     if (fileP.endsWith(".cpp"))
     {
-        QString className = fileP.split('.')[0]; // remove file extension to get class name for now
+        QString className = fileP.split('.')[0].split(QDir::separator()).back(); // remove file extension to get class name for now
         this->classes.insert_or_assign(className, FixedClass(className));
 
         QFile file(fileP);

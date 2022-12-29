@@ -20,6 +20,7 @@ SOURCES += \
         rawclass.cpp \
         rawfunction.cpp \
         reinterpretalter.cpp \
+        specialvals.cpp \
         structer.cpp
 
 # Default rules for deployment.

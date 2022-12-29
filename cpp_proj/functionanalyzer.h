@@ -28,21 +28,42 @@ public:
 class FunctionAnalyzerTask : public QRunnable
 {
 private:
+  uint mode;
   uint offset, length;
   FunctionAnalyzer* funcAnalyzer;
   vector<RawClass> *rawClasses;
   map<QString, FixedClass> *classes;
+  map<QString, FixedClass> *fixedClasses;
   map<QString, QStringList> *includes;
 
 public:
-  FunctionAnalyzerTask(FunctionAnalyzer* funcAnalyzer, map<QString, QStringList>* includes, map<QString, FixedClass> *classes, vector<RawClass> *rawClasses, uint offset, uint length)
-  {
-    this->includes = includes;
+  FunctionAnalyzerTask(
+      FunctionAnalyzer* funcAnalyzer,
+      map<QString, QStringList>* includes,
+      map<QString, FixedClass> *classes,
+      vector<RawClass> *rawClasses,
+      uint offset, uint length,
+      uint mode = 0) {
     this->funcAnalyzer = funcAnalyzer;
+    this->includes = includes;
     this->classes = classes;
     this->rawClasses = rawClasses;
     this->offset = offset;
     this->length = length;
+    this->mode = mode;
+  }
+  FunctionAnalyzerTask(
+      FunctionAnalyzer* funcAnalyzer,
+      map<QString, FixedClass>* fixedClasses,
+      map<QString, FixedClass> *classes,
+      uint offset, uint length,
+      uint mode = 1) {
+    this->funcAnalyzer = funcAnalyzer;
+    this->fixedClasses = fixedClasses;
+    this->classes = classes;
+    this->offset = offset;
+    this->length = length;
+    this->mode = mode;
   }
 
   void run() override
@@ -50,17 +71,32 @@ public:
       auto it = classes->begin();
       std::advance(it, offset);
       for (uint i = offset; i < length; i++) {
+          switch (mode){
+            case 0:
 #if DEBUGMODE
+    #if SPECIAL_DEBUG
           cout << "Add Used Class Imports " << it->first.toStdString().c_str();
+    #else
+          cout << "Add Used Class Imports " << it->first.toStdString().c_str() << endl;
+    #endif
 #endif
+              includes->insert_or_assign(it->first, funcAnalyzer->addUsedClassImports(it->first, classes, rawClasses));
+#if DEBUGMODE
+    #if SPECIAL_DEBUG
+          cout << "DONE" << endl;
+    #endif
+#endif
+              break;
+            case 1:
+              fixedClasses->insert_or_assign(it->first, funcAnalyzer->findOriginalClass(it->first, classes));
+              break;
+            default:
+              qDebug() << "ERROR: Wrong mode!!!" << Qt::endl;
+              break;
+          }
 
-          includes->insert_or_assign(it->first, funcAnalyzer->addUsedClassImports(it->first, classes, rawClasses));
           if (i < classes->size() - 1)
               std::advance(it, 1);
-
-#if DEBUGMODE
-          cout << "DONE" << endl;
-#endif
       }
   }
 };

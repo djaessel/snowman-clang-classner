@@ -188,7 +188,7 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
       QString fileP3(ClassStorer::ExportDir + "/" + cls.first + ".h");
       QFile file3(fileP3);
       if(!file3.open(QIODevice::ReadOnly)) {
-          cout << "CLASSSTORER 4 ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
+          cout << "CLASSSTORER 4 ERROR: File could not be opened - " << fileP3.toStdString().c_str() << endl;
       }
 
       QTextStream in2(&file3);
@@ -206,7 +206,7 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
 
       QFile file4(fileP3);
       if(!file4.open(QIODevice::WriteOnly)) {
-          cout << "CLASSSTORER 5 ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
+          cout << "CLASSSTORER 5 ERROR: File could not be opened - " << fileP3.toStdString().c_str() << endl;
       }
 
       QTextStream out2(&file4);
@@ -602,9 +602,10 @@ void ClassStorer::writeClasses()
   cout << "WRITING CLASSES BEGIN" << endl;
 #else
   cout << "Writing classes...";
+  cout.flush();
 #endif
 
-  uint processor_count = std::thread::hardware_concurrency();
+  uint processor_count = processorCount();
   int length = this->classList.size() / processor_count;
   for (uint i = 0; i < processor_count; i++) {
       int start = i * length;
