@@ -13,6 +13,7 @@ SOURCES += \
         classstorer.cpp \
         fixedclass.cpp \
         fixedfunction.cpp \
+        functionanalyzer.cpp \
         main.cpp \
         rawclass.cpp \
         rawfunction.cpp \
@@ -30,6 +31,7 @@ HEADERS += \
     classstorer.h \
     fixedclass.h \
     fixedfunction.h \
+    functionanalyzer.h \
     rawclass.h \
     rawfunction.h \
     reinterpretalter.h \

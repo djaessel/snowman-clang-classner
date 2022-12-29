@@ -26,7 +26,7 @@ static bool argumentExists(char* arg, const char* search)
 
 int main(int argc, char *argv[])
 {
-//  QCoreApplication a(argc, argv);
+  QCoreApplication a(argc, argv);
 
   QString filePath = "";
 
@@ -36,15 +36,15 @@ int main(int argc, char *argv[])
           for (int i = 1; i < argc; i++) {
               if (argumentExists(argv[i], "-sc"))
                   skipClassWrite = true;
-              if (argumentExists(argv[i], "-sr"))
+              else if (argumentExists(argv[i], "-sr"))
                   skipReinterpret = true;
-              if (argumentExists(argv[i], "-sa"))
+              else if (argumentExists(argv[i], "-sa"))
                   skipAnalyze = true;
-              if (argumentExists(argv[i], "-si"))
+              else if (argumentExists(argv[i], "-si"))
                   skipRemoveIncluded = true;
-              if (argumentExists(argv[i], "-sa2"))
+              else if (argumentExists(argv[i], "-sa2"))
                   skipClassAnalyze = true;
-              if (argumentExists(argv[i], "--skip-all")){
+              else if (argumentExists(argv[i], "--skip-all")){
                   skipClassWrite = true;
                   skipReinterpret = true;
                   skipAnalyze = true;
@@ -76,20 +76,30 @@ int main(int argc, char *argv[])
 
   ClassStorer classStorer(structer, classes);
 
-  if (skipClassWrite) {
+  if (!skipClassWrite) {
     classStorer.writeClasses();
     classStorer.updateNewCppFile(filePath, classes);
   }
 
-  if (skipReinterpret) {
+  if (!skipReinterpret) {
     ReinterpretAlter reinterpret;
     reinterpret.removeReinterpret(classes);
   }
 
   ClassReader classReader;
   classReader.readClasses();
-  auto modified_classes = classReader.getClasses();
+  auto modifiedClasses = classReader.getClasses();
 
-//  return a.exec();
+  // remove default cpp file from class check - change later with different behavior
+  QStringList pathArray = filePath.split("/");
+  QString fileName = pathArray.back().split(".")[0];
+  modifiedClasses.erase(fileName);
+
+  map<QString, FixedClass> bakModClasses;
+  foreach (auto c, modifiedClasses) {
+      bakModClasses.insert_or_assign(c.first, c.second);
+  }
+
+  a.exit();
   return 0;
 }

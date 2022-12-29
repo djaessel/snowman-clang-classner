@@ -16,7 +16,7 @@ class ClassReader
 private:
   map<QString, FixedClass> classes;
 public:
-  ClassReader();
+  ClassReader() {}
   void readClasses();
   map<QString, FixedClass> getClasses() {return classes;}
 };

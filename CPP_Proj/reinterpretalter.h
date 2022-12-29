@@ -12,7 +12,7 @@ using namespace std;
 class ReinterpretAlter
 {
 public:
-  ReinterpretAlter();
+  ReinterpretAlter() {}
   void removeReinterpret(vector<RawClass> classList);
 };
 
