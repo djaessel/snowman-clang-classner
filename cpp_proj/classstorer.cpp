@@ -604,11 +604,25 @@ void ClassStorer::writeClasses()
   cout << "Writing classes...";
 #endif
 
-  foreach (RawClass cls, this->classList) {
-      this->writeClassHeaderFile(cls);
-      this->writeClassCodeFile(cls);
-      this->writeStructsForHeader(cls);
+  uint processor_count = std::thread::hardware_concurrency();
+  int length = this->classList.size() / processor_count;
+  for (uint i = 0; i < processor_count; i++) {
+      int start = i * length;
+      int end = start + length;
+      if (i == processor_count - 1)
+          end = this->classList.size();
+
+      ClassStorerTask *hello = new ClassStorerTask(this, &this->classList, start, end);
+      // QThreadPool takes ownership and deletes 'hello' automatically
+      QThreadPool::globalInstance()->start(hello);
   }
+  QThreadPool::globalInstance()->waitForDone(); // waits for all to be done(?)
+
+  //foreach (RawClass cls, this->classList) {
+  //    this->writeClassHeaderFile(cls);
+  //    this->writeClassCodeFile(cls);
+  //    this->writeStructsForHeader(cls);
+  //}
 
 #if DEBUGMODE
   cout << "WRITING CLASSES END" << endl << endl;

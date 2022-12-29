@@ -2,58 +2,75 @@
 #include "classstorer.h"
 
 
-map<QString, QStringList> FunctionAnalyzer::addUsedClassImports(map<QString, FixedClass> &classes, vector<RawClass> &rawClasses)
+// make this easier - read file as a whole and simply regex over it!
+map<QString, QStringList> FunctionAnalyzer::addUsedClassImports(map<QString, FixedClass> *classes, vector<RawClass> *rawClasses)
 {
   map<QString, QStringList> includes;
-  foreach (auto cls, classes) {
-      includes.insert_or_assign(cls.first, this->addUsedClassImports(cls.first, classes, rawClasses));
+
+  //foreach (auto cls, classes) {
+  //    includes.insert_or_assign(cls.first, this->addUsedClassImports(cls.first, classes, rawClasses));
+  //}
+
+  uint processor_count = std::thread::hardware_concurrency();
+  int length = classes->size() / processor_count;
+  for (uint i = 0; i < processor_count; i++) {
+      int start = i * length;
+      int end = start + length;
+      if (i == processor_count - 1)
+          end = classes->size();
+
+      FunctionAnalyzerTask *hello = new FunctionAnalyzerTask(this, &includes, classes, rawClasses, start, end);
+      // QThreadPool takes ownership and deletes 'hello' automatically
+      QThreadPool::globalInstance()->start(hello);
   }
+  QThreadPool::globalInstance()->waitForDone(); // waits for all to be done(?)
+
   return includes;
 }
 
-void FunctionAnalyzer::addUsedCLassImportsHelper(QStringList &includes, map<QString, FixedClass> &classes, QString line, bool sec)
+void FunctionAnalyzer::addUsedCLassImportsHelper(QStringList *includes, map<QString, FixedClass> *classes, QString line, bool sec)
 {
-  foreach (auto cls2, classes) {
-      if (line.contains(cls2.first) && !includes.contains(cls2.first)) {
+  foreach (auto cls2, *classes) {
+      if (line.contains(cls2.first) && !includes->contains(cls2.first)) {
           if (line.contains(" " + cls2.first + "*") || line.contains(" " + cls2.first + " ") ||
               (sec && (line.contains(" " + cls2.first + "("))) ||
               (!sec && (line.contains("(" + cls2.first + " ") || line.contains("(" + cls2.first + "*")))) {
-              includes.append(cls2.first);
+              includes->append(cls2.first);
           }
       }
   }
 }
 
 // FIXME: bottleneck!!!
-QStringList FunctionAnalyzer::addUsedClassImports(QString cls, map<QString, FixedClass> &classes, vector<RawClass> &rawClasses)
+QStringList FunctionAnalyzer::addUsedClassImports(QString cls, map<QString, FixedClass> *classes, vector<RawClass> *rawClasses)
 {
   QStringList includes;
 
-  foreach (RawClass obj, rawClasses) {
+  foreach (RawClass obj, *rawClasses) {
       foreach (RawFunction rawFunc, obj.getFunctions()) {
-          this->addUsedCLassImportsHelper(includes, classes, rawFunc.getDeclar());
+          this->addUsedCLassImportsHelper(&includes, classes, rawFunc.getDeclar());
       }
   }
 
-  foreach (FixedFunction func, classes[cls].getFunctions()) {
+  foreach (FixedFunction func, classes->at(cls).getFunctions()) {
       foreach (QString line, func.getCodeLines()) {
-          this->addUsedCLassImportsHelper(includes, classes, line, true);
+          this->addUsedCLassImportsHelper(&includes, classes, line, true);
       }
   }
 
   return includes;
 }
 
-map<QString, FixedClass> FunctionAnalyzer::findOriginalClass(map<QString, FixedClass> &classes)
+map<QString, FixedClass> FunctionAnalyzer::findOriginalClass(map<QString, FixedClass> *classes)
 {
   map<QString, FixedClass> fixedClasses;
-  foreach (auto cls, classes) {
+  foreach (auto cls, *classes) {
       fixedClasses.insert_or_assign(cls.first, this->findOriginalClass(cls.first, classes));
   }
   return fixedClasses;
 }
 
-FixedClass FunctionAnalyzer::findOriginalClass(QString cls, map<QString, FixedClass> &classes)
+FixedClass FunctionAnalyzer::findOriginalClass(QString cls, map<QString, FixedClass> *classes)
 {
   FixedClass fixedClass;
   map<QString, QString> tracerx;
@@ -63,7 +80,7 @@ FixedClass FunctionAnalyzer::findOriginalClass(QString cls, map<QString, FixedCl
   cout << "Analyzing " << cls.toStdString().c_str() << "...";
 #endif
 
-  foreach (FixedFunction func, classes[cls].getFunctions()) {
+  foreach (FixedFunction func, classes->at(cls).getFunctions()) {
       FixedFunction fixedFunc(func.getName());
       bool declarMode = false;
       foreach (QString line, func.getCodeLines()) {
@@ -74,7 +91,7 @@ FixedClass FunctionAnalyzer::findOriginalClass(QString cls, map<QString, FixedCl
               else
                 fixedFunc.addCodeLine(line);
           } else {
-              foreach (auto cls2, classes) {
+              foreach (auto cls2, *classes) {
                   foreach (FixedFunction func2, cls2.second.getFunctions()) {
                       QString lll = "->" + func2.getName();
                       if (line.contains(lll)) {
@@ -101,7 +118,7 @@ FixedClass FunctionAnalyzer::findOriginalClass(QString cls, map<QString, FixedCl
                                 tmpx2 = tmpx.back();
                               tmpx2 = tmpx2.remove(QRegExp("^([&]+)")).remove(QRegExp("^([*]+)")); // remove extras # TODO: check again alter
                               QString func2Name = func2.getName();
-                              if (classes[cls].getFunction(func2Name).getName() != nullptr) {
+                              if (classes->at(cls).getFunction(func2Name).getName() != nullptr) {
                                   line = line.replace(tmpx2 + "->" + func2Name, "this->" + func2Name);
                               } else if (tmpx2.length() > 0 && tracerx.count(tmpx2) <= 0) {
                                   tracerx.insert_or_assign(tmpx2, cls2.first);

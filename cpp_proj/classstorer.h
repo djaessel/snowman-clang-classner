@@ -15,6 +15,12 @@
 #include "structer.h"
 #include "fixedclass.h"
 
+#include <thread>
+#include <QRunnable>
+#include <QDebug>
+#include <QThread>
+#include <QThreadPool>
+
 using namespace std;
 
 
@@ -48,6 +54,31 @@ public:
   void writeClassesJust(map<QString, FixedClass> fixedClasses, map<QString, QStringList> classIncludes);
 
   ClassStorer(Structer structer, vector<RawClass> classList);
+};
+
+class ClassStorerTask : public QRunnable
+{
+private:
+  uint offset, length;
+  ClassStorer* classStorer;
+  vector<RawClass> *classes;
+public:
+  ClassStorerTask(ClassStorer* classStorer, vector<RawClass> *classes, uint offset, uint length)
+  {
+    this->classStorer = classStorer;
+    this->classes = classes;
+    this->offset = offset;
+    this->length = length;
+  }
+
+  void run() override
+  {
+      for (uint i = offset; i < length; i++) {
+          classStorer->writeClassHeaderFile(this->classes->at(i));
+          classStorer->writeClassCodeFile(this->classes->at(i));
+          classStorer->writeStructsForHeader(this->classes->at(i));
+      }
+  }
 };
 
 #endif // CLASSSTORER_H

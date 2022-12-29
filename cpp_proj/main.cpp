@@ -119,8 +119,8 @@ int main(int argc, char *argv[])
 
   if (!skipAnalyze) {
       FunctionAnalyzer funcAnalyzer;
-      map<QString, FixedClass> fixedClasses = funcAnalyzer.findOriginalClass(modifiedClasses);
-      map<QString, QStringList> classIncludes = funcAnalyzer.addUsedClassImports(fixedClasses, classes); // FIXME: bottleneck!!!
+      map<QString, FixedClass> fixedClasses = funcAnalyzer.findOriginalClass(&modifiedClasses);
+      map<QString, QStringList> classIncludes = funcAnalyzer.addUsedClassImports(&fixedClasses, &classes); // FIXME: bottleneck!!!
       // fixed_classes = analyzer.removeInvalidParams(fixed_classes, classes) # FIXME: broken at the moment
       classStorer.writeClassesJust(fixedClasses, classIncludes);
   }
