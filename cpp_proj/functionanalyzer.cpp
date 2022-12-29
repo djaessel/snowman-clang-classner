@@ -11,35 +11,33 @@ map<QString, QStringList> FunctionAnalyzer::addUsedClassImports(map<QString, Fix
   return includes;
 }
 
+void FunctionAnalyzer::addUsedCLassImportsHelper(QStringList &includes, map<QString, FixedClass> &classes, QString line, bool sec)
+{
+  foreach (auto cls2, classes) {
+      if (line.contains(cls2.first) && !includes.contains(cls2.first)) {
+          if (line.contains(" " + cls2.first + "*") || line.contains(" " + cls2.first + " ") ||
+              (sec && (line.contains(" " + cls2.first + "("))) ||
+              (!sec && (line.contains("(" + cls2.first + " ") || line.contains("(" + cls2.first + "*")))) {
+              includes.append(cls2.first);
+          }
+      }
+  }
+}
+
+// FIXME: bottleneck!!!
 QStringList FunctionAnalyzer::addUsedClassImports(QString cls, map<QString, FixedClass> &classes, vector<RawClass> &rawClasses)
 {
   QStringList includes;
 
   foreach (RawClass obj, rawClasses) {
       foreach (RawFunction rawFunc, obj.getFunctions()) {
-          foreach (auto cls2, classes) {
-              QString declar = rawFunc.getDeclar();
-              if (declar.contains(cls2.first) && !includes.contains(cls2.first)) {
-                  if (declar.contains("(" + cls2.first + " ") ||
-                      declar.contains("(" + cls2.first + "*") ||
-                      declar.contains(" " + cls2.first + " ") ||
-                      declar.contains(" " + cls2.first + "*"))
-                    includes.append(cls2.first);
-              }
-          }
+          this->addUsedCLassImportsHelper(includes, classes, rawFunc.getDeclar());
       }
   }
 
   foreach (FixedFunction func, classes[cls].getFunctions()) {
       foreach (QString line, func.getCodeLines()) {
-          foreach (auto cls2, classes) {
-              if (line.contains(cls2.first) && !includes.contains(cls2.first)) {
-                  if (line.contains(" " + cls2.first + "*") ||
-                      line.contains(" " + cls2.first + " ") ||
-                      line.contains(" " + cls2.first + "("))
-                    includes.append(cls2.first);
-              }
-          }
+          this->addUsedCLassImportsHelper(includes, classes, line, true);
       }
   }
 

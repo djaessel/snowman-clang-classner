@@ -16,6 +16,7 @@ public:
   FixedClass findOriginalClass(QString cls, map<QString, FixedClass> &classes);
   map<QString, QStringList> addUsedClassImports(map<QString, FixedClass> &classes, vector<RawClass> &rawClasses);
   QStringList addUsedClassImports(QString cls, map<QString, FixedClass> &classes, vector<RawClass> &rawClasses);
+  void addUsedCLassImportsHelper(QStringList &includes, map<QString, FixedClass> &classes, QString line, bool sec = false);
 };
 
 #endif // FUNCTIONANALYZER_H

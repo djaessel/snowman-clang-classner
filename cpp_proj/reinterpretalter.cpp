@@ -13,9 +13,9 @@ void ReinterpretAlter::removeReinterpret(vector<RawClass> classList)
       cout << cls.getName().toStdString().c_str() << " removing interprets...";
 #endif
 
-      QFile file(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".h"));
+      QFile file(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".cpp"));
       if(!file.open(QIODevice::ReadOnly)) {
-          cout << "REINTERPRETALTER 1 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
+          cout << "REINTERPRETALTER 1 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".cpp" << endl;
       }
 
       QTextStream in(&file);
@@ -32,9 +32,9 @@ void ReinterpretAlter::removeReinterpret(vector<RawClass> classList)
       file.close();
 
 
-      QFile file2(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".h"));
+      QFile file2(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".cpp"));
       if(!file2.open(QIODevice::WriteOnly)) {
-          cout << "REINTERPRETALTER 2 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
+          cout << "REINTERPRETALTER 2 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".cpp" << endl;
       }
 
       QTextStream out(&file2);
