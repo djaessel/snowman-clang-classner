@@ -33,6 +33,7 @@ private:
   vector<RawClass> *rawClasses;
   map<QString, FixedClass> *classes;
   map<QString, QStringList> *includes;
+
 public:
   FunctionAnalyzerTask(FunctionAnalyzer* funcAnalyzer, map<QString, QStringList>* includes, map<QString, FixedClass> *classes, vector<RawClass> *rawClasses, uint offset, uint length)
   {
@@ -49,9 +50,17 @@ public:
       auto it = classes->begin();
       std::advance(it, offset);
       for (uint i = offset; i < length; i++) {
+#if DEBUGMODE
+          cout << "Add Used Class Imports " << it->first.toStdString().c_str();
+#endif
+
           includes->insert_or_assign(it->first, funcAnalyzer->addUsedClassImports(it->first, classes, rawClasses));
           if (i < classes->size() - 1)
               std::advance(it, 1);
+
+#if DEBUGMODE
+          cout << "DONE" << endl;
+#endif
       }
   }
 };

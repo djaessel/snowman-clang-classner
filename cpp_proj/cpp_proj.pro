@@ -1,8 +1,9 @@
 QT -= gui
-QT += core
 
 CONFIG += c++17 console
 CONFIG -= app_bundle
+
+TARGET = cpp_proj_run
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
