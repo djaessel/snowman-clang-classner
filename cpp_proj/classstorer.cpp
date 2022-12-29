@@ -444,7 +444,7 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
 
   QFile file(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".cpp"));
   if(!file.open(QIODevice::WriteOnly)) {
-      cout << "CLASSSTORER 8 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
+      cout << "CLASSSTORER 8 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".cpp" << endl;
   }
 
   QTextStream out(&file);
