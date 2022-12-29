@@ -360,7 +360,9 @@ QString ClassStorer::classFunctionParameterFix(QString fname, QString assemblyFu
 {
   if (fname.indexOf("(") < 0) {
 #if DEBUGMODE
+  #if SPECIAL_DEBUG
       cout << "classFunctionParameterFix : " << fname.toStdString().c_str() << " : " << assemblyFuncName.toStdString().c_str() << endl;
+  #endif
 #endif
       fname = assemblyFuncName; // FIXME: temporary fix?
   } else {
