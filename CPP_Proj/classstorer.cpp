@@ -76,8 +76,8 @@ void ClassStorer::initValues()
 
 void ClassStorer::writeClassHeaderFile(RawClass cls)
 {
-#ifdef DEBUGMODE
-  cout << "  Writing " << cls.getName() << " class header...";
+#if DEBUGMODE
+  cout << "  Writing " << cls.getName().toStdString().c_str() << " class header...";
 #endif
 
   QFile file(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".h"));
@@ -122,7 +122,7 @@ void ClassStorer::writeClassHeaderFile(RawClass cls)
 
   file.close();
 
-#ifdef DEBUGMODE
+#if DEBUGMODE
   cout << "DONE" << endl;
 #endif
 }
@@ -359,7 +359,9 @@ QString ClassStorer::replaceSymbolsInLine(QString line)
 QString ClassStorer::classFunctionParameterFix(QString fname, QString assemblyFuncName)
 {
   if (fname.indexOf("(") < 0) {
-      //cout << "classFunctionParameterFix : " << fname.toStdString().c_str() << " : " << assemblyFuncName.toStdString().c_str() << endl;
+#if DEBUGMODE
+      cout << "classFunctionParameterFix : " << fname.toStdString().c_str() << " : " << assemblyFuncName.toStdString().c_str() << endl;
+#endif
       fname = assemblyFuncName; // FIXME: temporary fix?
   } else {
       QStringList telp = fname.split("(")[1].split(")")[0].split(',');
@@ -434,7 +436,7 @@ void ClassStorer::updateNewCppFile(QString filePath/*, vector<RawClass> classes*
 
 void ClassStorer::writeClassCodeFile(RawClass cls)
 {
-#ifdef DEBUGMODE
+#if DEBUGMODE
   cout << "  Writing " << cls.getName().toStdString().c_str() << " class functions...";
 #endif
 
@@ -561,8 +563,8 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
   }
   file.close();
 
-#ifdef DEBUGMODE
-  out << "DONE" << endl;
+#if DEBUGMODE
+  cout << "DONE" << endl;
 #endif
 }
 
@@ -594,7 +596,7 @@ void ClassStorer::writeClasses()
       }
   }
 
-#ifdef DEBUGMODE
+#if DEBUGMODE
   cout << "WRITING CLASSES BEGIN" << endl;
 #else
   cout << "Writing classes...";
@@ -606,7 +608,7 @@ void ClassStorer::writeClasses()
       this->writeStructsForHeader(cls);
   }
 
-#ifdef DEBUGMODE
+#if DEBUGMODE
   cout << "WRITING CLASSES END" << endl << endl;
 #else
   cout << "DONE" << endl;
@@ -617,7 +619,7 @@ void ClassStorer::writeStructsForHeader(RawClass cls)
 {
   map<QString, QStringList> structs = this->structer.getStructs();
 
-#ifdef DEBUGMODE
+#if DEBUGMODE
   cout << "  Writing " << cls.getName().toStdString().c_str() << " class used structs...";
 #endif
 
@@ -669,7 +671,7 @@ void ClassStorer::writeStructsForHeader(RawClass cls)
   out2 << allHeader << Qt::endl;
   file3.close();
 
-#ifdef DEBUGMODE
+#if DEBUGMODE
   cout << "DONE" << endl;
 #endif
 }

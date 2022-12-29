@@ -3,6 +3,8 @@
 
 #include <QStringList>
 
+#include "specialvals.h"
+
 class FixedFunction
 {
 private:

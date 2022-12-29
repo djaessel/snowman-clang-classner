@@ -42,7 +42,7 @@ static void printElapsedTime(QElapsedTimer *elapsedTimer)
 
 int main(int argc, char *argv[])
 {
-  QCoreApplication a(argc, argv);
+//  QCoreApplication a(argc, argv);
 
   QString filePath = "";
 
@@ -105,17 +105,17 @@ int main(int argc, char *argv[])
 
   ClassReader classReader;
   classReader.readClasses();
-  auto modifiedClasses = classReader.getClasses();
+  map<QString, FixedClass> modifiedClasses = classReader.getClasses();
 
   // remove default cpp file from class check - change later with different behavior
   QStringList pathArray = filePath.split("/");
   QString fileName = pathArray.back().split(".")[0];
   modifiedClasses.erase(fileName);
 
-  map<QString, FixedClass> bakModClasses;
-  foreach (auto c, modifiedClasses) {
-      bakModClasses.insert_or_assign(c.first, c.second);
-  }
+  //map<QString, FixedClass> bakModClasses;
+  //foreach (auto c, modifiedClasses) {
+  //    bakModClasses.insert_or_assign(c.first, c.second);
+  //}
 
   if (!skipAnalyze) {
       FunctionAnalyzer funcAnalyzer;
@@ -128,6 +128,5 @@ int main(int argc, char *argv[])
   printElapsedTime(&elapsedTimer);
   elapsedTimer.invalidate();
 
-  a.exit();
   return 0;
 }

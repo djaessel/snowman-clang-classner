@@ -7,6 +7,8 @@
 #include <QTextStream>
 #include <bits/stdc++.h>
 
+#include "specialvals.h"
+
 using namespace std;
 
 class Structer

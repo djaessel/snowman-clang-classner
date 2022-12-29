@@ -4,6 +4,8 @@
 #include <QString>
 #include <QStringList>
 
+#include "specialvals.h"
+
 class RawFunction
 {
 private:

@@ -9,8 +9,8 @@ void ReinterpretAlter::removeReinterpret(vector<RawClass> classList)
   foreach (RawClass cls, classList) {
       QStringList lines;
 
-#ifdef DEBUGMODE
-      cout << cls.getName.toStdString.c_str() << " removing interprets...";
+#if DEBUGMODE
+      cout << cls.getName().toStdString().c_str() << " removing interprets...";
 #endif
 
       QFile file(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".h"));
@@ -43,7 +43,7 @@ void ReinterpretAlter::removeReinterpret(vector<RawClass> classList)
       }
       file2.close();
 
-#ifdef DEBUGMODE
+#if DEBUGMODE
       cout << "DONE" << endl;
 #endif
   }

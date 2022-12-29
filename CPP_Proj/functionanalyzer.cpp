@@ -61,7 +61,7 @@ FixedClass FunctionAnalyzer::findOriginalClass(QString cls, map<QString, FixedCl
   map<QString, QString> tracerx;
   //bool foundSomething = false;
 
-#ifdef DEBUGMODE
+#if DEBUGMODE
   cout << "Analyzing " << cls.toStdString().c_str() << "...";
 #endif
 
@@ -123,7 +123,7 @@ FixedClass FunctionAnalyzer::findOriginalClass(QString cls, map<QString, FixedCl
     fixedClass.addFunction(fixedFunc);
   }
 
-#ifdef DEBUGMODE
+#if DEBUGMODE
     cout << "DONE" << endl;
     cout << "Fixing " << cls.toStdString().c_str() << "...";
 #endif
@@ -193,7 +193,7 @@ FixedClass FunctionAnalyzer::findOriginalClass(QString cls, map<QString, FixedCl
         fixedClass.updateFunc(func);
     }
 
-#ifdef DEBUGMODE
+#if DEBUGMODE
   cout << "DONE" << endl;
 #endif
 

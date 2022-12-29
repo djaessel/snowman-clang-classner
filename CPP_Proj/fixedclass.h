@@ -3,6 +3,8 @@
 
 #include <QString>
 
+#include "specialvals.h"
+
 #include "fixedfunction.h"
 
 using namespace std;

@@ -1,6 +1,8 @@
 #ifndef RAWCLASS_H
 #define RAWCLASS_H
 
+#include "specialvals.h"
+
 #include "rawfunction.h"
 
 using namespace std;

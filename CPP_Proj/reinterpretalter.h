@@ -5,6 +5,8 @@
 #include <QFile>
 #include <QTextStream>
 
+#include "specialvals.h"
+
 #include "rawclass.h"
 
 using namespace std;

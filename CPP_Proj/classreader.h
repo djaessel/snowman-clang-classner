@@ -6,6 +6,8 @@
 
 #include <QString>
 
+#include "specialvals.h"
+
 #include "fixedclass.h"
 
 using namespace std;

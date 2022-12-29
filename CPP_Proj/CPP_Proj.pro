@@ -35,4 +35,5 @@ HEADERS += \
     rawclass.h \
     rawfunction.h \
     reinterpretalter.h \
+    specialvals.h \
     structer.h

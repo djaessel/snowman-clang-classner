@@ -9,6 +9,8 @@
 #include <bits/stdc++.h>
 #include <iostream>
 
+#include "specialvals.h"
+
 #include "rawclass.h"
 #include "structer.h"
 #include "fixedclass.h"

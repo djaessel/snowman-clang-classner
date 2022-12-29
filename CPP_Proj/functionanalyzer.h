@@ -3,6 +3,8 @@
 
 #include <bits/stdc++.h>
 
+#include "specialvals.h"
+
 #include "rawclass.h"
 #include "fixedclass.h"
 

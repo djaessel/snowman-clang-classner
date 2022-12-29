@@ -10,6 +10,8 @@
 #include <QRegExp>
 #include <QDir>
 
+#include "specialvals.h"
+
 #include "rawclass.h"
 #include "rawfunction.h"
 #include "classstorer.h"
