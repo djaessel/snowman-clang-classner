@@ -1,8 +1,49 @@
 #include "functionanalyzer.h"
 #include "classstorer.h"
 
-FunctionAnalyzer::FunctionAnalyzer()
+
+map<QString, QStringList> FunctionAnalyzer::addUsedClassImports(map<QString, FixedClass> &classes, map<QString, RawClass> &rawClasses)
 {
+  map<QString, QStringList> includes;
+  foreach (auto cls, classes) {
+      includes.insert_or_assign(cls.first, this->addUsedClassImports(cls.first, classes, rawClasses));
+  }
+  return includes;
+}
+
+QStringList FunctionAnalyzer::addUsedClassImports(QString cls, map<QString, FixedClass> &classes, map<QString, RawClass> &rawClasses)
+{
+  QStringList includes;
+
+  foreach (auto obj, rawClasses) {
+      foreach (RawFunction rawFunc, obj.second.getFunctions()) {
+          foreach (auto cls2, classes) {
+              QString declar = rawFunc.getDeclar();
+              if (declar.contains(cls2.first) && !includes.contains(cls2.first)) {
+                  if (declar.contains("(" + cls2.first + " ") ||
+                      declar.contains("(" + cls2.first + "*") ||
+                      declar.contains(" " + cls2.first + " ") ||
+                      declar.contains(" " + cls2.first + "*"))
+                    includes.append(cls2.first);
+              }
+          }
+      }
+  }
+
+  foreach (FixedFunction func, classes[cls].getFunctions()) {
+      foreach (QString line, func.getCodeLines()) {
+          foreach (auto cls2, classes) {
+              if (line.contains(cls2.first) && !includes.contains(cls2.first)) {
+                  if (line.contains(" " + cls2.first + "*") ||
+                      line.contains(" " + cls2.first + " ") ||
+                      line.contains(" " + cls2.first + "("))
+                    includes.append(cls2.first);
+              }
+          }
+      }
+  }
+
+  return includes;
 }
 
 map<QString, FixedClass> FunctionAnalyzer::findOriginalClass(map<QString, FixedClass> &classes)

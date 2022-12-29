@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <QCoreApplication>
+#include <QElapsedTimer>
 #include <QString>
 
 #include "classner.h"
@@ -22,6 +23,16 @@ static bool skipClassAnalyze = false;
 static bool argumentExists(char* arg, const char* search)
 {
   return QString::fromLocal8Bit((const char*)arg, strlen(arg)) == QString(search);
+}
+
+static void printElapsedTime(QElapsedTimer *elapsedTimer)
+{
+  ulong secs = elapsedTimer->elapsed();
+  ulong hours = secs / 3600;
+  secs = secs % 3600;
+  ulong mins = secs / 60;
+  secs = secs % 60;
+  cout << "Time taken: " << hours << ":" << mins << ":" << secs << endl;
 }
 
 int main(int argc, char *argv[])
@@ -62,6 +73,8 @@ int main(int argc, char *argv[])
 
   //stopwatch = Stopwatch()
   //stopwatch.start()
+  QElapsedTimer elapsedTimer;
+  elapsedTimer.start();
 
   cout << "Processing cpp file ..." << endl;
 
@@ -99,6 +112,11 @@ int main(int argc, char *argv[])
   foreach (auto c, modifiedClasses) {
       bakModClasses.insert_or_assign(c.first, c.second);
   }
+
+
+
+  printElapsedTime(&elapsedTimer);
+  elapsedTimer.invalidate();
 
   a.exit();
   return 0;
