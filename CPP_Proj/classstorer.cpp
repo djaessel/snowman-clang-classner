@@ -82,7 +82,7 @@ void ClassStorer::writeClassHeaderFile(RawClass cls)
 
   QFile file(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".h"));
   if(!file.open(QIODevice::WriteOnly)) {
-      cout << "ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
+      cout << "CLASSSTORER 1 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
   }
 
   QTextStream out(&file);
@@ -141,7 +141,7 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
       QString fileP(ClassStorer::ExportDir + "/" + cls.first + ".cpp");
       QFile file(fileP);
       if(!file.open(QIODevice::ReadOnly)) {
-          cout << "ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
+          cout << "CLASSSTORER 2 ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
       }
 
       bool molMode = false;
@@ -159,8 +159,8 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
       file.close();
 
       QFile file2(fileP);
-      if(!file.open(QIODevice::WriteOnly)) {
-          cout << "ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
+      if(!file2.open(QIODevice::WriteOnly)) {
+          cout << "CLASSSTORER 3 ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
       }
 
       QTextStream out(&file2);
@@ -187,8 +187,8 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
       QStringList allLinesX;
       QString fileP3(ClassStorer::ExportDir + "/" + cls.first + ".h");
       QFile file3(fileP3);
-      if(!file.open(QIODevice::ReadOnly)) {
-          cout << "ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
+      if(!file3.open(QIODevice::ReadOnly)) {
+          cout << "CLASSSTORER 4 ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
       }
 
       QTextStream in2(&file3);
@@ -205,8 +205,8 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
       file3.close();
 
       QFile file4(fileP3);
-      if(!file.open(QIODevice::WriteOnly)) {
-          cout << "ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
+      if(!file4.open(QIODevice::WriteOnly)) {
+          cout << "CLASSSTORER 5 ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
       }
 
       QTextStream out2(&file4);
@@ -359,7 +359,7 @@ QString ClassStorer::replaceSymbolsInLine(QString line)
 QString ClassStorer::classFunctionParameterFix(QString fname, QString assemblyFuncName)
 {
   if (fname.indexOf("(") < 0) {
-      cout << "classFunctionParameterFix : " << fname.toStdString().c_str() << " : " << assemblyFuncName.toStdString().c_str() << endl;
+      //cout << "classFunctionParameterFix : " << fname.toStdString().c_str() << " : " << assemblyFuncName.toStdString().c_str() << endl;
       fname = assemblyFuncName; // FIXME: temporary fix?
   } else {
       QStringList telp = fname.split("(")[1].split(")")[0].split(',');
@@ -406,7 +406,7 @@ void ClassStorer::updateNewCppFile(QString filePath/*, vector<RawClass> classes*
 
   QFile file(ClassStorer::ExportDir + QString("/") + fileName);
   if(!file.open(QIODevice::ReadOnly)) {
-      cout << "ERROR: File could not be opened - " << fileName.toStdString().c_str() << endl;
+      cout << "CLASSSTORER 6 ERROR: File could not be opened - " << fileName.toStdString().c_str() << endl;
   }
 
   QTextStream in(&file);
@@ -417,8 +417,8 @@ void ClassStorer::updateNewCppFile(QString filePath/*, vector<RawClass> classes*
   file.close();
 
   QFile file2(ClassStorer::ExportDir + QString("/") + fileName);
-  if(!file.open(QIODevice::WriteOnly)) {
-      cout << "ERROR: File could not be opened - " << fileName.toStdString().c_str() << endl;
+  if(!file2.open(QIODevice::WriteOnly)) {
+      cout << "CLASSSTORER 7 ERROR: File could not be opened - " << fileName.toStdString().c_str() << endl;
   }
 
   QTextStream out(&file2);
@@ -440,7 +440,7 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
 
   QFile file(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".cpp"));
   if(!file.open(QIODevice::WriteOnly)) {
-      cout << "ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
+      cout << "CLASSSTORER 8 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
   }
 
   QTextStream out(&file);
@@ -623,7 +623,7 @@ void ClassStorer::writeStructsForHeader(RawClass cls)
 
   QFile file(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".cpp"));
   if(!file.open(QIODevice::ReadOnly)) {
-      cout << "ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".cpp" << endl;
+      cout << "CLASSSTORER 9 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".cpp" << endl;
   }
 
   QString allCode;
@@ -634,8 +634,8 @@ void ClassStorer::writeStructsForHeader(RawClass cls)
   file.close();
 
   QFile file2(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".h"));
-  if(!file.open(QIODevice::ReadOnly)) {
-      cout << "ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
+  if(!file2.open(QIODevice::ReadOnly)) {
+      cout << "CLASSSTORER 10 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
   }
 
   QString allHeader;
@@ -661,8 +661,8 @@ void ClassStorer::writeStructsForHeader(RawClass cls)
   allHeader = allHeader.replace("// STRUCTS_GEN", newStructCode);
 
   QFile file3(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".h"));
-  if(!file.open(QIODevice::ReadOnly)) {
-      cout << "ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
+  if(!file3.open(QIODevice::WriteOnly)) {
+      cout << "CLASSSTORER 11 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
   }
 
   QTextStream out2(&file3);

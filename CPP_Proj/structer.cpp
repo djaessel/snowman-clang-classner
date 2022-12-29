@@ -10,7 +10,7 @@ void Structer::readStructs(QString filePath)
 
   QFile file(filePath);
   if(!file.open(QIODevice::ReadOnly)) {
-      cout << "ERROR: File could not be opened - " << filePath.toStdString().c_str() << endl;
+      cout << "STRUCTER ERROR: File could not be opened - " << filePath.toStdString().c_str() << endl;
   }
 
   bool structBody = false;

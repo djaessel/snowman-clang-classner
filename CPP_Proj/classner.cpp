@@ -47,7 +47,7 @@ void Classner::saveNewCppFile(QString filePath, QStringList linesToStore)
 
   QFile file(exportDir.absolutePath() + QString("/") + fileName);
   if(!file.open(QIODevice::WriteOnly)) {
-      cout << "ERROR: File could not be opened - " << filePath.toStdString().c_str() << endl;
+      cout << "CLASSNER 1 ERROR: File could not be opened - " << filePath.toStdString().c_str() << endl;
   }
 
   QTextStream out(&file);
@@ -69,7 +69,7 @@ void Classner::readClassFunctions(QString filePath, bool skipNewCpp)
 
   QFile file(filePath);
   if(!file.open(QIODevice::ReadOnly)) {
-      cout << "ERROR: File could not be opened - " << filePath.toStdString().c_str() << endl;
+      cout << "CLASSNER 2 ERROR: File could not be opened - " << filePath.toStdString().c_str() << endl;
   }
 
   bool nextIsDecl = false;

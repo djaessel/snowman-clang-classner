@@ -29,7 +29,9 @@ static bool argumentExists(char* arg, const char* search)
 
 static void printElapsedTime(QElapsedTimer *elapsedTimer)
 {
-  ulong secs = elapsedTimer->nsecsElapsed();
+  ulong msecs = elapsedTimer->elapsed();
+  ulong secs = msecs / 1000;
+  if ((msecs % 1000) > 0) secs++;
   ulong hours = secs / 3600;
   secs = secs % 3600;
   ulong mins = secs / 60;

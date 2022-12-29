@@ -15,7 +15,7 @@ void ClassReader::readClasses()
 
         QFile file(fileP);
         if(!file.open(QIODevice::ReadOnly)) {
-            cout << "ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
+            cout << "CLASSREADER ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
         }
 
         bool funcBody = false;
