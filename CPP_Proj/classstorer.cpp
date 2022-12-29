@@ -127,6 +127,98 @@ void ClassStorer::writeClassHeaderFile(RawClass cls)
 #endif
 }
 
+void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QString, QStringList> classIncludes)
+{
+  if (!QDir(ClassStorer::ExportDir).exists())
+    QDir().mkdir(ClassStorer::ExportDir);
+
+  cout << "WRITING FIXED CLASSES BEGIN" << endl;
+
+  foreach (auto cls, fixedClasses) {
+      QStringList startLines;
+      QStringList myFuncs;
+
+      QString fileP(ClassStorer::ExportDir + "/" + cls.first + ".cpp");
+      QFile file(fileP);
+      if(!file.open(QIODevice::ReadOnly)) {
+          cout << "ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
+      }
+
+      bool molMode = false;
+      QTextStream in(&file);
+      while(!in.atEnd()) {
+          QString line = in.readLine();
+          if (line.contains(cls.first + "::")){
+              myFuncs.append(line);
+              molMode = true;
+          }
+
+          if (!molMode)
+            startLines.append(line);
+      }
+      file.close();
+
+      QFile file2(fileP);
+      if(!file.open(QIODevice::WriteOnly)) {
+          cout << "ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
+      }
+
+      QTextStream out(&file2);
+      foreach (QString line, startLines) {
+          out << line.toStdString().c_str();
+      }
+
+      foreach (FixedFunction func, fixedClasses[cls.first].getFunctions()) {
+          foreach (QString fun, myFuncs) {
+              if (fun.contains("::" + func.getName() + "(")){
+                  out << fun.toStdString().c_str(); // write func head
+                  break;
+              }
+          }
+
+          foreach (QString line, func.getCodeLines()) {
+              out << line.toStdString().c_str();
+          }
+
+          out << "\n\n\n";
+      }
+      file2.close();
+
+      QStringList allLinesX;
+      QString fileP3(ClassStorer::ExportDir + "/" + cls.first + ".h");
+      QFile file3(fileP3);
+      if(!file.open(QIODevice::ReadOnly)) {
+          cout << "ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
+      }
+
+      QTextStream in2(&file3);
+      while(!in.atEnd()) {
+          QString line = in.readLine();
+          if (line.contains("// USED_CLASSES")) {
+              line = "";
+              foreach (QString include, classIncludes[cls.first])
+                  line += "#include \"" + include + ".h\"\n";
+              line += "\n";
+          }
+          allLinesX.append(line);
+      }
+      file3.close();
+
+      QFile file4(fileP3);
+      if(!file.open(QIODevice::WriteOnly)) {
+          cout << "ERROR: File could not be opened - " << fileP.toStdString().c_str() << endl;
+      }
+
+      QTextStream out2(&file4);
+      foreach (QString line, allLinesX) {
+          out << line.remove("\n").toStdString().c_str() << Qt::endl;
+      }
+      file4.close();
+  }
+
+  cout << "WRITING FIXED CLASSES END" << endl << endl;
+}
+
 QString ClassStorer::replaceSymbolsInLine(QString line)
 {
   foreach (auto repl, ClassStorer::Replaces) {
@@ -305,7 +397,7 @@ QString ClassStorer::classFunctionParameterFix(QString fname, QString assemblyFu
   return fname;
 }
 
-void ClassStorer::updateNewCppFile(QString filePath, vector<RawClass> classes)
+void ClassStorer::updateNewCppFile(QString filePath/*, vector<RawClass> classes*/)
 {
   cout << "Update cleaned cpp file...";
 
@@ -467,6 +559,7 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
 
       out << "}\n\n\n";
   }
+  file.close();
 
 #ifdef DEBUGMODE
   out << "DONE" << endl;
@@ -510,12 +603,73 @@ void ClassStorer::writeClasses()
   foreach (RawClass cls, this->classList) {
       this->writeClassHeaderFile(cls);
       this->writeClassCodeFile(cls);
-      //this->writeStructsForHeader(cls);
+      this->writeStructsForHeader(cls);
   }
 
 #ifdef DEBUGMODE
   cout << "WRITING CLASSES END" << endl << endl;
 #else
+  cout << "DONE" << endl;
+#endif
+}
+
+void ClassStorer::writeStructsForHeader(RawClass cls)
+{
+  map<QString, QStringList> structs = this->structer.getStructs();
+
+#ifdef DEBUGMODE
+  cout << "  Writing " << cls.getName().toStdString().c_str() << " class used structs...";
+#endif
+
+  QFile file(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".cpp"));
+  if(!file.open(QIODevice::ReadOnly)) {
+      cout << "ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".cpp" << endl;
+  }
+
+  QString allCode;
+  QTextStream in(&file);
+  while (!in.atEnd()) {
+      allCode = in.readAll();
+  }
+  file.close();
+
+  QFile file2(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".h"));
+  if(!file.open(QIODevice::ReadOnly)) {
+      cout << "ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
+  }
+
+  QString allHeader;
+  QTextStream in2(&file2);
+  while (!in.atEnd()) {
+      allHeader = in.readAll();
+  }
+  file2.close();
+
+  QString newStructCode("");
+
+  foreach (auto structx, structs) {
+      QString defStruct = QString(structx.first).replace("STRUCT_", "s");
+      if (allCode.contains(defStruct) || allHeader.contains(defStruct)) {
+          newStructCode += "\n";
+          foreach (QString line, structx.second) {
+              newStructCode += line + "\n";
+          }
+          newStructCode += "\n";
+      }
+  }
+
+  allHeader = allHeader.replace("// STRUCTS_GEN", newStructCode);
+
+  QFile file3(ClassStorer::ExportDir + QString("/") + cls.getName() + QString(".h"));
+  if(!file.open(QIODevice::ReadOnly)) {
+      cout << "ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
+  }
+
+  QTextStream out2(&file3);
+  out2 << allHeader << Qt::endl;
+  file3.close();
+
+#ifdef DEBUGMODE
   cout << "DONE" << endl;
 #endif
 }

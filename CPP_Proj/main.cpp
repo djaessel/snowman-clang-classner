@@ -10,8 +10,10 @@
 #include "classstorer.h"
 #include "classreader.h"
 #include "reinterpretalter.h"
+#include "functionanalyzer.h"
 
 using namespace std;
+
 
 static bool skipClassWrite = false;
 static bool skipReinterpret = false;
@@ -27,13 +29,14 @@ static bool argumentExists(char* arg, const char* search)
 
 static void printElapsedTime(QElapsedTimer *elapsedTimer)
 {
-  ulong secs = elapsedTimer->elapsed();
+  ulong secs = elapsedTimer->nsecsElapsed();
   ulong hours = secs / 3600;
   secs = secs % 3600;
   ulong mins = secs / 60;
   secs = secs % 60;
   cout << "Time taken: " << hours << ":" << mins << ":" << secs << endl;
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -71,8 +74,7 @@ int main(int argc, char *argv[])
       return 1;
   }
 
-  //stopwatch = Stopwatch()
-  //stopwatch.start()
+
   QElapsedTimer elapsedTimer;
   elapsedTimer.start();
 
@@ -91,7 +93,7 @@ int main(int argc, char *argv[])
 
   if (!skipClassWrite) {
     classStorer.writeClasses();
-    classStorer.updateNewCppFile(filePath, classes);
+    classStorer.updateNewCppFile(filePath/*, classes*/);
   }
 
   if (!skipReinterpret) {
@@ -113,7 +115,13 @@ int main(int argc, char *argv[])
       bakModClasses.insert_or_assign(c.first, c.second);
   }
 
-
+  if (!skipAnalyze) {
+      FunctionAnalyzer funcAnalyzer;
+      map<QString, FixedClass> fixedClasses = funcAnalyzer.findOriginalClass(modifiedClasses);
+      map<QString, QStringList> classIncludes = funcAnalyzer.addUsedClassImports(fixedClasses, classes);
+      // fixed_classes = analyzer.removeInvalidParams(fixed_classes, classes) # FIXME: broken at the moment
+      classStorer.writeClassesJust(fixedClasses, classIncludes);
+  }
 
   printElapsedTime(&elapsedTimer);
   elapsedTimer.invalidate();

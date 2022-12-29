@@ -11,6 +11,7 @@
 
 #include "rawclass.h"
 #include "structer.h"
+#include "fixedclass.h"
 
 using namespace std;
 
@@ -26,8 +27,7 @@ private:
 
   QString replaceSymbolsInLine(QString line);
   QString classFunctionParameterFix(QString fname, QString assemblyFuncName);
-  //void updateNewCppFile(QString filePath, vector<FixedClass> classes);
-  //void writeClassesJust(vector<FixedClass> fixedClasses, QStringList classIncludes);
+
 public:
   inline static QString ExportDir;
   inline static map<QString, QString> ParamTypes; // currently unused
@@ -42,7 +42,8 @@ public:
   void writeClassHeaderFile(RawClass cls);
   void writeClassCodeFile(RawClass cls);
   void writeStructsForHeader(RawClass cls);
-  void updateNewCppFile(QString filePath, vector<RawClass> classes);
+  void updateNewCppFile(QString filePath/*, vector<RawClass> classes*/);
+  void writeClassesJust(map<QString, FixedClass> fixedClasses, map<QString, QStringList> classIncludes);
 
   ClassStorer(Structer structer, vector<RawClass> classList);
 };

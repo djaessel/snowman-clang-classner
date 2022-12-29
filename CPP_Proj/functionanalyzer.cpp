@@ -2,7 +2,7 @@
 #include "classstorer.h"
 
 
-map<QString, QStringList> FunctionAnalyzer::addUsedClassImports(map<QString, FixedClass> &classes, map<QString, RawClass> &rawClasses)
+map<QString, QStringList> FunctionAnalyzer::addUsedClassImports(map<QString, FixedClass> &classes, vector<RawClass> &rawClasses)
 {
   map<QString, QStringList> includes;
   foreach (auto cls, classes) {
@@ -11,12 +11,12 @@ map<QString, QStringList> FunctionAnalyzer::addUsedClassImports(map<QString, Fix
   return includes;
 }
 
-QStringList FunctionAnalyzer::addUsedClassImports(QString cls, map<QString, FixedClass> &classes, map<QString, RawClass> &rawClasses)
+QStringList FunctionAnalyzer::addUsedClassImports(QString cls, map<QString, FixedClass> &classes, vector<RawClass> &rawClasses)
 {
   QStringList includes;
 
-  foreach (auto obj, rawClasses) {
-      foreach (RawFunction rawFunc, obj.second.getFunctions()) {
+  foreach (RawClass obj, rawClasses) {
+      foreach (RawFunction rawFunc, obj.getFunctions()) {
           foreach (auto cls2, classes) {
               QString declar = rawFunc.getDeclar();
               if (declar.contains(cls2.first) && !includes.contains(cls2.first)) {
