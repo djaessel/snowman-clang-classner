@@ -7,6 +7,8 @@ map<QString, QStringList> FunctionAnalyzer::addUsedClassImports(map<QString, Fix
 {
   map<QString, QStringList> includes;
 
+  cout << "Add used class imports..." << endl;
+
   //foreach (auto cls, classes) {
   //    includes.insert_or_assign(cls.first, this->addUsedClassImports(cls.first, classes, rawClasses));
   //}
@@ -24,6 +26,8 @@ map<QString, QStringList> FunctionAnalyzer::addUsedClassImports(map<QString, Fix
       QThreadPool::globalInstance()->start(hello);
   }
   QThreadPool::globalInstance()->waitForDone(); // waits for all to be done(?)
+
+  cout << "DONE" << endl;
 
   return includes;
 }
@@ -69,6 +73,8 @@ map<QString, FixedClass> FunctionAnalyzer::findOriginalClass(map<QString, FixedC
 //      fixedClasses.insert_or_assign(cls.first, this->findOriginalClass(cls.first, classes));
 //  }
 
+  cout << "Find original classes..." << endl;
+
   uint processor_count = processorCount();
   int length = classes->size() / processor_count;
   for (uint i = 0; i < processor_count; i++) {
@@ -82,6 +88,8 @@ map<QString, FixedClass> FunctionAnalyzer::findOriginalClass(map<QString, FixedC
       QThreadPool::globalInstance()->start(hello);
   }
   QThreadPool::globalInstance()->waitForDone(); // waits for all to be done(?)
+
+  cout << "DONE" << endl;
 
   return fixedClasses;
 }
