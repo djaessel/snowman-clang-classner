@@ -39,6 +39,16 @@ static void printElapsedTime(QElapsedTimer *elapsedTimer)
   cout << "Time taken: " << hours << ":" << mins << ":" << secs << endl;
 }
 
+static void printSkipOptions()
+{
+  // print options
+  cout << "SkipClassWrite: " << ((skipClassWrite) ? "True" : "False") << endl;
+  cout << "SkipReinterpret: " << ((skipReinterpret) ? "True" : "False") << endl;
+  cout << "SkipAnalyze: " << ((skipAnalyze) ? "True" : "False") << endl;
+  cout << "SkipRemoveIncluded: " << ((skipRemoveIncluded) ? "True" : "False") << endl;
+  cout << "SkipClassAnalyze: " << ((skipClassAnalyze) ? "True" : "False") << endl;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -71,12 +81,7 @@ int main(int argc, char *argv[])
       }
   }
 
-  // print options
-  cout << "SkipClassWrite: " << ((skipClassWrite) ? "True" : "False") << endl;
-  cout << "SkipReinterpret: " << ((skipReinterpret) ? "True" : "False") << endl;
-  cout << "SkipAnalyze: " << ((skipAnalyze) ? "True" : "False") << endl;
-  cout << "SkipRemoveIncluded: " << ((skipRemoveIncluded) ? "True" : "False") << endl;
-  cout << "SkipClassAnalyze: " << ((skipClassAnalyze) ? "True" : "False") << endl;
+  printSkipOptions();
 
 
   if (filePath.isEmpty()) {
