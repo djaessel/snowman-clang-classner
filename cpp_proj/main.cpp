@@ -71,6 +71,14 @@ int main(int argc, char *argv[])
       }
   }
 
+  // print options
+  cout << "SkipClassWrite: " << ((skipClassWrite) ? "True" : "False") << endl;
+  cout << "SkipReinterpret: " << ((skipReinterpret) ? "True" : "False") << endl;
+  cout << "SkipAnalyze: " << ((skipAnalyze) ? "True" : "False") << endl;
+  cout << "SkipRemoveIncluded: " << ((skipRemoveIncluded) ? "True" : "False") << endl;
+  cout << "SkipClassAnalyze: " << ((skipClassAnalyze) ? "True" : "False") << endl;
+
+
   if (filePath.isEmpty()) {
       cout << "No file given!" << endl;
       return 1;
