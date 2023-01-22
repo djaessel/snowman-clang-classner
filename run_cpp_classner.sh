@@ -8,4 +8,5 @@ FILESX=$(locate "cpp_proj_run" | grep $(pwd))
 
 # echo "$FILESX"
 echo "$FILESX $@"
+$FILESX $@
 
