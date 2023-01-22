@@ -176,6 +176,9 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
               }
           }
 
+          // FIXME: add '{' ?
+          // FIXME: new lines missing
+
           foreach (QString line, func.getCodeLines()) {
               out << line.toStdString().c_str();
           }

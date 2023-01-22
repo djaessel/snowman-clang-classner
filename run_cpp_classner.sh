@@ -7,5 +7,5 @@ sudo updatedb
 FILESX=$(locate "cpp_proj_run" | grep $(pwd))
 
 # echo "$FILESX"
-echo "$FILESX $1"
+echo "$FILESX $@"
 
