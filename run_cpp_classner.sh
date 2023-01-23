@@ -5,7 +5,11 @@
 # FILESX=$(ls | grep "cpp_proj_run")
 
 # maybe not each time
-sudo updatedb
+i="EMPTY" # default value if no arguments
+for i in $@; do :; done # get last argument
+if [ $i != "-ndbu" ]; then
+  sudo updatedb
+fi
 
 FILESX=$(locate "cpp_proj_run" | grep $(pwd))
 # echo "$FILESX $@"

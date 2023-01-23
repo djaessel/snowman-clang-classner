@@ -176,9 +176,6 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
               }
           }
 
-          // FIXME: add '{' ?
-          // FIXME: new lines missing
-
           foreach (QString line, func.getCodeLines()) {
               out << line.toStdString().c_str();
           }
@@ -498,7 +495,7 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
           func.removeCodeLine(0);
       }
 
-      out << "\n";
+      out << "{\n"; // fixed?
 
       foreach (QString line, func.getCodeLines()) {
           line = this->replaceSymbolsInLine(line);
@@ -662,13 +659,12 @@ void ClassStorer::writeStructsForHeader(RawClass cls)
 
   QString allHeader;
   QTextStream in2(&file2);
-  while (!in.atEnd()) {
-      allHeader = in.readAll();
+  while (!in2.atEnd()) {
+      allHeader = in2.readAll();
   }
   file2.close();
 
   QString newStructCode("");
-
   foreach (auto structx, structs) {
       QString defStruct = QString(structx.first).replace("STRUCT_", "s");
       if (allCode.contains(defStruct) || allHeader.contains(defStruct)) {
@@ -687,8 +683,8 @@ void ClassStorer::writeStructsForHeader(RawClass cls)
       cout << "CLASSSTORER 11 ERROR: File could not be opened - " << cls.getName().toStdString().c_str() << ".h" << endl;
   }
 
-  QTextStream out2(&file3);
-  out2 << allHeader << Qt::endl;
+  QTextStream out(&file3);
+  out << allHeader << Qt::endl;
   file3.close();
 
 #if DEBUGMODE
