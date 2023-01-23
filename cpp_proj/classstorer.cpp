@@ -165,19 +165,19 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
 
       QTextStream out(&file2);
       foreach (QString line, startLines) {
-          out << line.toStdString().c_str();
+          out << line.toStdString().c_str() << Qt::endl;
       }
 
       foreach (FixedFunction func, fixedClasses[cls.first].getFunctions()) {
           foreach (QString fun, myFuncs) {
               if (fun.contains("::" + func.getName() + "(")){
-                  out << fun.toStdString().c_str(); // write func head
+                  out << fun.toStdString().c_str() << Qt::endl; // write func head
                   break;
               }
           }
 
           foreach (QString line, func.getCodeLines()) {
-              out << line.toStdString().c_str();
+              out << line.toStdString().c_str() << Qt::endl;
           }
 
           out << "\n\n\n";
@@ -192,8 +192,8 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
       }
 
       QTextStream in2(&file3);
-      while(!in.atEnd()) {
-          QString line = in.readLine();
+      while(!in2.atEnd()) {
+          QString line = in2.readLine();
           if (line.contains("// USED_CLASSES")) {
               line = "";
               foreach (QString include, classIncludes[cls.first])
@@ -211,7 +211,7 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
 
       QTextStream out2(&file4);
       foreach (QString line, allLinesX) {
-          out << line.remove("\n").toStdString().c_str() << Qt::endl;
+          out2 << line.remove(QRegExp("([\n]$)")).toStdString().c_str() << Qt::endl;
       }
       file4.close();
   }
