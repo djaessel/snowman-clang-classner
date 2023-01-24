@@ -495,7 +495,7 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
           func.removeCodeLine(0);
       }
 
-      out << "{\n"; // fixed?
+      out << "{\n";
 
       foreach (QString line, func.getCodeLines()) {
           line = this->replaceSymbolsInLine(line);

@@ -111,7 +111,7 @@ FixedClass FunctionAnalyzer::findOriginalClass(QString cls, map<QString, FixedCl
           if (line.contains("possible pointer usage or inline declarations")) declarMode = true;
           else if (declarMode) {
               if (!line.contains("}"))
-                fixedFunc.insertCodeLine(1, line);
+                fixedFunc.insertCodeLine(1, line.replace("// ", " ").remove("\n") + QString(";\n"));
               else
                 fixedFunc.addCodeLine(line);
           } else {
