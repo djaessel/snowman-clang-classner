@@ -51,8 +51,11 @@ QStringList FunctionAnalyzer::addUsedClassImports(QString cls, map<QString, Fixe
   QStringList includes;
 
   foreach (RawClass obj, *rawClasses) {
-      foreach (RawFunction rawFunc, obj.getFunctions()) {
+      if (obj.getName() == cls) { // only for current class(?)
+        foreach (RawFunction rawFunc, obj.getFunctions()) {
           this->addUsedCLassImportsHelper(&includes, classes, rawFunc.getDeclar());
+        }
+        break;
       }
   }
 

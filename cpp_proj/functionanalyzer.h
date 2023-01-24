@@ -70,33 +70,37 @@ public:
   {
       auto it = classes->begin();
       std::advance(it, offset);
-      for (uint i = offset; i < length; i++) {
-          switch (mode){
-            case 0:
+      switch (mode){
+          case 0:
+            for (uint i = offset; i < length; i++) {
+
 #if DEBUGMODE
-    #if SPECIAL_DEBUG
-          cout << "Add Used Class Imports " << it->first.toStdString().c_str();
-    #else
-          cout << "Add Used Class Imports " << it->first.toStdString().c_str() << endl;
-    #endif
+  #if SPECIAL_DEBUG
+        cout << "Add Used Class Imports " << it->first.toStdString().c_str();
+  #else
+        cout << "Add Used Class Imports " << it->first.toStdString().c_str() << endl;
+  #endif
 #endif
               includes->insert_or_assign(it->first, funcAnalyzer->addUsedClassImports(it->first, classes, rawClasses));
+              if (i < classes->size() - 1)
+                  std::advance(it, 1);
 #if DEBUGMODE
-    #if SPECIAL_DEBUG
-          cout << "DONE" << endl;
-    #endif
+  #if SPECIAL_DEBUG
+        cout << "DONE" << endl;
+  #endif
 #endif
-              break;
-            case 1:
+            }
+            break;
+          case 1:
+            for (uint i = offset; i < length; i++) {
               fixedClasses->insert_or_assign(it->first, funcAnalyzer->findOriginalClass(it->first, classes));
-              break;
-            default:
-              qDebug() << "ERROR: Wrong mode!!!" << Qt::endl;
-              break;
-          }
-
-          if (i < classes->size() - 1)
-              std::advance(it, 1);
+              if (i < classes->size() - 1)
+                  std::advance(it, 1);
+            }
+            break;
+          default:
+            qDebug() << "ERROR: Wrong mode!!!" << Qt::endl;
+            break;
       }
   }
 };
