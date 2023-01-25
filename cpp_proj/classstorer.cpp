@@ -233,7 +233,7 @@ QString ClassStorer::replaceSymbolsInLine(QString line)
 
   while (line.contains("_Z") && tmp != line) {
       tmp = QString(line);
-      QString cutty = line.right(line.size() - line.indexOf("_Z") + 1);
+      QString cutty = line.right(line.size() - line.indexOf("_Z"));
 
       if (cutty.indexOf("(") >= 0){
         cutty = cutty.left(cutty.indexOf("("));
