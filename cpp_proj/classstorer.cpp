@@ -462,7 +462,8 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
       out << returnType.toStdString().c_str() << " " << cls.getName().toStdString().c_str() << "::" << cppFileFuncName.toStdString().c_str() << "\n"; // add return value and maybe basic parameter names
 
       map<QString, QString> usedAsPointer;
-      map<QString, int> toBeDeleted;
+      //map<QString, int> toBeDeleted;
+      vector<int> toBeDeleted;
 
       int max = func.getCodeLines().size();
       for (int i = 0; i < max; i++) {
@@ -477,18 +478,20 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
           if (monem.size() == 2) {
               if (ClassStorer::AllValidTypes.contains(monem[0])) {
                   variables.insert_or_assign(monem[1], monem[0]);
-                  toBeDeleted.insert_or_assign(monem[1], i);
+                  //toBeDeleted.insert_or_assign(monem[1], i);
+                  toBeDeleted.insert(toBeDeleted.begin(), i);
               } // else not valid
           } else if (monem.size() == 3) {
               if (ClassStorer::AllValidSpecialTypes.contains(monem[0])) {
                   variables.insert_or_assign(monem[2], "STRUCT_" + monem[1].right(monem[1].size() - 1)); // change later to meaningful name or fix
-                  toBeDeleted.insert_or_assign(monem[2], i);
+                  //toBeDeleted.insert_or_assign(monem[2], i);
+                  toBeDeleted.insert(toBeDeleted.begin(), i);
               } // else not valid
           }
       }
 
-      foreach (auto pair, toBeDeleted) {
-          func.removeCodeLine(pair.second);
+      foreach (int idx, toBeDeleted) {
+          func.removeCodeLine(idx);
       }
 
       if (func.getCodeLines().size() > 0 && func.getCodeLine(0).trimmed().size() == 0) {
