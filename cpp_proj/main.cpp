@@ -90,8 +90,10 @@ int main(int argc, char *argv[])
   }
 
 
+  // Start program time watch
   QElapsedTimer elapsedTimer;
   elapsedTimer.start();
+
 
   cout << "Processing cpp file ..." << endl;
 
@@ -138,6 +140,24 @@ int main(int argc, char *argv[])
       classStorer.writeClassesJust(fixedClasses, classIncludes);
   }
 
+  if (!skipRemoveIncluded) {
+      cout << "Remove included [not implemented yet]" << endl;
+      // TODO: Python equivalen: os.system("cd generated_classes && python3 remove_included.py")
+  }
+
+  if (!skipClassAnalyze) {
+      cout << "Class Analyze [not implemented yet]" << endl;
+      // TODO: Python equivalent
+      // classAnalyzer = ClassAnalyzer()
+      // classAnalyzer.findClassAttributes(bak_mod_classes) # FIXME: only works when previous are done and skipped second run
+      // - - -
+      //gotogo = Gotogo()
+      //gotogo.processClasses(modified_classes)
+      //os.system("mv *_*.cpp endl/class_info/") # FIXME: change later
+  }
+
+
+  // Stop program time watch
   printElapsedTime(&elapsedTimer);
   elapsedTimer.invalidate();
 
