@@ -667,15 +667,19 @@ void ClassStorer::writeStructsForHeader(RawClass cls)
   }
   file2.close();
 
+  bool firstStruct = true;
   QString newStructCode("");
   foreach (auto structx, structs) {
       QString defStruct = QString(structx.first).replace("STRUCT_", "s");
       if (allCode.contains(defStruct) || allHeader.contains(defStruct)) {
-          newStructCode += "\n";
+          if (!firstStruct) {
+              newStructCode += "\n";
+          }
           foreach (QString line, structx.second) {
               newStructCode += line + "\n";
           }
           newStructCode += "\n";
+          firstStruct = false;
       }
   }
 
