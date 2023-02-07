@@ -501,6 +501,8 @@ void ClassStorer::writeClassCodeFile(RawClass cls)
 
       out << "{\n";
 
+      // FIXME: some variables are not detected, propably because of Replaces/different type changes (e.g. char -> BYTE)
+
       foreach (QString line, func.getCodeLines()) {
           line = this->replaceSymbolsInLine(line);
 
