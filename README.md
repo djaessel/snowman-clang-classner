@@ -26,9 +26,10 @@ The cpp file should be decompiled output from snowman decompiler.
 # snowman with Classner Extension  
 Now there also is a modified repo version of snowman with Classner (this project) already included as extension.  
 > [snowman Decompiler Classner repo](https://github.com/djaessel/snowman)  
-So you could simply use this version of snowman to automate the whole process and directly get the result from snowman itself.
+
+So you could simply use this version of snowman to automate the whole process and directly get the result from snowman itself.  
 The procedure is the same as with usual console decompile process of snowman (with the nocode executable).  
 The GUI version of snowman might not be supported yet.  
-
+  
 Depending on the development state, it is possible that the snowman extension version is not up-to-date at times.  
 Keep that in mind, if you are an early adapter or up for experiments that is.  
