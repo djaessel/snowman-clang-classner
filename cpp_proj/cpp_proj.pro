@@ -18,6 +18,7 @@ QMAKE_LFLAGS += -m64 -O3
 QMAKE_CXXFLAGS += -m64 -O3
 
 SOURCES += \
+        classanalyzer.cpp \
         classner.cpp \
         classreader.cpp \
         classstorer.cpp \
@@ -37,6 +38,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    classanalyzer.h \
     classner.h \
     classreader.h \
     classstorer.h \
