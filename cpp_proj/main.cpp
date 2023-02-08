@@ -77,6 +77,8 @@ static void removeIncluded(QString moduleDir, QString moduleName, QString operat
       QDir::setCurrent(operatingDir);
   }
 
+  moduleDir = moduleDir.replace("/", QDir::separator());
+
   QStringList files;
   QDir glob(moduleDir);
   DownDir(glob, &files);
