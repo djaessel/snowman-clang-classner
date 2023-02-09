@@ -25,7 +25,7 @@ QString ClassAnalyzer::clamsFix(QString allText, QString text)
       }
   }
 
-  QString tx = text.remove(QRegExp("([\n]$)")).trimmed();
+  QString tx = text.remove(QRegExp("([\n]+$)")).trimmed();
   QString xon = allText.mid(allText.indexOf(tx) + tx.length());
 
   for (int i = 0; i < xon.length(); i++) {
@@ -74,7 +74,7 @@ QString ClassAnalyzer::clamsFix(QString allText, QString text)
 
 void ClassAnalyzer::benulf(QString line, map<QString, FixedClass>* classes, map<QString, QString> *classAttributes, QString cls, QString orgCls, QString func, QString fragger)
 {
-  QString tmo = line.remove(QRegExp("([\n]$)"));
+  QString tmo = line.remove(QRegExp("([\n]+$)"));
   if (tmo.contains("//")) {
       tmo = tmo.left(tmo.indexOf("//"));
   }
@@ -92,10 +92,10 @@ void ClassAnalyzer::benulf(QString line, map<QString, FixedClass>* classes, map<
   QString nomo("");
   if (mo.captureCount() > 0) {
       tx = this->clamsFix(tmo, mo.cap());
-      nomo = "\"" + tx + "\";\"" + tmo.trimmed().remove(QRegExp("([;]$)"));
+      nomo = "\"" + tx + "\";\"" + tmo.trimmed().remove(QRegExp("([;]+$)"));
   } else if (mo2.captureCount() > 0) {
       tx = this->clamsFix(tmo, mo2.cap());
-      nomo = "\"" + tx + "\";\"" + tmo.trimmed().remove(QRegExp("([;]$)"));
+      nomo = "\"" + tx + "\";\"" + tmo.trimmed().remove(QRegExp("([;]+$)"));
   } else if (tmo.contains(fragger + "*") ||
              tmo.contains(fragger + " ") ||
              (fragger == QString("rdi") && tmo.contains("this->"))) {
@@ -124,7 +124,7 @@ void ClassAnalyzer::benulf(QString line, map<QString, FixedClass>* classes, map<
   if (mo3.captureCount() > 0) {
       QString xa = tmo.mid(tmo.indexOf("STRUCT_"));
       xa = xa.left(xa.indexOf(" "));
-      nomo = "\"" + xa + "\";\"" + tmo.trimmed().remove(QRegExp("([;]$)")) + "\";\"" + cls + "\";\"" + func + "\"\n";
+      nomo = "\"" + xa + "\";\"" + tmo.trimmed().remove(QRegExp("([;]+$)")) + "\";\"" + cls + "\";\"" + func + "\"\n";
       QString key = nomo.split(';').first();
       if (classAttributes->count(key) == 0) {
           classAttributes->insert_or_assign(key, nomo);
@@ -162,20 +162,20 @@ QStringList ClassAnalyzer::findClassAttributesExternal(QString cls, map<QString,
                   QString nomo("");
                   if (moa.captureCount() > 0 || mob.captureCount() > 0) {
                       if (moa.captureCount() > 0) {
-                          tx = moa.cap().trimmed().remove(QRegExp("([=]$)")).remove(QRegExp("([ ]$)"));
+                          tx = moa.cap().trimmed().remove(QRegExp("([=]+$)")).remove(QRegExp("([ ]+$)"));
                       } else {
-                          tx = mob.cap().trimmed().remove(QRegExp("([;]$)"));
+                          tx = mob.cap().trimmed().remove(QRegExp("([;]+$)"));
                       }
                       tx = tx.split(' ')[1];
                       activeAttribs.append(tx);
-                      nomo = "\"" + tx + "\";\"" + tmo.trimmed().remove(QRegExp("([;]$)"));
+                      nomo = "\"" + tx + "\";\"" + tmo.trimmed().remove(QRegExp("([;]+$)"));
                   } else if (mo2.captureCount() > 0) {
                       tx = mo2.cap().trimmed();
                       QString txa = tx.mid(tx.indexOf('>') + 1);
                       txa = txa.left(txa.indexOf('(')- 1); // FIXME: possible inde bug because txa was tx before in python
                       foreach (auto f, myFuncs) {
                           if (f.getName() == txa) {
-                              nomo = "\"" + tx.split('(').first() + "\";\"" + tmo.trimmed().remove(QRegExp("([;]$)"));
+                              nomo = "\"" + tx.split('(').first() + "\";\"" + tmo.trimmed().remove(QRegExp("([;]+$)"));
                               break;
                           }
                       }

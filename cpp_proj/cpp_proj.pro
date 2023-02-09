@@ -27,6 +27,7 @@ SOURCES += \
         fixedclass.cpp \
         fixedfunction.cpp \
         functionanalyzer.cpp \
+        gotogo.cpp \
         main.cpp \
         rawclass.cpp \
         rawfunction.cpp \
@@ -47,6 +48,7 @@ HEADERS += \
     fixedclass.h \
     fixedfunction.h \
     functionanalyzer.h \
+    gotogo.h \
     rawclass.h \
     rawfunction.h \
     reinterpretalter.h \
