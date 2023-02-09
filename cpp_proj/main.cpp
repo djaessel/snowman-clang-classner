@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
   }
 
   if (!skipClassAnalyze) {
-      cout << "Class Analyze [not implemented yet]" << endl;
+      cout << "Class Analyzing..." << endl;
       ClassAnalyzer classAnalyzer;
       classAnalyzer.findClassAttributes(&bakModClasses); // FIXME: only works when previous are done and skipped second run
       // TODO: later retrieve actual attributes maybe and then store in actual class files etc.
