@@ -11,6 +11,7 @@
 #include "classreader.h"
 #include "reinterpretalter.h"
 #include "functionanalyzer.h"
+#include "classanalyzer.h"
 
 using namespace std;
 
@@ -237,10 +238,10 @@ int main(int argc, char *argv[])
   QString fileName = pathArray.back().split(".")[0];
   modifiedClasses.erase(fileName);
 
-  //map<QString, FixedClass> bakModClasses;
-  //foreach (auto c, modifiedClasses) {
-  //    bakModClasses.insert_or_assign(c.first, c.second);
-  //}
+  map<QString, FixedClass> bakModClasses;
+  foreach (auto c, modifiedClasses) {
+      bakModClasses.insert_or_assign(c.first, c.second);
+  }
 
   if (!skipAnalyze) {
       FunctionAnalyzer funcAnalyzer;
@@ -257,9 +258,9 @@ int main(int argc, char *argv[])
 
   if (!skipClassAnalyze) {
       cout << "Class Analyze [not implemented yet]" << endl;
-      // TODO: Python equivalent
-      // classAnalyzer = ClassAnalyzer()
-      // classAnalyzer.findClassAttributes(bak_mod_classes) # FIXME: only works when previous are done and skipped second run
+      ClassAnalyzer classAnalyzer;
+      classAnalyzer.findClassAttributes(&bakModClasses); // FIXME: only works when previous are done and skipped second run
+      // TODO: later retrieve actual attributes maybe and then store in actual class files etc.
       // - - -
       //gotogo = Gotogo()
       //gotogo.processClasses(modified_classes)

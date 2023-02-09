@@ -17,6 +17,8 @@ QMAKE_CFLAGS += -m64 -O3
 QMAKE_LFLAGS += -m64 -O3
 QMAKE_CXXFLAGS += -m64 -O3
 
+QMAKE_CXXFLAGS += -mpreferred-stack-boundary=3 -finline-small-functions -momit-leaf-frame-pointer
+
 SOURCES += \
         classanalyzer.cpp \
         classner.cpp \
