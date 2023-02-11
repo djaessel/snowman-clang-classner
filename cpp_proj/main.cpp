@@ -22,6 +22,7 @@ static bool skipReinterpret = false;
 static bool skipAnalyze = false;
 static bool skipRemoveIncluded = false;
 static bool skipClassAnalyze = false;
+static bool skipGotoAnalyze = false;
 
 
 static bool argumentExists(char* arg, const char* search)
@@ -161,15 +162,20 @@ static void removeIncluded(QString moduleDir, QString moduleName, QString operat
   }
 }
 
-
-int main(int argc, char *argv[])
+static void setAllSkipTrue()
 {
-  QCoreApplication a(argc, argv);
+  skipClassWrite = true;
+  skipReinterpret = true;
+  skipAnalyze = true;
+  skipRemoveIncluded = true;
+  skipClassAnalyze = true;
+  skipGotoAnalyze = true;
+}
 
-  QString filePath = "";
-
+static void processCommandArguments(QString *filePath, int argc, char* argv[])
+{
   if (argc > 0) {
-      filePath = argv[1];
+      *filePath = argv[1];
       if (argc > 1) {
           for (int i = 1; i < argc; i++) {
               if (argumentExists(argv[i], "-sc"))
@@ -182,17 +188,54 @@ int main(int argc, char *argv[])
                   skipRemoveIncluded = true;
               else if (argumentExists(argv[i], "-sa2"))
                   skipClassAnalyze = true;
-              else if (argumentExists(argv[i], "--skip-all")){
-                  skipClassWrite = true;
-                  skipReinterpret = true;
-                  skipAnalyze = true;
-                  skipRemoveIncluded = true;
-                  skipClassAnalyze = true;
+              else if (argumentExists(argv[i], "-sg"))
+                  skipGotoAnalyze = true;
+              else if (argumentExists(argv[i], "--skip-all"))
+                  setAllSkipTrue();
+              else if (argumentExists(argv[i], "--skip=")){
+                  QStringList skipArgs = QString(argv[i]).split('=')[1].split(',');
+                  foreach (QString skipArg, skipArgs) {
+                      if (skipArg.length() == 1) {
+                        switch (skipArg.at(0).cell()) {
+                          case u'c':
+                            skipClassWrite = true;
+                            break;
+                          case u'r':
+                            skipReinterpret = true;
+                            break;
+                          case u'a':
+                            skipAnalyze = true;
+                            break;
+                          case u'i':
+                            skipRemoveIncluded = true;
+                            break;
+                          case u'g':
+                            skipGotoAnalyze = true;
+                            break;
+                          default:
+                            cout << "Unknown skip argument: " << skipArg.at(0).cell() << endl;
+                            break;
+                        }
+                      }
+                      else if (skipArg == QString("a2"))
+                        skipClassAnalyze = true;
+                      else if (skipArg == QString("all"))
+                        setAllSkipTrue();
+                  }
               }
           }
       }
   }
+}
 
+
+int main(int argc, char *argv[])
+{
+  QCoreApplication a(argc, argv);
+
+  QString filePath("");
+
+  processCommandArguments(&filePath, argc, argv);
   printSkipOptions();
 
 
@@ -262,7 +305,9 @@ int main(int argc, char *argv[])
       ClassAnalyzer classAnalyzer;
       classAnalyzer.findClassAttributes(&bakModClasses); // FIXME: only works when previous are done and skipped second run
       // TODO: later retrieve actual attributes maybe and then store in actual class files etc.
-      // - - -
+  }
+
+  if (!skipGotoAnalyze) {
       GoToGo gotogo;
       gotogo.processClasses(&modifiedClasses);
 
