@@ -136,7 +136,7 @@ void GoToGo::processClasses(map<QString, FixedClass> *classes)
            QFile f(cls.first + "_" + func.getName() + ".cpp");
            if (f.open(QFile::WriteOnly | QFile::Text)) {
               QTextStream out(&f);
-              out << funcy.join("") << Qt::endl;
+              out << funcy.join("\n") << Qt::endl;
               f.close();
            }
 
