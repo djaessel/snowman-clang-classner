@@ -27,7 +27,8 @@ static bool skipGotoAnalyze = false;
 
 static bool argumentExists(char* arg, const char* search)
 {
-  return QString::fromLocal8Bit((const char*)arg, strlen(arg)) == QString(search);
+  QString argx(QString::fromLocal8Bit((const char*)arg, strlen(arg)));
+  return (argx == QString(search) || argx.startsWith(QString(search) + QString("=")));
 }
 
 static void printElapsedTime(QElapsedTimer *elapsedTimer)
@@ -50,6 +51,7 @@ static void printSkipOptions()
   cout << "SkipAnalyze: " << ((skipAnalyze) ? "True" : "False") << endl;
   cout << "SkipRemoveIncluded: " << ((skipRemoveIncluded) ? "True" : "False") << endl;
   cout << "SkipClassAnalyze: " << ((skipClassAnalyze) ? "True" : "False") << endl;
+  cout << "SkipGotoAnalyze: " << ((skipGotoAnalyze) ? "True" : "False") << endl;
 }
 
 static void DownDir(QDir dir, QStringList* listX)
@@ -192,24 +194,28 @@ static void processCommandArguments(QString *filePath, int argc, char* argv[])
                   skipGotoAnalyze = true;
               else if (argumentExists(argv[i], "--skip-all"))
                   setAllSkipTrue();
-              else if (argumentExists(argv[i], "--skip=")){
+              else if (argumentExists(argv[i], "--skip")){ // option with '=' at end!
+                  if (!QString(argv[i]).contains("=")) {
+                      cout << "Empty --skip options ignored!" << endl;
+                      continue; // skip if for some reason no parameters
+                  }
                   QStringList skipArgs = QString(argv[i]).split('=')[1].split(',');
                   foreach (QString skipArg, skipArgs) {
                       if (skipArg.length() == 1) {
-                        switch (skipArg.at(0).cell()) {
-                          case u'c':
+                        switch ((char)skipArg.at(0).cell()) {
+                          case 'c':
                             skipClassWrite = true;
                             break;
-                          case u'r':
+                          case 'r':
                             skipReinterpret = true;
                             break;
-                          case u'a':
+                          case 'a':
                             skipAnalyze = true;
                             break;
-                          case u'i':
+                          case 'i':
                             skipRemoveIncluded = true;
                             break;
-                          case u'g':
+                          case 'g':
                             skipGotoAnalyze = true;
                             break;
                           default:
