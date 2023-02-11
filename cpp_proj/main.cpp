@@ -22,7 +22,7 @@ static bool skipReinterpret = false;
 static bool skipAnalyze = false;
 static bool skipRemoveIncluded = false;
 static bool skipClassAnalyze = false;
-static bool skipGotoAnalyze = false;
+static bool skipGotoAnalyze = true; // for now since it does not fully work
 
 
 static bool argumentExists(char* arg, const char* search)
