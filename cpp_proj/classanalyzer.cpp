@@ -248,7 +248,7 @@ map<QString, QStringList> ClassAnalyzer::findClassAttributes(map<QString, FixedC
 {
   map<QString, QStringList> classAttributes;
 
-  cout << "Add used class imports..." << endl;
+  cout << "Find class attributes..." << endl;
 
   uint processor_count = processorCount();
   //processor_count = 1; // for testing bugs
