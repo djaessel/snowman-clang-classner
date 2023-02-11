@@ -254,7 +254,7 @@ int main(int argc, char *argv[])
 
   if (!skipRemoveIncluded) {
       cout << "Remove included..." << endl;
-      removeIncluded("../warband_mangled_source/havok-2013", "havok-2013"); // example with Havok-2013
+      removeIncluded(QString("../warband_mangled_source/havok-2013").replace("/", QDir::separator()), "havok-2013"); // example with Havok-2013
   }
 
   if (!skipClassAnalyze) {
@@ -263,18 +263,17 @@ int main(int argc, char *argv[])
       classAnalyzer.findClassAttributes(&bakModClasses); // FIXME: only works when previous are done and skipped second run
       // TODO: later retrieve actual attributes maybe and then store in actual class files etc.
       // - - -
-// DEACTIVATE SEGMENT FAULT!
-//      GoToGo gotogo;
-//      gotogo.processClasses(&modifiedClasses);
-//
-//      QStringList files = QDir(".").entryList(QDir::Files | QDir::NoDotAndDotDot);
-//      foreach (QString file, files) {
-//          if (file.contains("_") && file.endsWith(".cpp")) {
-//              QFile fx(file);
-//              fx.copy(QString("./endl/class_info/" + file).replace("/", QDir::separator()));
-//              fx.remove();
-//          }
-//      }
+      GoToGo gotogo;
+      gotogo.processClasses(&modifiedClasses);
+
+      QStringList files = QDir(".").entryList(QDir::Files | QDir::NoDotAndDotDot);
+      foreach (QString file, files) {
+          if (file.contains("_") && file.endsWith(".cpp")) {
+              QFile fx(file);
+              fx.copy(QString("./endl/class_info/" + file).replace("/", QDir::separator()));
+              fx.remove();
+          }
+      }
   }
 
 

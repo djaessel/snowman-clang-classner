@@ -197,6 +197,7 @@ void ClassStorer::writeClassesJust(map<QString, FixedClass> fixedClasses, map<QS
           if (line.contains("// USED_CLASSES")) {
               line = "";
               foreach (QString include, classIncludes[cls.first])
+                if (cls.first != include) // ignore same class include in itself
                   line += "#include \"" + include + ".h\"\n";
               line += "\n";
           }

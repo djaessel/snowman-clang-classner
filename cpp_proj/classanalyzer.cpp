@@ -203,10 +203,10 @@ QStringList ClassAnalyzer::findClassAttributesExternal(QString cls, map<QString,
 
   // TODO: remove these later when attribs found!
   QFile f(QString("./endl/" + cls + ".endl").replace("/", QDir::separator()));
-  if (f.open(QFile::WriteOnly | QFile::Text)) {
+  if (f.open(QFile::WriteOnly | QFile::Append | QFile::Text)) {
       QTextStream out(&f);
       foreach (auto attr, classAttributes) {
-          out << attr.second << Qt::endl;
+          out << attr.second;
       }
       f.close();
   }
@@ -229,7 +229,7 @@ QStringList ClassAnalyzer::findClassAttributes(QString cls, map<QString, FixedCl
   }
 
   QFile f(QString("./endl/" + cls + ".endl").replace("/", QDir::separator()));
-  if (f.open(QFile::WriteOnly | QFile::Text)) {
+  if (f.open(QFile::WriteOnly | QFile::Append | QFile::Text)) {
       QTextStream out(&f);
       foreach (auto attr, classAttributes) {
           out << attr.second << Qt::endl;
