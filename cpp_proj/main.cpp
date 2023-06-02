@@ -24,6 +24,8 @@ static bool skipRemoveIncluded = false;
 static bool skipClassAnalyze = false;
 static bool skipGotoAnalyze = true; // for now since it does not fully work
 
+static QStringList externalIncludes;
+
 
 static bool argumentExists(char* arg, const char* search)
 {
@@ -43,6 +45,16 @@ static void printElapsedTime(QElapsedTimer *elapsedTimer)
   cout << "Time taken: " << hours << ":" << mins << ":" << secs << endl;
 }
 
+static void printExternalIncludes()
+{
+  cout << "External Includes: " << externalIncludes.count() << endl;
+  foreach (QString includedModule, externalIncludes) {
+      QStringList moduleInfo = includedModule.split('|');
+      cout << " Module: " << moduleInfo[0].toStdString().c_str() << endl;
+      cout << " >> " << moduleInfo[1].replace("/", QDir::separator()).toStdString().c_str() << endl;
+  }
+}
+
 static void printSkipOptions()
 {
   // print options
@@ -54,21 +66,28 @@ static void printSkipOptions()
   cout << "SkipGotoAnalyze: " << ((skipGotoAnalyze) ? "True" : "False") << endl;
 }
 
-static void DownDir(QDir dir, QStringList* listX)
+static void DownDir(QString dirName, QStringList* listX)
 {
-  const QFileInfoList list = dir.entryInfoList();
+  QDir dir(dirName);
+  const QFileInfoList list =  dir.entryInfoList();
+
   QFileInfo fi;
+  QStringList beta;
   for (int l = 0; l < list.size(); l++)
   {
       fi = list.at(l);
       if (fi.isDir() && fi.fileName() != "." && fi.fileName() != "..")
       {
-          DownDir(fi.absoluteFilePath(), listX);
+          beta.append(fi.absoluteFilePath());
       }
-      else if (fi.isFile() && fi.path().endsWith(".h"))
+      else if (fi.isFile() && fi.absoluteFilePath().endsWith(".h"))
       {
           listX->append(fi.absoluteFilePath());
       }
+  }
+
+  foreach (QString s, beta) {
+      DownDir(s, listX);
   }
 }
 
@@ -85,8 +104,7 @@ static void removeIncluded(QString moduleDir, QString moduleName, QString operat
   moduleDir = moduleDir.replace("/", QDir::separator());
 
   QStringList files;
-  QDir glob(moduleDir);
-  DownDir(glob, &files);
+  DownDir(moduleDir, &files);
 
   QStringList excludedDirs;
   excludedDirs.append(".git");
@@ -102,18 +120,26 @@ static void removeIncluded(QString moduleDir, QString moduleName, QString operat
       }
 
       if (!foundExl) {
-          fileNames.append(filePath.split(QDir::separator()).last());
+          if (!fileNames.contains( filePath.split(QDir::separator()).last()) ) {
+              fileNames.append(filePath.split(QDir::separator()).last());
+          }
       }
   }
 
   QString sourceFile;
   QStringList fileNamesFound;
   foreach (QString headerFile, fileNames) {
+      //QDir cur(".");
+      //headerFile = cur.absolutePath() + QDir::separator() + headerFile;
+      cout << "FILE: " << headerFile.toStdString().c_str();
       if (QFile::exists(headerFile) && QFileInfo(headerFile).isFile()) {
+          cout << " | EXISTS ";
           if (QFile::remove(headerFile)) {
+              cout << "| FOUND";
               fileNamesFound.append(headerFile);
           }
       }
+      cout << endl;
 
       sourceFile = headerFile.replace(".h", ".cpp");
       if (QFile::exists(sourceFile) && QFileInfo(sourceFile).isFile()) {
@@ -121,10 +147,13 @@ static void removeIncluded(QString moduleDir, QString moduleName, QString operat
       }
   }
 
+  cout << "FOUND ONLY REAL: " << fileNamesFound.count() << endl;
+
   map<QString, QString> cortess;
   QString fileName, filex2;
   foreach (QString filex, files) {
       fileName = filex.split(QDir::separator()).last();
+
       if (fileNamesFound.contains(fileName)) {
           filex2 = filex.mid(filex.indexOf(moduleName)).replace(moduleName, moduleDir);
           cortess.insert_or_assign(fileName, filex2);
@@ -149,7 +178,7 @@ static void removeIncluded(QString moduleDir, QString moduleName, QString operat
           QFile f2(file);
           if (!f2.open(QFile::WriteOnly | QFile::Text))
           {
-              cout << "ERROR2 file read removeIncludes: " << file.toStdString().c_str() << endl;
+              cout << "ERROR2 file write removeIncludes: " << file.toStdString().c_str() << endl;
               continue;
           }
           QTextStream out(&f2);
@@ -160,7 +189,7 @@ static void removeIncluded(QString moduleDir, QString moduleName, QString operat
 
   // finish up and reset to original working dir
   if (!standardDir) {
-    QDir::setCurrent(originalDir);
+      QDir::setCurrent(originalDir);
   }
 }
 
@@ -229,6 +258,14 @@ static void processCommandArguments(QString *filePath, int argc, char* argv[])
                         setAllSkipTrue();
                   }
               }
+              else if (argumentExists(argv[i], "--includes")) {
+                  //../warband_mangled_source/havok-2013
+                  if (!QString(argv[i]).contains("=")) {
+                      cout << "Empty --skip options ignored!" << endl;
+                      continue; // skip if for some reason no parameters
+                  }
+                  externalIncludes = QString(argv[i]).split('=')[1].split(',');
+              }
           }
       }
   }
@@ -243,6 +280,7 @@ int main(int argc, char *argv[])
 
   processCommandArguments(&filePath, argc, argv);
   printSkipOptions();
+  printExternalIncludes();
 
 
   if (filePath.isEmpty()) {
@@ -303,7 +341,11 @@ int main(int argc, char *argv[])
 
   if (!skipRemoveIncluded) {
       cout << "Remove included..." << endl;
-      removeIncluded(QString("../warband_mangled_source/havok-2013").replace("/", QDir::separator()), "havok-2013"); // example with Havok-2013
+      //removeIncluded(QString("../warband_mangled_source/havok-2013").replace("/", QDir::separator()), "havok-2013"); // example with Havok-2013
+      foreach (QString includedModule, externalIncludes) {
+          QStringList moduleInfo = includedModule.split('|');
+          removeIncluded(moduleInfo[1].replace("/", QDir::separator()), moduleInfo[0]);
+      }
   }
 
   if (!skipClassAnalyze) {
