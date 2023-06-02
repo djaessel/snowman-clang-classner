@@ -66,6 +66,56 @@ static void printSkipOptions()
   cout << "SkipGotoAnalyze: " << ((skipGotoAnalyze) ? "True" : "False") << endl;
 }
 
+static void createProFile(QString fileName)
+{
+  QFile fx(QString(".") + QDir::separator() + "cpp_proj" + QDir::separator() + "template_pro.txt");
+  fileName = QString(".") + QDir::separator() + "generated_classes" + QDir::separator() + fileName;
+  fx.copy(fileName);
+
+  QFile f(fileName);
+  if (!f.open(QFile::ReadOnly | QFile::Text))
+  {
+      cout << "ERROR1 file read removeIncludes: " << fileName.toStdString().c_str() << endl;
+      return;
+  }
+
+  QDir dir(QString(".") + QDir::separator() + "generated_classes");
+  const QFileInfoList list =  dir.entryInfoList();
+
+  QString sources("");
+  QString headers("");
+  foreach (QFileInfo fileInfo, list) {
+      if (fileInfo.isFile() && fileInfo.exists()) {
+          cout << "FILEINFOX: " << fileInfo.fileName().toStdString().c_str() << endl;
+          if (fileInfo.fileName().endsWith(".cpp") || fileInfo.fileName().endsWith(".c")) {
+              sources.append("  " + fileInfo.fileName() + " \\");
+          }
+          else if (fileInfo.fileName().endsWith(".hpp") || fileInfo.fileName().endsWith(".h")) {
+              headers.append("  " + fileInfo.fileName() + " \\");
+          }
+      }
+  }
+
+  QTextStream in(&f);
+  QString alla = in.readAll();
+  alla = alla.replace("# %%SOURCES%%", sources);
+  alla = alla.replace("# %%HEADERS%%", headers);
+  f.close();
+
+  QFile f2(fileName);
+  if (!f2.open(QFile::WriteOnly | QFile::Text))
+  {
+      cout << "ERROR2 file write createProFile: " << fileName.toStdString().c_str() << endl;
+      return;
+  }
+
+  QTextStream out(&f2);
+  out << alla;
+  f2.close();
+
+  cout << " >> .pro file created > " << fileName.toStdString().c_str() << endl;
+}
+
 static void DownDir(QString dirName, QStringList* listX)
 {
   QDir dir(dirName);
@@ -369,6 +419,8 @@ int main(int argc, char *argv[])
       }
   }
 
+
+  createProFile("my_test_project.pro");
 
   // Stop program time watch
   printElapsedTime(&elapsedTimer);

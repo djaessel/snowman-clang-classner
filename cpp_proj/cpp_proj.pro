@@ -54,3 +54,6 @@ HEADERS += \
     reinterpretalter.h \
     specialvals.h \
     structer.h
+
+DISTFILES += \
+    template_pro.txt
