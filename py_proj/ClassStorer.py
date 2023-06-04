@@ -134,6 +134,7 @@ class ClassStorer:
         for cls in fixed_classes:
             start_lines = []
             my_funcs = []
+            print(cls, "...")
             with open(ClassStorer.export_dir + "/" + cls + ".cpp") as fr:
                 mol_mode = False
                 for line in fr:

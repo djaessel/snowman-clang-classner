@@ -29,6 +29,10 @@ class ClassReader:
                 for line in fr:
                     if class_name + "::" in line:
                         cur_func_name = line.split("::")[1].split("(")[0]
+                        countxyz = 1
+                        while cur_func_name in self.classes[class_name]:
+                            countxyz += 1
+                            cur_func_name += "_" + countxyz
                         self.classes[class_name][cur_func_name] = []
                         func_body = True
                     elif func_body:

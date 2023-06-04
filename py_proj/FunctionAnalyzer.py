@@ -107,9 +107,15 @@ class FunctionAnalyzer:
         fixed_class = dict()
         #found_something = False
         for func in classes[cls]:
+            countxyz = 1
+            orgFunc = func
+            while func in fixed_class.keys():
+                countxyz += 1
+                func += "_" + str(countxyz)
+                print("A:", func, orgFunc)
             fixed_class[func] = []
             declar_mode = False
-            for line in classes[cls][func]:
+            for line in classes[cls][orgFunc]:
                 if "possible pointer usage or inline declarations" in line:
                     declar_mode = True
                 elif declar_mode:

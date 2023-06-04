@@ -26,6 +26,10 @@ generated_classes/*
 
 main
 main.bin
+main*.cpp
+
+
+extra_namespace_funcs.csv
 
 
 ccompiled/build/

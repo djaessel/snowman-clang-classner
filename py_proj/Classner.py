@@ -59,6 +59,17 @@ class Classner:
                         # TODO: handle functions that have different names/class structures later!!! Do not forget!!!
                         if mo:
                             if len(mo.group(0)) > 0:
+                                cxxxx = 1
+                                already_in_it = False
+                                for nameas in class_functions:
+                                    if nameas[0] == line:
+                                        already_in_it = True
+                                        cxxxx += 1
+                                        line += "_" + str(cxxxx)
+
+                                if already_in_it:
+                                    print("[", line, "] >> already inside")
+
                                 class_functions.append([line]) # probably correct function name, without return type
                                 next_is_decl = True
                             else:
