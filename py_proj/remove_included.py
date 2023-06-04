@@ -17,8 +17,8 @@ def processFath():
 
     file_names_found = []
     for header_file in files_names:
-        if os.path.exists(header_file) and os.path.isfile(header_file):
-            os.system("rm ./" + header_file)
+        if os.path.exists("./generated_classes/" + header_file) and os.path.isfile("./generated_classes/" header_file):
+            os.system("rm ./generated_classes/" + header_file)
             file_names_found.append(header_file)
         source_file = header_file.replace(".h", ".cpp")
         if os.path.exists(source_file) and os.path.isfile(source_file):
