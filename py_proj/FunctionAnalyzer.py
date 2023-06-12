@@ -36,15 +36,7 @@ class FunctionAnalyzer:
                                         ex = ","
                                     ex = ex + ",".join(actux[len(ttt):])
                                     line = line.replace(ex, "")
-
                                 break
-
-                try:
-                    print(type(fixed_class[func]), fixed_class[func])
-                    #fixed_class[func].append(line)
-                except:
-                    print(type(line), line)
-                    input("xx")
 
         return fixed_class
 
@@ -109,10 +101,10 @@ class FunctionAnalyzer:
         for func in classes[cls]:
             countxyz = 1
             orgFunc = func
+
             while func in fixed_class.keys():
                 countxyz += 1
                 func += "_" + str(countxyz)
-                print("A:", func, orgFunc)
             fixed_class[func] = []
             declar_mode = False
             for line in classes[cls][orgFunc]:

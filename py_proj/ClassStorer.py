@@ -149,8 +149,36 @@ class ClassStorer:
                     fw.write(line)
 
                 for func in fixed_classes[cls]:
-                    for fun in my_funcs:
-                        if "::" + func + "(" in fun:
+                    count = 0
+                    for fun in my_funcs: # FIXME: here write second and third overload as well!!!
+                        xl = func
+                        # bell = False
+                        if not "::" + func + "(" in fun:
+                            xlx = xl.split('_')
+                            if count <= 0:
+                                count = 1
+                                if xlx[len(xlx)-1].isnumeric():
+                                    count = int(xlx[len(xlx)-1])
+                            b = len(xlx)
+                            while xlx[b-1].isnumeric():
+                                xl = ""
+                                # bell = True
+                                for x in xlx:
+                                    b -= 1
+                                    xl += x
+                                    if b == 1:
+                                        break
+                                    else:
+                                        xl += "_"
+                                xlx = xl.split('_')
+                                b = len(xlx)
+
+                        if "::" + xl + "(" in fun:
+                            count -= 1
+                            if count > 0: # skip next
+                                continue
+
+                        if "::" + xl + "(" in fun:
                             fw.write(fun) # write func head
                             break
 
